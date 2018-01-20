@@ -1,0 +1,5 @@
+window.calculator.title = Calculatrice
+window.exampleApp.title = Exemple d'application
+window.iwan.title = Iwan
+window.painter.title = Peintre
+window.snakeGame.title = Jeu de serpent simple

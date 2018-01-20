@@ -1,0 +1,5 @@
+window.calculator.title = Калкулатор
+window.exampleApp.title = Примерно приложение
+window.iwan.title = Иван
+window.painter.title = Рисуване
+window.snakeGame.title = Игра с змия

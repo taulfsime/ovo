@@ -1,0 +1,4 @@
+English = eng.txt
+Bulgarian = bg.txt
+French = fr.txt
+Deutsch = dsh.txt

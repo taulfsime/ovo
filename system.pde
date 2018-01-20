@@ -32,7 +32,7 @@ class system
   {
     for(window w : windows)
     {
-      if(w.getSystemName() == systemName)
+      if(w.systemName == systemName)
       {
         return w;
       }
@@ -44,9 +44,9 @@ class system
   {
     for(window w : windows)
     {
-      if(w.getSystemName() == systemName)
+      if(w.systemName == systemName)
       {
-        return w.getIcon();
+        return w.icon;
       }
     }
     return null;

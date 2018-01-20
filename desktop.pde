@@ -148,7 +148,7 @@ class taskBar
 
     if (clock.isClicked)
     {
-      clockDialog.open(mouseX - clockDialog.getWidth(), height - 42 - clockDialog.getHeigth());
+      clockDialog.open(mouseX - clockDialog.w, height - 42 - clockDialog.h);
     }
 
     for (int a = 0; a < icons.size(); a++)

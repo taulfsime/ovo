@@ -24,8 +24,24 @@ class window
   {
     this.w = 500;
     this.h = 500;
-    x = width/2 - w/3;
-    y = height/2 - h/3;
+    int x1 = width/2 - w/3;  
+    if(x1 + w < width)
+    {
+      x = x1;
+    }
+    else
+    {
+      x = width - 40 - w;
+    }
+    int y1 = height/2 - w/3;  
+    if(y1 + w < height)
+    {
+      y = y1;
+    }
+    else
+    {
+      y = height - 40 - h;
+    }
     
     this.systemName = systemName;
     
@@ -36,19 +52,30 @@ class window
   {
     this.w = w;
     this.h = h;
-    x = width/2 - w/3;
-    y = height/2 - h/3;
+    
+    int x1 = width/2 - w/3;  
+    if(x1 + w < width)
+    {
+      x = x1;
+    }
+    else
+    {
+      x = width - 40 - w;
+    }
+    int y1 = height/2 - w/3;  
+    if(y1 + w < height)
+    {
+      y = y1;
+    }
+    else
+    {
+      y = height - 40 - h;
+    }
     
     this.systemName = systemName;
     
     update();
   }
-  
-  //GETS
-  String getSystemName() {return systemName;}
-  boolean isOpen() {return isOpen;}
-  boolean getActive() {return isActive;}
-  PImage getIcon() {return icon;}
   
   //SETS
   void setApplication(application app) 
@@ -263,21 +290,6 @@ class dialog
     {
       isOpen = false;
     }
-  }
-  
-  boolean isOpen()
-  {
-    return isOpen;
-  }
-  
-  int getWidth()
-  {
-    return w;
-  }
-  
-  int getHeigth()
-  {
-    return h;
   }
   
   void render()

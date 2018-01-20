@@ -17,8 +17,8 @@ boolean mouseDragged = false;
 
 void setup()
 {  
-  fullScreen();
-  //size(1000, 700);
+  //fullScreen();
+  size(1000, 700);
     
   background(0);
   system = new system();
@@ -31,11 +31,8 @@ void setup()
 
   system.registerApplication("calculator", 228, 322, new calculator());
   system.registerApplication("painter", 588, 528, new painter());
-  system.registerApplication("snakeGame", 700, 500, new snakeGame());
   system.registerApplication("exampleApp", new example());
-  
-  //desktop.registerWindow(system.getWindow("painter"));
-  //desktop.registerWindow(system.getWindow("calculator"));
+  system.registerApplication("appMaker", 800, 600, new appMaker());
 }
 
 void draw()

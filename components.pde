@@ -101,6 +101,7 @@ class button extends component
   PImage img1 = null, img2 = null;
   boolean isClicked = false;
   boolean isOver = false;
+  text showText;
 
   button(int xPos, int yPos, int xLength, int yLength, String text)
   {
@@ -108,6 +109,7 @@ class button extends component
     if (this.img == null)
     {
       this.text = text;
+      showText = new text(w - borderWidth*2);
     }
   }
 
@@ -183,7 +185,8 @@ class button extends component
     {
       fill(0);
       textSize((int) (this.h * 0.5));
-      text(this.text, this.x + tx + this.w/2 - textWidth(this.text)/2, this.y + ty + this.h*2/3);
+      String t = showText.toString(this.text);
+      text(t, this.x + tx + this.w/2 - textWidth(t)/2, this.y + ty + this.h*2/3);
     } 
     else if (this.text == null && this.img != null && this.img1 != null && this.img2 != null)        //image x3
     {
@@ -240,6 +243,7 @@ class label extends component
   String text = null;
   PImage img = null;
   int textScale;
+  text showText;
 
   label(int xPos, int yPos, int xLength, int yLength, String text) 
   {
@@ -247,6 +251,7 @@ class label extends component
     if (this.img == null)
     {
       this.text = text;
+      showText = new text(w);
     }
 
     textScale = (int) (h * 0.5);
@@ -281,8 +286,6 @@ class label extends component
       } 
       else if (text != null && img == null)
       {
-        updateWidth();
-
         noStroke();
         fill(border);
         rect(x + tx, y + ty, w, h);
@@ -291,16 +294,9 @@ class label extends component
 
         fill(0);
         textSize(textScale);
-        text(text, x + tx + w/2 - (int) textWidth(text)/2, y + ty + h*2/3);
+        String t = showText.toString(text);
+        text(t, x + tx + w/2 - (int) textWidth(t)/2, y + ty + h*2/3);
       }
-    }
-  }
-
-  void updateWidth()
-  {
-    if (textWidth(text) >= w - 10)
-    {
-      w = (int) textWidth(text) + 10;
     }
   }
 
@@ -328,7 +324,7 @@ class label extends component
   }
 }
 
-//Switch Button //WORK 17.01.18
+//Switch Button //WORK 20.01.18
 class switchButton extends component
 {
   boolean isClicked = false;
@@ -337,11 +333,13 @@ class switchButton extends component
   PImage imgOn = null;
   String text = null;
   collisionBox cb;
+  text showText;
 
   switchButton(int xPos, int yPos, int xLength, int yLength, String text)
   {
     super(xPos, yPos, xLength, yLength);
     this.text = text;
+    showText = new text(w);
   }
 
   switchButton(int xPos, int yPos, int xLength, int yLength, PImage imgON, PImage imgOFF)
@@ -375,7 +373,7 @@ class switchButton extends component
     }
   }
 
-  void setText(PImage img)
+  void setImage(PImage img)
   {
     if (text == null)
     {
@@ -390,11 +388,6 @@ class switchButton extends component
       this.imgOn = imgON;
       this.imgOff = imgOFF;
     }
-  }
-
-  boolean isClicked()
-  {
-    return isClicked;
   }
 
   void render()
@@ -437,12 +430,14 @@ class switchButton extends component
       if (isClicked)
       {
         fill(click);
-      } else 
+      } 
+      else 
       {
         if (isOver)
         {
           fill(over);
-        } else
+        } 
+        else
         {
           fill(normal);
         }
@@ -454,7 +449,8 @@ class switchButton extends component
       {
         fill(0);
         textSize((int) (this.h * 0.5));
-        text(this.text, this.x + tx + this.w/2 - textWidth(this.text)/2, this.y + ty + this.h*2/3);
+        String t = showText.toString(text);
+        text(t, this.x + tx + this.w/2 - textWidth(t)/2, this.y + ty + this.h*2/3);
       } 
       else
       {
@@ -469,6 +465,7 @@ class progressBar extends component
 {
   float percentage = 0;
   boolean showPercentage = false;
+  text showText;
 
   progressBar(int xPos, int yPos, int xLength, int yLength) 
   {
@@ -483,6 +480,7 @@ class progressBar extends component
   void showPercentage(boolean show)
   {
     showPercentage = show;
+    showText = new text(w);
   }
 
   void setProgress(float percentage)
@@ -514,7 +512,7 @@ class progressBar extends component
 
     if (showPercentage)
     {
-      String per = (int) (percentage*100) + " %";
+      String per = showText.toString((int) (percentage*100) + " %");
       textSize(12);
       fill(0, 0, 0);
       text(per, tx + x + w/2 - textWidth(per)/2, ty + y + h*0.62);
@@ -645,6 +643,7 @@ class slider extends component
   final int sliderWidth = 5;
   boolean showPercentage = false;
   color slider = color(80, 80, 80);
+  text showText;
 
   slider(int xPos, int yPos, int xLength, int yLength)
   {
@@ -660,6 +659,7 @@ class slider extends component
   void showPercentage(boolean show)
   {
     showPercentage = show;
+    showText = new text(w);
   }
 
   float getPercentage()
@@ -711,7 +711,7 @@ class slider extends component
     //text
     if(showPercentage)
     {
-      String per = (int) (getPercentage()*100) + " %";
+      String per = showText.toString((int) (getPercentage()*100) + " %");
       textSize(12);
       fill(0, 0, 0);
       text(per, tx + x + w/2 - textWidth(per)/2, ty + y + h*0.62);
@@ -784,7 +784,7 @@ class itemList extends component
     show.render();
     title.render();
 
-    if (show.isClicked())
+    if (show.isClicked)
     {
       for (int a = 0; a < item.size(); a++)
       {
@@ -837,10 +837,12 @@ class checkBox extends component
   String text = null;
   boolean clicked = false;
   boolean update = false;
+  text showText;
   checkBox(int xPos, int yPos, int xLength, int yLength, String text)
   {
     super(xPos, yPos, xLength, yLength);
     this.text = text;
+    showText = new text(w - h - 5);
   }
   
   void render()
@@ -854,7 +856,7 @@ class checkBox extends component
     rect(x + tx + borderWidth + 3, y + ty + borderWidth + 3, h - borderWidth*2 - 6, h - borderWidth*2 - 6);
     
     fill(0);
-    text(text, tx + x + h + 5, ty + y + h*0.62);
+    text(showText.toString(text), tx + x + h + 5, ty + y + h*0.62);
     
     if(cb.isOver() && mouseClicked)
     {
@@ -949,5 +951,30 @@ class radioGroup extends component
         c.clicked = false;
       }
     }
+  }
+}
+
+class text
+{
+  int w;
+  text(int w) {this.w = w;}
+  
+  String toString(String text)
+  {
+    if(textWidth(text) > w)
+    {
+      String r = "";
+      for(int a = 0; a < text.length(); a++)
+      {
+        r += text.charAt(a);
+        if(textWidth(r + "...") >= w - 7)
+        {
+          break;
+        }
+      }
+      return r + "...";
+    }
+    
+    return text;
   }
 }

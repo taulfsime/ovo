@@ -64,6 +64,7 @@ class example extends application
   void init()
   {
     setLayout(layout);
+    radioGroup.show();
     
     progressBar.setProgress(slider.getPercentage());
   } //<>//

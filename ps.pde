@@ -17,8 +17,8 @@ boolean mouseDragged = false;
 
 void setup()
 {  
-  //fullScreen();
-  size(1000, 700);
+  fullScreen();
+  //size(1000, 700);
     
   background(0);
   system = new system();

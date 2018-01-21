@@ -91,21 +91,7 @@ class dataReader
     }
     
     return data;
-  }
-  
-  PImage getImage(String dir)
-  {
-    PImage img = null;
-    
-    img = loadImage(dir);
-    
-    if(img != null) 
-    {
-      return img;
-    }
-    
-    return loadImage("basic/unknown.png");
-  }
+  }  
 }
 
 class data
@@ -158,5 +144,19 @@ class data
       }
     }
     return data;
+  }
+  
+  PImage getImage(String dir)
+  {
+    PImage img = null;
+    
+    img = loadImage(dir);
+    
+    if(img != null) 
+    {
+      return img;
+    }
+    
+    return loadImage("basic/unknown.png");
   }
 }

@@ -18,7 +18,8 @@ class window
   button btnClose;
   label lbIcon;
   collisionBox toolBar;
-  dataReader data = new dataReader();
+  data data = new data();
+  dataReader dataReader = new dataReader();
         
   window(String systemName)
   {
@@ -113,7 +114,7 @@ class window
     
     icon = data.getImage("textures/applicationIcon/" + systemName + ".png");
     lbIcon = new label(x + 2, y + 2, 17, 17, icon);
-    title = data.getAppTitle(systemName, lang);
+    title = dataReader.getAppTitle(systemName, lang);
     btnClose = new button(x + w - 42, y, 35, 16, loadImage("basic/button/close/normal.png"), loadImage("basic/button/close/over.png"), loadImage("basic/button/close/clicked.png"));
   }
   
@@ -186,7 +187,7 @@ class window
     } 
     else if(btnTaskManager.isOver)
     {
-      String a = data.getAppTitle(systemName, lang);
+      String a = dataReader.getAppTitle(systemName, lang);
       if(title != a)
       {
         title = a;

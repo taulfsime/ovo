@@ -12,6 +12,8 @@
  - Item List
  - Image
  - CheckBox
+ - Radio Group
+ - Text 
  ***************************/
 
 //Component
@@ -465,6 +467,7 @@ class progressBar extends component
 {
   float percentage = 0;
   boolean showPercentage = false;
+  color bar = color(0, 255, 0);
   text showText;
 
   progressBar(int xPos, int yPos, int xLength, int yLength) 
@@ -481,6 +484,11 @@ class progressBar extends component
   {
     showPercentage = show;
     showText = new text(w);
+  }
+  
+  void setColor(int red, int green, int blue)
+  {
+    bar = color(red, green, blue);
   }
 
   void setProgress(float percentage)
@@ -507,7 +515,7 @@ class progressBar extends component
     fill(normal);
     rect(x + borderWidth + tx + percentage*(w - borderWidth*2), y + ty + borderWidth, w - percentage*(w - borderWidth*2) - borderWidth*2, h - borderWidth*2);
     
-    fill(0, 255, 0); //COLOR - SHOW PROGRESS
+    fill(bar);
     rect(x + borderWidth + tx, y + ty + borderWidth, percentage*(w - borderWidth*2), h - borderWidth*2);
 
     if (showPercentage)
@@ -655,7 +663,7 @@ class slider extends component
     super(xPos, yPos, xLength, yLength);
     this.img = img;
   }
-  
+ 
   void showPercentage(boolean show)
   {
     showPercentage = show;
@@ -806,6 +814,7 @@ class itemList extends component
   }
 }
 
+//Image
 class image extends component
 {
   PImage img = null;
@@ -887,6 +896,7 @@ class checkBox extends component
   }
 }
 
+//Radio Group
 class radioGroup extends component
 {
   ArrayList<checkBox> checkBoxes = new ArrayList<checkBox>();
@@ -908,12 +918,12 @@ class radioGroup extends component
   
   void show()
   {
-    int x = 1000;
-    int y = 1000;
+    int x = width;
+    int y = height;
     int y1 = 0;
     int w = 0;
-    int tx = 1000;
-    int ty = 1000;
+    int tx = width;
+    int ty = height;
         
     for(checkBox c : checkBoxes)
     {
@@ -923,7 +933,7 @@ class radioGroup extends component
       w = max(c.w, w);
       tx = min(c.tx, tx);
       ty = min(c.ty, ty);
-  }
+    }
     
     fill(0, 255, 0);
     rect(x + tx, y + ty, w, y1 - y);
@@ -954,6 +964,7 @@ class radioGroup extends component
   }
 }
 
+//Text
 class text
 {
   int w;

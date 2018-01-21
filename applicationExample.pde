@@ -45,6 +45,7 @@ class example extends application
     radioGroup.addItem(checkBox2);
     radioGroup.addItem(checkBox3);
     radioGroup.addItem(checkBox4);
+    progressBar.setColor(150, 0, 255);
     
     //add component to layout
     layout.addComponent(button);

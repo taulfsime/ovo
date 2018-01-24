@@ -26,7 +26,7 @@ class example extends application
     switchButton = new switchButton    (20, 100, 100, 30, "SwitchButton");
     progressBar = new progressBar      (20, 140, 100, 30);
     slider = new slider                (20, 180, 100, 30);
-    itemList = new itemList            (20, 220, 100, 30, "test");
+    itemList = new itemList            (150, 220, 100, 300); //
     textArea = new textArea            (20, 260, 100, 30);
     checkBox1 = new checkBox           (20, 300, 100, 30,  "test1");
     checkBox2 = new checkBox           (20, 340, 100, 30,  "test2");
@@ -65,7 +65,8 @@ class example extends application
   void init()
   {
     setLayout(layout);
-    radioGroup.show();
+
+    itemList.setOpen(switchButton.isClicked);
     
     progressBar.setProgress(slider.getPercentage());
   } //<>//

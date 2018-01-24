@@ -734,30 +734,32 @@ class slider extends component
 //Item List
 class itemList extends component
 {
-  ArrayList<button> item = new ArrayList<button>();
-  switchButton show;
-  label title;
+  ArrayList<String> itemTitle = new ArrayList<String>();
   int selected = -1;
+  boolean isOpen = false;
 
-  itemList(int xPos, int yPos, int xLength, int yLength, String title)
+  itemList(int xPos, int yPos, int xLength, int yLength)
   {
     super(xPos, yPos, xLength, yLength);
-    show = new switchButton((x + tx) + w - h, y + ty, h, h, loadImage("textures/arrowDown.png"));
-    this.title = new label(x + tx, y + ty, w - h, h, title);
   }
 
   void addItem(String itemTitle)
   {
-    this.item.add(new button(x + tx, y + ty + (h + 1) * max(this.item.size() + 1, 1), w, h, itemTitle));
+    this.itemTitle.add(itemTitle);
+  }
+  
+  void setOpen(boolean open)
+  {
+    this.isOpen = open;
   }
 
   void removeItem(String itemTitle)
   {
-    for (int a = 0; a < item.size(); a++)
+    for (int a = 0; a < this.itemTitle.size(); a++)
     {
-      if (item.get(a).getText().toLowerCase() == itemTitle.toLowerCase())
+      if (this.itemTitle.get(a).toLowerCase() == itemTitle.toLowerCase())
       {
-        item.remove(item.get(a));
+        this.itemTitle.remove(this.itemTitle.get(a));
       }
     }
   }
@@ -766,10 +768,10 @@ class itemList extends component
   {
     if (selected >= 0)
     {
-      return item.get(selected).getText();
+      return itemTitle.get(selected);
     }
 
-    return title.getText();
+    return null;
   }
 
   int getSelectedNum()
@@ -778,38 +780,18 @@ class itemList extends component
     {
       return selected;
     }
-    return 0;
+    return -1;
   }
 
   void render()
   {
-
-    show.translate(tx, ty);
-    title.translate(tx, ty);
-
-    title.setText(getSelected());
-
-    show.render();
-    title.render();
-
-    if (show.isClicked)
+    if (isOpen)
     {
-      for (int a = 0; a < item.size(); a++)
+      for(int a = 0; a < this.itemTitle.size(); a++)
       {
-        item.get(a).translate(tx, ty);
-        item.get(a).render();
-
-        if (item.get(a).isClicked)
-        {
-          selected = a;
-          show.setClicked(false);
-        }
+        button b = new button(x + tx, y + ty + a*(h/8) + 20, w, h/8, itemTitle.get(a));
+        b.render();
       }
-    }
-    collisionBox cb = new collisionBox(x + tx, y + ty, w, h + h*item.size());
-    if (mouseClicked && !cb.isOver())
-    {
-      show.setClicked(false);
     }
   }
 }
@@ -865,6 +847,7 @@ class checkBox extends component
     rect(x + tx + borderWidth + 3, y + ty + borderWidth + 3, h - borderWidth*2 - 6, h - borderWidth*2 - 6);
     
     fill(0);
+    textSize(15);
     text(showText.toString(text), tx + x + h + 5, ty + y + h*0.62);
     
     if(cb.isOver() && mouseClicked)

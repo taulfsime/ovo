@@ -157,15 +157,15 @@ class setting extends application
   
   void preinit()
   {
-    layout = new layout(x, y, w, h);
-    langs = new itemList(1, 1, 150, 25, dataReader.getLanguages()[0][0]);
+    //layout = new layout(x, y, w, h);
+    //langs = new itemList(1, 1, 150, 25, dataReader.getLanguages()[0][0]);
     
-    layout.addComponent(langs);
+    //layout.addComponent(langs);
     
-    for(int a = 0; a < dataReader.getNumLanguages(); a++)
-    {
-      langs.addItem(dataReader.getLanguages()[a][0]);
-    }
+    //for(int a = 0; a < dataReader.getNumLanguages(); a++)
+    //{
+    //  langs.addItem(dataReader.getLanguages()[a][0]);
+    //}
   }
   
   void init()

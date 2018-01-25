@@ -8,6 +8,7 @@ String lang = "eng.txt";
 final String VERSION = "alpha v0.1";
 boolean mouseClicked = false;
 boolean mouseDragged = false;
+boolean needTextureUpdate = false;
 
 /*******************
 
@@ -19,8 +20,12 @@ void setup()
 {  
   fullScreen();
   //size(1000, 700);
-    
-  background(0);
+
+  if(needTextureUpdate)
+  {
+    background(0);
+    needTextureUpdate = false;
+  }
   system = new system();
   taskBar = new taskBar();
   taskManager = new taskManager(taskBar.getWidth());

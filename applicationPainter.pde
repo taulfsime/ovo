@@ -4,6 +4,7 @@ class painter extends application
   String tool = "pencil";
   
   layout tools;
+  data data;
     
   button toolPencil;
   button toolEraser;
@@ -13,22 +14,43 @@ class painter extends application
   slider sliderRed;
   slider sliderGreen;
   slider sliderBlue;
+  button[] colors = new button[20];
+  
   float red = 0, green = 0, blue = 0;
   canvas canvas;
   
   void preinit()
   {
+    data = new data();
     tools = new layout(501, y, w - 501, h - 128);
     canvas = new canvas(x, y, 500, 500);
-    toolPencil = new button(510, 10, 25, 25, loadImage("textures/painter/tools/pencil.png"));
-    toolEraser = new button(540, 10, 25, 25, loadImage("textures/painter/tools/eraser.png"));
-    toolBucket = new button(510, 40, 25, 25, loadImage("textures/painter/tools/bucket.png"));
-    saveFile = new button(510, 70, 25, 25, loadImage("textures/painter/tools/saveFile.png"));
-    newFile = new button(540, 70, 25, 25, loadImage("textures/painter/tools/newFile.png"));
+    toolPencil = new button(510, 10, 25, 25, data.getImage("textures/painter/tools/pencil.png"));
+    toolEraser = new button(540, 10, 25, 25, data.getImage("textures/painter/tools/eraser.png"));
+    toolBucket = new button(510, 40, 25, 25, data.getImage("textures/painter/tools/bucket.png"));
+    saveFile = new button(510, 70, 25, 25, data.getImage("textures/painter/tools/saveFile.png"));
+    newFile = new button(540, 70, 25, 25, data.getImage("textures/painter/tools/newFile.png"));
     
-    sliderRed = new slider(504, 100, 68, 25, loadImage("textures/painter/tools/redSlider.png"));
-    sliderGreen = new slider(504, 130, 68, 25, loadImage("textures/painter/tools/greenSlider.png"));
-    sliderBlue = new slider(504, 160, 68, 25, loadImage("textures/painter/tools/blueSlider.png"));
+    sliderRed = new slider(504, 100, 68, 25, data.getImage("textures/painter/tools/redSlider.png"));
+    sliderGreen = new slider(504, 130, 68, 25, data.getImage("textures/painter/tools/greenSlider.png"));
+    sliderBlue = new slider(504, 160, 68, 25, data.getImage("textures/painter/tools/blueSlider.png"));
+    
+    //first line
+    colors[0] = new button(506, 190, 15, 15, data.getImage("textures/painter/colors/black.png"), data.getImage("textures/painter/colors/black.png"), data.getImage("textures/painter/colors/black.png"));
+    colors[1] = new button(523, 190, 15, 15, data.getImage("textures/painter/colors/gray.png"), data.getImage("textures/painter/colors/gray.png"), data.getImage("textures/painter/colors/gray.png"));
+    colors[2] = new button(540, 190, 15, 15, data.getImage("textures/painter/colors/red.png"), data.getImage("textures/painter/colors/red.png"), data.getImage("textures/painter/colors/red.png"));
+    colors[3] = new button(557, 190, 15, 15, data.getImage("textures/painter/colors/orange.png"), data.getImage("textures/painter/colors/orange.png"), data.getImage("textures/painter/colors/orange.png"));
+   
+    //second line
+    colors[4] = new button(506, 207, 15, 15, data.getImage("textures/painter/colors/yellow.png"), data.getImage("textures/painter/colors/yellow.png"), data.getImage("textures/painter/colors/yellow.png"));
+    colors[5] = new button(523, 207, 15, 15, data.getImage("textures/painter/colors/green.png"), data.getImage("textures/painter/colors/green.png"), data.getImage("textures/painter/colors/green.png"));
+    colors[6] = new button(540, 207, 15, 15, data.getImage("textures/painter/colors/light_blue.png"), data.getImage("textures/painter/colors/light_blue.png"), data.getImage("textures/painter/colors/light_blue.png"));
+    colors[7] = new button(557, 207, 15, 15, data.getImage("textures/painter/colors/dark_blue.png"), data.getImage("textures/painter/colors/dark_blue.png"), data.getImage("textures/painter/colors/dark_blue.png"));
+    
+    //third line
+    colors[8] = new button(506, 224, 15, 15, "");
+    colors[9] = new button(523, 224, 15, 15, "");
+    colors[10] = new button(540, 224, 15, 15, "");
+    colors[11] = new button(557, 224, 15, 15, "");
         
     tools.addComponent(toolPencil);
     tools.addComponent(newFile);
@@ -38,6 +60,18 @@ class painter extends application
     tools.addComponent(sliderBlue);
     tools.addComponent(toolEraser);
     tools.addComponent(toolBucket);
+    tools.addComponent(colors[0]);
+    tools.addComponent(colors[1]);
+    tools.addComponent(colors[2]);
+    tools.addComponent(colors[3]);
+    tools.addComponent(colors[4]);
+    tools.addComponent(colors[5]);
+    tools.addComponent(colors[6]);
+    tools.addComponent(colors[7]);
+    tools.addComponent(colors[8]);
+    tools.addComponent(colors[9]);
+    tools.addComponent(colors[10]);
+    tools.addComponent(colors[11]);
   }
   
   void init()
@@ -47,8 +81,37 @@ class painter extends application
     red = sliderRed.getPercentage()*255;
     green = sliderGreen.getPercentage()*255;
     blue = sliderBlue.getPercentage()*255;
-        
-    if(toolPencil.isClicked)
+    if(colors[0].isClicked)
+    {
+      red = 255;
+      green = 255;
+      blue = 255;
+    }
+    else if(colors[1].isClicked)
+    {
+      red = 165;
+      green = 165;
+      blue = 165;
+    }
+    else if(colors[2].isClicked)
+    {
+      red = 255;
+      green = 0;
+      blue = 0;
+    }
+    else if(colors[3].isClicked)
+    {
+      red = 255;
+      green = 153;
+      blue = 0;
+    }
+    else if(colors[4].isClicked)
+    {
+      red = 165;
+      green = 165;
+      blue = 165;
+    }
+    else if(toolPencil.isClicked)
     {
       tool = "pencil";
     }
@@ -94,7 +157,7 @@ class painter extends application
       }
       
     }
-  } //<>// //<>// //<>//
+  } //<>//
   
   void cfill(int dx, int dy, float red, float green, float blue, canvas canvas)
   {

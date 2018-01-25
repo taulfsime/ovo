@@ -565,18 +565,24 @@ class textArea extends component
       if (enterText && keyPressed)
       {
         //line(textWidth(text) + x + tx, y + ty, textWidth(text) + x + tx, y + ty + 20);
-        if (keyCode == BACKSPACE) 
+        switch(keyCode)
         {
-          if (text.length() > 0)
-          {
-            text = text.substring(0, text.length() - 1);
-          }
-        } 
-        else if (keyCode >= 32 && keyCode <= 126) //keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT
-        {
-          text += key;
+          case BACKSPACE:
+            if (text.length() > 0)
+            {
+              text = text.substring(0, text.length() - 1);
+            }
+          break;
+          
+          default:
+            if (keyCode >= keyCode && keyCode <= 126 && keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT)
+            {
+              text += (char) keyCode;
+            }
+          break;
         }
       }
+      
       fill(border);
       rect(x + tx, y + ty, w, h);
 
@@ -584,6 +590,7 @@ class textArea extends component
       rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
 
       fill(0);
+      textSize(14);
       text(text, x + borderWidth + tx + 5, y + ty + 20);
     }
   }
@@ -631,12 +638,24 @@ class layout extends component
     {
       for (component comp : components) 
       {
+        if(!comp.isActive)
+        {
+          comp.isActive = true;
+        }
+        
         comp.translate(this.x, this.y);
         comp.render();
       }
     } 
     else
     {
+      for(component comp : components)
+      {
+        if(comp.isActive)
+        {
+          comp.isActive = false;
+        }
+      }
     }
   }
 }

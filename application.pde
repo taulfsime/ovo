@@ -12,7 +12,7 @@ class application
   void render()
   {
     layout.updateComponent(x, y, w, h);
-    layout.render(); //<>// //<>//
+    layout.render(); //<>// //<>// //<>//
   }
   
   void setLayout(layout newLayout)

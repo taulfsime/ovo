@@ -232,6 +232,7 @@ class window
   {
     if(isActive && mouseDragged && isOpen)
     {
+      needTextureUpdate = true;
       if(!isLocked) //move
       {
         if(mouseX - newX >= 0 && mouseX - newX + w < width)
@@ -273,6 +274,7 @@ class dialog
   {
     this.x = x;
     this.y = y;
+    needTextureUpdate = true;
     
     if(!isOpen)
     {

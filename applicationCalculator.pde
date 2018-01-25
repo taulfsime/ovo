@@ -109,7 +109,7 @@ class calculator extends application
     
   void init()
   {
-    setLayout(layout); //<>// //<>//
+    setLayout(layout); //<>// //<>// //<>//
     
     String a = fNum + operation + sNum + "";
     output.setTextScale(max(30/( max( max(a.length() - 8, 1), (int) result)), 12));

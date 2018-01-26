@@ -601,9 +601,9 @@ class layout extends component
 {
   ArrayList<component> components = new ArrayList<component>();
 
-  layout(int xPos, int yPos, int xLength, int yLength)
+  layout(int xLength, int yLength)
   {
-    super(xPos, yPos, xLength, yLength);
+    super(0, 0, xLength, yLength);
   }
 
   void addComponent(component c)
@@ -643,7 +643,7 @@ class layout extends component
           comp.isActive = true;
         }
         
-        comp.translate(this.x, this.y);
+        comp.translate(this.x + this.tx, this.y + this.ty);
         comp.render();
       }
     } 
@@ -828,6 +828,25 @@ class image extends component
   image(int xPos, int yPos, int xLength, int yLength)
   {
     super(xPos, yPos, xLength, yLength);
+    this.img = null;
+  }
+  
+  PImage createImage(int w, int h, color c)
+  {
+    PGraphics i = createGraphics(w, h);
+    for(int x = 0; x < w; x++)
+    {
+      for(int y = 0; y < h; y++)
+      {
+        i.beginDraw();
+        
+        i.set(x, y, c);
+        
+        i.endDraw();
+      }
+    }
+    
+    return i;
   }
 
   void setImage(PImage img)
@@ -837,10 +856,14 @@ class image extends component
 
   void render()
   {
-    image(img, x + tx, y + ty, w, h);
+    if(img != null)
+    {
+      image(img, x + tx, y + ty, w, h);
+    }
   }
 }
 
+//Check Box
 class checkBox extends component
 {
   collisionBox cb;

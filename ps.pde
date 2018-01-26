@@ -3,6 +3,7 @@ taskBar taskBar;
 desktop desktop;
 startButton startButton;
 system system;
+data data;
 
 String lang = "eng.txt";
 final String VERSION = "alpha v0.1";
@@ -12,7 +13,8 @@ boolean needTextureUpdate = false;
 
 /*******************
 
-  TODO: check for file exist (langs) /in helper/
+  *TODO: check for file exist (langs) /helper/
+  *TODO: Add suport for change a background color!! /painter/
 
 *******************/
 
@@ -26,18 +28,25 @@ void setup()
     background(0);
     needTextureUpdate = false;
   }
+  data = new data("test");
   system = new system();
   taskBar = new taskBar();
   taskManager = new taskManager(taskBar.getWidth());
   startButton = new startButton();
   desktop = new desktop();
   
+  println(data.readFromFile("dware"));
+  
   taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new setting());
 
-  system.registerApplication("calculator", 228, 322, new calculator());
-  system.registerApplication("painter", 588, 528, new painter());
+  system.registerApplication("calculator", new calculator());
+  system.registerApplication("painter", new painter());
   system.registerApplication("exampleApp", new example());
-  system.registerApplication("appMaker", 800, 600, new appMaker());
+  system.registerApplication("appMaker", new appMaker());
+  
+  taskManager.registerApplication("calculator");
+  taskManager.registerApplication("exampleApp");
+  taskManager.registerApplication("painter");
 }
 
 void draw()
@@ -101,7 +110,7 @@ class clock extends application
 
   void preinit()
   {
-    layout = new layout(x, y, w, h);
+    layout = new layout(250, 250);
     displayClock = new image(1, 1, 180, 180);
     imgClock = createGraphics(displayClock.w, displayClock.h);
     clock = new label(3, 190, 177, 30, "");

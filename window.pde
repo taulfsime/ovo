@@ -18,60 +18,19 @@ class window
   button btnClose;
   label lbIcon;
   collisionBox toolBar;
-  data data = new data();
+  data data = new data("");
   dataReader dataReader = new dataReader();
-        
-  window(String systemName)
-  {
-    this.w = 500;
-    this.h = 500;
-    int x1 = width/2 - w/3;  
-    if(x1 + w < width)
-    {
-      x = x1;
-    }
-    else
-    {
-      x = width - 40 - w;
-    }
-    int y1 = height/2 - w/3;  
-    if(y1 + w < height)
-    {
-      y = y1;
-    }
-    else
-    {
-      y = height - 40 - h;
-    }
-    
-    this.systemName = systemName;
-    
-    update();
-  }
   
-  window(String systemName, int w, int h)
+  window(String systemName, application app)
   {
-    this.w = w;
-    this.h = h;
+    this.app = app;
+    this.app.init();
+    this.app.update();
+    this.w = app.w;
+    this.h = app.h;
     
-    int x1 = width/2 - w/3;  
-    if(x1 + w < width)
-    {
-      x = x1;
-    }
-    else
-    {
-      x = width - 40 - w;
-    }
-    int y1 = height/2 - w/3;  
-    if(y1 + w < height)
-    {
-      y = y1;
-    }
-    else
-    {
-      y = height - 40 - h;
-    }
+    x = (width - this.w)/2;
+    y = (height - this.h)/2;
     
     this.systemName = systemName;
     
@@ -79,10 +38,6 @@ class window
   }
   
   //SETS
-  void setApplication(application app) 
-  {
-    this.app = app;
-  }
   void setActive(boolean active) 
   {
     this.isActive = active;
@@ -91,10 +46,10 @@ class window
   }
   
   void open() 
-  {    
+  {
     if(app != null)
     {
-      this.app.preinit();
+      this.app.init();
     }
     
     isOpen = true;
@@ -102,8 +57,8 @@ class window
   
   void close()
   {
-    x = width/2 - w/3;
-    y = height/2 - h/3;
+     x = (width - this.w)/2;
+     y = (height - this.h)/2;
     
     isOpen = false;
   }
@@ -141,8 +96,10 @@ class window
       
       if(app != null)
       {
-        app.updateComponent(x + 6, y + 21, w - 12, h - 27);
-        app.init();
+        app.updateComponent(x, y);
+        w = app.w;
+        h = app.h;
+        app.update();
         app.render();
       }
         
@@ -280,7 +237,7 @@ class dialog
     {
       if(app != null)
       {
-        app.preinit();
+        app.init();
       }
       
       isOpen = true;
@@ -311,7 +268,9 @@ class dialog
       
       if(app != null)
       {
-        app.updateComponent(x + 6, y + 6, w - 12, h - 12);
+        app.updateComponent(x + 6, y + 6);
+        w = app.w - 12;
+        h = app.h - 12;
         app.init();
         app.render();
       }

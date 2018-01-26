@@ -43,9 +43,9 @@ class calculator extends application
   
   layout layout;
   
-  void preinit()
+  void init()
   {
-    layout = new layout(x, y, w, h);
+    layout = new layout(228, 322);
     mc = new button(11, 85, 34, 27, "MC");
     mr = new button(50, 85, 34, 27, "MR");
     ms = new button(89, 85, 34, 27, "MS");
@@ -107,9 +107,9 @@ class calculator extends application
     layout.addComponent(output);
   }
     
-  void init()
+  void update()
   {
-    setLayout(layout); //<>// //<>// //<>//
+    setLayout(layout); //<>//
     
     String a = fNum + operation + sNum + "";
     output.setTextScale(max(30/( max( max(a.length() - 8, 1), (int) result)), 12));

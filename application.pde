@@ -7,19 +7,21 @@ class application
   public int h;
   
   void init() {}
-  void preinit() {}
+  void update() {}
   
   void render()
   {
-    layout.updateComponent(x, y, w, h);
-    layout.render(); //<>// //<>// //<>//
+    layout.updateComponent(x, y);
+    layout.render(); //<>//
   }
   
   void setLayout(layout newLayout)
   {
     if(newLayout != null)
     {
-      layout = newLayout;
+      layout = newLayout; //<>//
+      w = layout.w;
+      h = layout.h;
     }
   }
   
@@ -30,17 +32,10 @@ class application
   
   void updateComponent(int x, int y)
   {
-    this.x = x;
-    this.y = y;
-    layout = new layout(x, y, w, h);
-  }
-  
-  void updateComponent(int x, int y, int w, int h)
-  {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    layout = new layout(x, y, w, h);
+    this.x = x + 6;
+    this.y = y + 21;
+    layout = new layout(w, h);
+    layout.x = this.x;
+    layout.y = this.y;
   }
 }

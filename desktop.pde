@@ -48,29 +48,27 @@ class taskManager
 {
   int w;
 
-  ArrayList<window> window = new ArrayList<window>();
+  ArrayList<String> systemNames = new ArrayList<String>();
 
   taskManager(int w)
   {
     this.w = w;
   }
 
-  void registerWindow(window w)
+  void registerApplication(String systemName)
   {
-    this.window.add(w);
+    this.systemNames.add(systemName);
   }
 
   void render()
   {
-    int n = 1;
     fill(218, 218, 218);
     stroke(0);
     rect(0, height - 42, width - w, 42);
 
-    for (window w : window)
+    for (int a = 0; a < systemNames.size(); a++)
     {
-      w.renderAtTaskManager(n);
-      n++;
+      system.getWindow(systemNames.get(a)).renderAtTaskManager(a + 1);
     }
   }
 }
@@ -101,24 +99,9 @@ class taskBar
     }
   }
 
-  int getWidth() {
-    return w;
-  }
-
-  void registerApplication(PImage icon, application app, int w, int h) 
+  int getWidth() 
   {
-    if (icons.size() < 6)
-    {
-      this.icons.add(icon);
-
-      if (app != null)
-      {
-        dialog d = new dialog(w, h, app);
-        this.dialogs.add(d);
-      }
-
-      updateWidth();
-    }
+    return w;
   }
 
   void registerApplication(PImage icon, application app) 

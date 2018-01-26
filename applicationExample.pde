@@ -16,10 +16,10 @@ class example extends application
   checkBox checkBox4;
   radioGroup radioGroup; 
     
-  void preinit()
+  void init()
   {
     //register component
-    layout = new layout(x, y, w, h);
+    layout = new layout(500, 500);
                                            //+40
     button = new button                (20, 20, 100, 30, "Button");
     label = new label                  (20, 60, 100, 30, "Label");
@@ -62,7 +62,7 @@ class example extends application
     layout.addComponent(radioGroup);
   }
     
-  void init()
+  void update()
   {
     setLayout(layout);
 

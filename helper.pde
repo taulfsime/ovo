@@ -96,55 +96,77 @@ class dataReader
 
 class data
 {
-  data(){}
+  String dir;
+  data(String dir)
+  {
+    this.dir = dir;
+  }
   
   public void writeToFile(String tag, String info)
   {
-    int n = loadStrings("data/data.txt").length;
-    String[] data = new String[n];
+    String[] data = loadStrings("data/dataTags/" + dir + ".txt");
     
-    for(int a = 0; a < n; a++)
+    for(int a = 0; a < data.length; a++)
     {
-      if(getData()[a][0].toLowerCase() == tag.toLowerCase())
-      {
-        data[a] = getData()[a][0] + " = " + info;
-      }
-      else
-      {
-        data[a] = getData()[a][0] + " = " + getData()[a][1];
-      }
+
     }
     saveStrings("data/data.txt", data);
   }
   
-  private String[][] getData()
+  String readFromFile(String tag)
   {
-    String[] reader = loadStrings("data/data.txt");
-    String[][] data = new String[reader.length][2];
+    String[] data = loadStrings("data/dataTags/" + dir + ".txt");
+    String result = "";
     
-    for(int a = 0; a < reader.length; a++)
+    int n = data.length;
+    for(int b = 0; b < n; b++)
     {
-      int n = 0;
-      data[a][0] = "";
-      data[a][1] = "";
-      for(int b = 0; b < reader[a].length(); b++)
+      result = "";
+      for(int a = 0; a < tag.length(); a++)
       {
-        char ch = reader[a].charAt(b);
-        if(ch != ' ')
-        {
-          if(ch == '=')
-          {
-            n = 1;
-          }
-          else
-          {
-            data[a][n] += ch;
-          }
-        }
+        result += data[b].charAt(a);
+      }
+      
+      if(result.equals(tag))
+      {
+        b = n + 10;
+      }
+      else
+      {
+        result = "";
       }
     }
-    return data;
+    return result;
   }
+  
+  //private String[][] getData()
+  //{
+  //  String[] reader = loadStrings("data/data.txt");
+  //  String[][] data = new String[reader.length][2];
+    
+  //  for(int a = 0; a < reader.length; a++)
+  //  {
+  //    int n = 0;
+  //    data[a][0] = "";
+  //    data[a][1] = "";
+  //    for(int b = 0; b < reader[a].length(); b++)
+  //    {
+  //      char ch = reader[a].charAt(b);
+  //      if(ch != ' ')
+  //      {
+  //        if(ch == '=')
+  //        {
+  //          n = 1;
+  //        }
+  //        else
+  //        {
+  //          data[a][n] += ch;
+  //        }
+  //      }
+  //    }
+  //  }
+  //  return data;
+  //}
   
   PImage getImage(String dir)
   {
@@ -158,5 +180,36 @@ class data
     }
     
     return loadImage("basic/unknown.png");
+  }
+  
+  PImage getImage(String dir, int x, int y, int cw, int ch)
+  {
+    x -= 1;
+    y -= 1;
+    
+    PImage loadImg = loadImage(dir);
+    PGraphics img = createGraphics(cw, ch);
+    
+    //load pixels
+    loadImg.loadPixels();
+    
+    img.beginDraw();
+    for(int dy = x*ch; dy < ch + x*ch; dy++) 
+    {
+      for(int dx = y*cw; dx < cw + y*cw; dx++)
+      {
+        int loc = (dx + x) + (dy + y)*loadImg.width;
+        
+        float r = red(loadImg.pixels[loc]);
+        float g = green(loadImg.pixels[loc]);
+        float b = blue(loadImg.pixels[loc]);
+        
+        img.set(dx - x, dy - y, color(r, g, b));
+      }
+    }
+    loadImg.updatePixels();
+    img.endDraw();
+
+    return img;
   }
 }

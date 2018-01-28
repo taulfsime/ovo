@@ -9,6 +9,7 @@ String lang = "eng.txt";
 final String VERSION = "alpha v0.1";
 boolean mouseClicked = false;
 boolean mouseDragged = false;
+boolean keyClicked = false;
 boolean needTextureUpdate = false;
 
 /*******************
@@ -28,15 +29,13 @@ void setup()
     background(0);
     needTextureUpdate = false;
   }
-  data = new data("test");
+  
   system = new system();
   taskBar = new taskBar();
   taskManager = new taskManager(taskBar.getWidth());
   startButton = new startButton();
   desktop = new desktop();
-  
-  println(data.readFromFile("dware"));
-  
+    
   taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new setting());
 
   system.registerApplication("calculator", new calculator());
@@ -61,6 +60,7 @@ void draw()
   
   mouseDragged = false;
   mouseClicked = false;
+  keyClicked = false;
   fps();
 }
 
@@ -72,6 +72,11 @@ void mouseDragged()
 void mousePressed()
 {
   mouseClicked = true;
+}
+
+void keyPressed()
+{
+  keyClicked = true;
 }
 
 void mouseReleased()

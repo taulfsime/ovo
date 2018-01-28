@@ -6,13 +6,12 @@
  - Switch Button
  - Text
  - Progress Bar
- - Text Area
+ - Text Field
  - Layout
  - Slider
  - Item List
  - Image
  - CheckBox
- - Radio Group
  - Text 
  ***************************/
 
@@ -145,29 +144,38 @@ class button extends component
       fill(border);
       rect(x + tx, y + ty, w, h);
     }
-    if (this.isActive && cb.isOver())
+    if(this.isActive)
     {
-      if (mouseClicked)
+      if (cb.isOver())
       {
-        noStroke();
-        fill(click); //clicked
-        this.isClicked = true;
+        if (mouseClicked)
+        {
+          noStroke();
+          fill(click); //clicked
+          this.isClicked = true;
+        } 
+        else
+        {
+          noStroke();
+          fill(over); //over
+          this.isClicked = false;
+          this.isOver = true;
+        }
       } 
       else
       {
         noStroke();
-        fill(over); //over
+        fill(normal); //normal
+        this.isOver = false;
         this.isClicked = false;
-        this.isOver = true;
       }
-    } 
+    }
     else
     {
       noStroke();
-      fill(normal); //normal
-      this.isOver = false;
-      this.isClicked = false;
+      fill(over);
     }
+    
     if (!this.isActive)
     {
       noStroke();
@@ -528,22 +536,27 @@ class progressBar extends component
   }
 }
 
-//Text area //WORK 10.12.17
-class textArea extends component
+//Text Field
+class textField extends component
 {
   String text = "";
+  String dText = "";
   collisionBox cb;
-  int maxSym = -1;
   boolean enterText = false;
-
-  textArea(int xPos, int yPos, int xLength, int yLength)
+  
+  textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
     super(xPos, yPos, xLength, yLength);
+    this.dText = displayText;
   }
-
-  void setMax(int max)
+  
+  String getText()
   {
-    this.maxSym = max;
+    if(text.length() == 0)
+    {
+      return null;
+    }
+    return text;
   }
 
   void render()
@@ -553,18 +566,13 @@ class textArea extends component
       cb = new collisionBox(x + tx, y + ty, w, h);
       if (mouseClicked)
       {
-        if (cb.isOver())
-        {
-          enterText = true;
-        } else
-        {
-          enterText = false;
-        }
+        enterText = cb.isOver();
       }
-
-      if (enterText && keyPressed)
+      
+      //println((int) textWidth(text), w - borderWidth*2);
+      
+      if (enterText && keyClicked)
       {
-        //line(textWidth(text) + x + tx, y + ty, textWidth(text) + x + tx, y + ty + 20);
         switch(keyCode)
         {
           case BACKSPACE:
@@ -575,9 +583,9 @@ class textArea extends component
           break;
           
           default:
-            if (keyCode >= keyCode && keyCode <= 126 && keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT)
+            if (keyCode >= 0 && keyCode <= 126 && keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT && keyCode != BACKSPACE && (int) (textWidth(text + (char) key)) < w)
             {
-              text += (char) keyCode;
+              text += (char) key;
             }
           break;
         }
@@ -589,9 +597,24 @@ class textArea extends component
       fill(normal);
       rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
 
-      fill(0);
       textSize(14);
-      text(text, x + borderWidth + tx + 5, y + ty + 20);
+      if(text != "")
+      {
+        fill(0, 0, 0);
+        text(text, x + borderWidth + tx + 5, y + ty + 20);
+      }
+      else
+      {
+        fill(98, 98, 98);
+        text(dText, x + borderWidth + tx + 5, y + ty + 20);
+      }
+      
+      if(enterText)
+      {
+        fill(0, 0, 0);
+        int lx = (int) (textWidth(text) + x + tx + borderWidth + 6); 
+        rect(lx, y + ty + 2, 2, h - 4);
+      }
     }
   }
 }
@@ -830,24 +853,6 @@ class image extends component
     super(xPos, yPos, xLength, yLength);
     this.img = null;
   }
-  
-  PImage createImage(int w, int h, color c)
-  {
-    PGraphics i = createGraphics(w, h);
-    for(int x = 0; x < w; x++)
-    {
-      for(int y = 0; y < h; y++)
-      {
-        i.beginDraw();
-        
-        i.set(x, y, c);
-        
-        i.endDraw();
-      }
-    }
-    
-    return i;
-  }
 
   void setImage(PImage img)
   {
@@ -917,74 +922,6 @@ class checkBox extends component
         fill(normal);
       }
       rect(x + tx + borderWidth + 7, y + ty + borderWidth + 7, h - borderWidth*2 - 14, h - borderWidth*2 - 14);
-    }
-  }
-}
-
-//Radio Group
-class radioGroup extends component
-{
-  ArrayList<checkBox> checkBoxes = new ArrayList<checkBox>();
-  checkBox cb;
-  radioGroup()
-  {
-    super(0, 0, 0, 0);
-  }
-  
-  void addItem(checkBox c)
-  {
-    checkBoxes.add(c);
-    if(checkBoxes.size() == 1)
-    {
-      checkBoxes.get(0).clicked = true;
-      checkBoxes.get(0).update = true;
-    }
-  }
-  
-  void show()
-  {
-    int x = width;
-    int y = height;
-    int y1 = 0;
-    int w = 0;
-    int tx = width;
-    int ty = height;
-        
-    for(checkBox c : checkBoxes)
-    {
-      x = min(c.x, x);
-      y = min(c.y, y);
-      y1 = max(c.y + c.h, y1);
-      w = max(c.w, w);
-      tx = min(c.tx, tx);
-      ty = min(c.ty, ty);
-    }
-    
-    fill(0, 255, 0);
-    rect(x + tx, y + ty, w, y1 - y);
-   }
-  
-  void render()
-  {
-    for(checkBox c : checkBoxes)
-    {
-      if(c.update)
-      {
-        if(c == cb)
-        {
-          c.clicked = true;
-        }
-        cb = c;
-        c.update = false;
-      }
-    }
-    
-    for(checkBox c : checkBoxes)
-    {
-      if(c != cb)
-      {
-        c.clicked = false;
-      }
     }
   }
 }

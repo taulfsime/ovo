@@ -20,14 +20,10 @@ class application
     if(newLayout != null)
     {
       layout = newLayout; //<>//
+      
       w = layout.w;
       h = layout.h;
     }
-  }
-  
-  layout getLayout()
-  {
-    return layout;
   }
   
   void updateComponent(int x, int y)

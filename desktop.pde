@@ -23,6 +23,7 @@ class desktop
   void render()
   {
     fill(255);
+    textSize(15);
     text("ovo " + VERSION, 20, 20);
   }
 }
@@ -30,7 +31,7 @@ class desktop
 //Start Button
 class startButton
 {
-  button start = new button(13, height - 38, 35, 30, loadImage("basic/button/start/normal.png"));
+  button start = new button(13, height - 38, 35, 30, loadImage("textures/button/start/normal.png"));
   startButton() {}
 
   void render()

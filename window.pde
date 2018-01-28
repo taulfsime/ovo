@@ -12,13 +12,13 @@ class window
   int timer = 0;
   String systemName;
   String title;
+  String addToTitle = null;
   boolean isOpen = false;
   boolean isLocked = true;
   boolean isActive = true;
   button btnClose;
   label lbIcon;
   collisionBox toolBar;
-  data data = new data("");
   dataReader dataReader = new dataReader();
   
   window(String systemName, application app)
@@ -67,10 +67,10 @@ class window
   {
     toolBar = new collisionBox(x, y + 7, w, 14);
     
-    icon = data.getImage("textures/applicationIcon/" + systemName + ".png");
+    icon = dataReader.getImage("textures/applicationIcon/" + systemName + ".png");
     lbIcon = new label(x + 2, y + 2, 17, 17, icon);
     title = dataReader.getAppTitle(systemName, lang);
-    btnClose = new button(x + w - 42, y, 35, 16, loadImage("basic/button/close/normal.png"), loadImage("basic/button/close/over.png"), loadImage("basic/button/close/clicked.png"));
+    btnClose = new button(x + w - 42, y, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
   }
   
   void render()
@@ -89,7 +89,14 @@ class window
       
       fill(0);
       textSize(13);
-      text(title, x + 24, y + 15.5);
+      if(addToTitle == null)
+      {
+        text(title, x + 24, y + 15.5);
+      }
+      else
+      {
+        text(title + " | " + addToTitle, x + 24, y + 15.5);
+      }
       
       btnClose.render();
       lbIcon.render();
@@ -119,6 +126,11 @@ class window
         }
       }
     }
+  }
+  
+  void addToTitle(String text)
+  {
+    this.addToTitle = text;
   }
   
   void renderAtTaskManager(int num)

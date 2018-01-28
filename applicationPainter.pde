@@ -1,12 +1,15 @@
 class painter extends application
 {
-  //Tools
-  String tool = "pencil";
+  dataReader data = new dataReader();
   
-  layout tools;
-  layout main;
-  data data;
-    
+  //Tools
+  String tool = "";
+  boolean drawing = false;
+  
+  /* DRAWINNG */
+  layout drawingTools;
+  layout draw;
+  
   button toolPencil;
   button toolEraser;
   button toolBucket;
@@ -21,11 +24,19 @@ class painter extends application
   color drawColor = color(0, 0, 0);
   canvas canvas;
   
+  /* CREATE PICTURE */
+  layout createPicture;
+  
+  button create;
+  button load;
+  textField enterName;
+  textField enterAuthor;
+  
   void init()
   {
-    data = new data("");
-    tools = new layout(87, 400);
-    main = new layout(588, 528);
+    /* DRAWING */
+    drawingTools = new layout(87, 400);
+    draw = new layout(588, 528);
     canvas = new canvas(x, y, 500, 500);
     toolPencil = new button(510, 10, 25, 25, data.getImage("textures/painter/tools/pencil.png"));
     toolEraser = new button(540, 10, 25, 25, data.getImage("textures/painter/tools/eraser.png"));
@@ -38,7 +49,7 @@ class painter extends application
     sliderBlue = new slider(504, 160, 68, 25, data.getImage("textures/painter/tools/blueSlider.png"));
     
     //first line
-    colors[0] = new button(506, 190, 15, 15, data.getImage("textures/painter/colors.png", 1, 1, 16, 16));
+    colors[0] = new button(506, 190, 15, 15, "");
     colors[1] = new button(523, 190, 15, 15, "");
     colors[2] = new button(540, 190, 15, 15, "");
     colors[3] = new button(557, 190, 15, 15, "");
@@ -56,35 +67,70 @@ class painter extends application
     colors[11] = new button(557, 224, 15, 15, "");
     
     //add Components
-    tools.addComponent(toolPencil);
-    tools.addComponent(newFile);
-    tools.addComponent(saveFile);
-    tools.addComponent(sliderRed);
-    tools.addComponent(sliderGreen);
-    tools.addComponent(sliderBlue);
-    tools.addComponent(toolEraser);
-    tools.addComponent(toolBucket);
-    tools.addComponent(colors[0]);
-    tools.addComponent(colors[1]);
-    tools.addComponent(colors[2]);
-    tools.addComponent(colors[3]);
-    tools.addComponent(colors[4]);
-    tools.addComponent(colors[5]);
-    tools.addComponent(colors[6]);
-    tools.addComponent(colors[7]);
-    tools.addComponent(colors[8]);
-    tools.addComponent(colors[9]);
-    tools.addComponent(colors[10]);
-    tools.addComponent(colors[11]);
+    drawingTools.addComponent(toolPencil);
+    drawingTools.addComponent(newFile);
+    drawingTools.addComponent(saveFile);
+    drawingTools.addComponent(sliderRed);
+    drawingTools.addComponent(sliderGreen);
+    drawingTools.addComponent(sliderBlue);
+    drawingTools.addComponent(toolEraser);
+    drawingTools.addComponent(toolBucket);
+    drawingTools.addComponent(colors[0]);
+    drawingTools.addComponent(colors[1]);
+    drawingTools.addComponent(colors[2]);
+    drawingTools.addComponent(colors[3]);
+    drawingTools.addComponent(colors[4]);
+    drawingTools.addComponent(colors[5]);
+    drawingTools.addComponent(colors[6]);
+    drawingTools.addComponent(colors[7]);
+    drawingTools.addComponent(colors[8]);
+    drawingTools.addComponent(colors[9]);
+    drawingTools.addComponent(colors[10]);
+    drawingTools.addComponent(colors[11]);
     
-    main.addComponent(tools);
-    main.addComponent(canvas);
+    draw.addComponent(drawingTools);
+    draw.addComponent(canvas);
+    
+    /* CREATE PICTURE */
+    createPicture = new layout(300, 200);
+    create = new button(185, 130, 90, 30, "Create new");
+    load = new button(120, 130, 60, 30, "Load");
+    enterName = new textField(10, 20, 150, 30, "Name");
+    enterAuthor = new textField(10, 55, 150, 30, "Author");
+    
+    createPicture.addComponent(create);
+    createPicture.addComponent(load);
+    createPicture.addComponent(enterName);
+    createPicture.addComponent(enterAuthor);
   }
   
   void update()
   {
-    setLayout(main);
+    if(drawing)
+    {
+      setLayout(draw);
+      drawing();
+    }
+    else
+    {
+      setLayout(createPicture);
+      createPicture();
+    }
+  } //<>//
+  
+  void createPicture()
+  {
+    println(enterName.getText() ,enterAuthor.getText(), create.isActive);
+    create.setActive(false);
     
+    if(create.isClicked)
+    {
+      drawing = true;
+    }
+  }
+  
+  void drawing()
+  {
     drawColor = color(sliderRed.getPercentage()*255, sliderGreen.getPercentage()*255, sliderBlue.getPercentage()*255);
     
     if(colors[0].isClicked)
@@ -153,14 +199,12 @@ class painter extends application
         break;
       }
     }
-  } //<>//
+  }
 }
 
 class canvas extends component
 {
-  private int pixelScale = 5;
-  
-  color[][] pixel = new color[500/pixelScale + 1][500/pixelScale + 1];
+  color[][] pixel = new color[101][101];
   
   color background = color(255, 255, 255);
   
@@ -172,9 +216,9 @@ class canvas extends component
   
   void fillBackground()
   {
-    for(int dx = 0; dx <= 500/pixelScale; dx++)
+    for(int dx = 0; dx <= 100; dx++)
     {
-      for(int dy = 0; dy <= 500/pixelScale; dy++)
+      for(int dy = 0; dy <= 100; dy++)
       {
         pixel[dx][dy] = background;
       }
@@ -203,15 +247,42 @@ class canvas extends component
     pixel[x][y] = c;
   }
   
+  void loadPicture(picture p)
+  {
+    pixel = p.getPicture();
+  }
+  
   void render()
   {
-    for(int dx = 1; dx <= 500; dx += pixelScale)
+    for(int dx = 1; dx <= 500; dx += 5)
     {
-      for(int dy = 1; dy <= 500; dy += pixelScale)
+      for(int dy = 1; dy <= 500; dy += 5)
       {
-        fill(pixel[dx/pixelScale][dy/pixelScale]);
-        rect(x + dx + tx, y + dy + ty, pixelScale, pixelScale);
+        fill(pixel[dx/5][dy/5]);
+        rect(x + dx + tx, y + dy + ty, 5, 5);
       }
     }
+  }
+}
+
+class picture
+{
+  String author;
+  String name;
+  color pixel[][] = new color[500][500];
+  picture(String author, String name)
+  {
+    this.author = author;
+    this.name = name;
+  }
+  
+  void setPicture(color[][] p)
+  {
+    pixel = p;
+  }
+  
+  color[][] getPicture()
+  {
+    return pixel;
   }
 }

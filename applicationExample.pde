@@ -1,20 +1,15 @@
 class example extends application
 {
-  //ArrayList<bubble> info = new ArrayList<bubble>();
-  
+  layout layout;
   button button;
   label label;
-  textArea textArea;
+  textField textField;
   switchButton switchButton;
   progressBar progressBar;
   slider slider;
-  itemList itemList;
-  layout layout;
+  itemList itemList; 
   checkBox checkBox1;
   checkBox checkBox2;
-  checkBox checkBox3;
-  checkBox checkBox4;
-  radioGroup radioGroup; 
     
   void init()
   {
@@ -26,13 +21,10 @@ class example extends application
     switchButton = new switchButton    (20, 100, 100, 30, "SwitchButton");
     progressBar = new progressBar      (20, 140, 100, 30);
     slider = new slider                (20, 180, 100, 30);
-    itemList = new itemList            (150, 220, 100, 300); //
-    textArea = new textArea            (20, 260, 100, 30);
+    itemList = new itemList            (150, 220, 100, 300);
+    textField = new textField            (20, 260, 100, 30, "Text Field");
     checkBox1 = new checkBox           (20, 300, 100, 30,  "test1");
     checkBox2 = new checkBox           (20, 340, 100, 30,  "test2");
-    checkBox3 = new checkBox           (20, 380, 100, 30,  "test3");
-    checkBox4 = new checkBox           (20, 420, 100, 30,  "test4");
-    radioGroup = new radioGroup        ();
     
     //Custom settings
     itemList.addItem("iwan1");
@@ -41,10 +33,6 @@ class example extends application
     itemList.addItem("iwan4");
     progressBar.showPercentage(true);
     slider.showPercentage(true);
-    radioGroup.addItem(checkBox1);
-    radioGroup.addItem(checkBox2);
-    radioGroup.addItem(checkBox3);
-    radioGroup.addItem(checkBox4);
     progressBar.setColor(150, 0, 255);
     
     //add component to layout
@@ -54,12 +42,9 @@ class example extends application
     layout.addComponent(progressBar);
     layout.addComponent(slider);
     layout.addComponent(itemList);
-    layout.addComponent(textArea);
+    layout.addComponent(textField);
     layout.addComponent(checkBox1);
     layout.addComponent(checkBox2);
-    layout.addComponent(checkBox3);
-    layout.addComponent(checkBox4);
-    layout.addComponent(radioGroup);
   }
     
   void update()

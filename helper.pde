@@ -1,5 +1,19 @@
 class dataReader
 {
+  PImage getImage(String dir)
+  {
+    PImage img = null;
+    
+    img = loadImage(dir);
+    
+    if(img != null) 
+    {
+      return img;
+    }
+    
+    return loadImage("basic/unknown.png");
+  }
+  
   String[][] getLanguages()
   {
     String[] reader = loadStrings("data/language.txt");
@@ -104,39 +118,67 @@ class data
   
   public void writeToFile(String tag, String info)
   {
-    String[] data = loadStrings("data/dataTags/" + dir + ".txt");
+    String[] data = loadStrings("data/tags/" + dir + ".txt");
     
     for(int a = 0; a < data.length; a++)
     {
-
+        
     }
     saveStrings("data/data.txt", data);
   }
   
   String readFromFile(String tag)
   {
-    String[] data = loadStrings("data/dataTags/" + dir + ".txt");
-    String result = "";
+    String[] data = loadStrings("data/tags/" + dir + ".txt");
     
-    int n = data.length;
-    for(int b = 0; b < n; b++)
+    for(int b = 0; b < data.length; b++)
     {
-      result = "";
-      for(int a = 0; a < tag.length(); a++)
+      String t = "";
+      String testTag = "";
+      
+      //Remove spaces from tag
+      for(int a = 0; a < data[b].length(); a++)
       {
-        result += data[b].charAt(a);
+        if(data[b].charAt(a) != ' ')
+        {
+          t += data[b].charAt(a);
+        }
       }
       
-      if(result.equals(tag))
+      //Get tag from text
+      for(int a = 0; a < tag.length(); a++)
       {
-        b = n + 10;
+        testTag += t.charAt(a);
       }
-      else
+      
+      //Check tags  
+      if(check(tag, testTag))
       {
-        result = "";
+        String result = "";
+        for(int a = testTag.length(); a < (t.length()); a++)
+        {
+          if(t.charAt(a) != '=')
+          {
+            result += t.charAt(a);
+          }
+        }
+        return result;
       }
     }
-    return result;
+    return null;
+  }
+  
+  boolean check(String t1, String t2)
+  {
+    for(int a = 0; a < t1.length(); a++)
+    {
+      if(t1.charAt(a) != t2.charAt(a))
+      {
+        return false;
+      }
+    }
+    
+    return true;
   }
   
   //private String[][] getData()
@@ -167,49 +209,4 @@ class data
   //  }
   //  return data;
   //}
-  
-  PImage getImage(String dir)
-  {
-    PImage img = null;
-    
-    img = loadImage(dir);
-    
-    if(img != null) 
-    {
-      return img;
-    }
-    
-    return loadImage("basic/unknown.png");
-  }
-  
-  PImage getImage(String dir, int x, int y, int cw, int ch)
-  {
-    x -= 1;
-    y -= 1;
-    
-    PImage loadImg = loadImage(dir);
-    PGraphics img = createGraphics(cw, ch);
-    
-    //load pixels
-    loadImg.loadPixels();
-    
-    img.beginDraw();
-    for(int dy = x*ch; dy < ch + x*ch; dy++) 
-    {
-      for(int dx = y*cw; dx < cw + y*cw; dx++)
-      {
-        int loc = (dx + x) + (dy + y)*loadImg.width;
-        
-        float r = red(loadImg.pixels[loc]);
-        float g = green(loadImg.pixels[loc]);
-        float b = blue(loadImg.pixels[loc]);
-        
-        img.set(dx - x, dy - y, color(r, g, b));
-      }
-    }
-    loadImg.updatePixels();
-    img.endDraw();
-
-    return img;
-  }
 }

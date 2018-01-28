@@ -253,7 +253,7 @@ class canvas extends component
   
   void render()
   {
-    println(x + tx, y + ty);
+    //println(x + tx, y + ty);
     
     for(int dx = 1; dx <= 500; dx += 5)
     {

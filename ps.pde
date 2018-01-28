@@ -16,13 +16,14 @@ boolean needTextureUpdate = false;
 
   *TODO: check for file exist (langs) /helper/
   *TODO: Add suport for change a background color!! /painter/
+  *TODO: Remake cmdLogger for display text in column /applicationCMD/
 
 *******************/
 
 void setup()
 {  
-  //fullScreen();
-  size(1000, 700);
+  fullScreen();
+  //size(1000, 700);
 
   if(needTextureUpdate)
   {
@@ -38,16 +39,16 @@ void setup()
     
   taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new setting());
 
-  system.registerApplication("calculator", new calculator());
   system.registerApplication("painter", new painter());
+  system.registerApplication("calculator", new calculator());
   system.registerApplication("exampleApp", new example());
   system.registerApplication("appMaker", new appMaker());
-  system.registerApplication("command", new command());
+  system.registerApplication("console", new console());
   
   taskManager.registerApplication("calculator");
   taskManager.registerApplication("exampleApp");
   taskManager.registerApplication("painter");
-  taskManager.registerApplication("command");
+  taskManager.registerApplication("console");
 }
 
 void draw()

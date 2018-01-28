@@ -545,7 +545,7 @@ class textField extends component
   String dText = "";
   collisionBox cb;
   boolean enterText = false;
-  final String symbols = "qwertyuiopasdfghjklzxcvbnm><.,0123456789*-+=!?&";
+  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
   
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
@@ -557,7 +557,7 @@ class textField extends component
   {
     if(text.length() == 0)
     {
-      return null;
+      return "";
     }
     return text;
   }

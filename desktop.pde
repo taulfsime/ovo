@@ -66,10 +66,16 @@ class taskManager
     fill(218, 218, 218);
     stroke(0);
     rect(0, height - 42, width - w, 42);
+    button[] buttons = new button[systemNames.size()];
 
-    for (int a = 0; a < systemNames.size(); a++)
+    for (int a = 0; a < buttons.length; a++)
     {
-      system.getWindow(systemNames.get(a)).renderAtTaskManager(a + 1);
+      buttons[a] = new button((int) ((a + 1) * 38 + 18), (int) (height - 38.5), 32, 32, system.getWindow(systemNames.get(a)).icon); //system.getWindow(systemNames.get(a)).icon)
+      buttons[a].render();
+      if(buttons[a].isClicked)
+      {
+        system.getWindow(systemNames.get(a)).open();
+      }
     }
   }
 }

@@ -11,7 +11,7 @@ class dataReader
       return img;
     }
     
-    return loadImage("basic/unknown.png");
+    return loadImage("textures/unknown.png");
   }
   
   String[][] getLanguages()

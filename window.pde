@@ -51,7 +51,6 @@ class window
     {
       this.app.init();
     }
-    println("OPEN");
     isOpen = true;
   }
   
@@ -133,48 +132,48 @@ class window
     this.addToTitle = text;
   }
   
-  void renderAtTaskManager(int num)
-  {
-    int displayNameTime = 30; //Timer
+  //void renderAtTaskManager(int num)
+  //{
+  //  int displayNameTime = 30; //Timer
     
-    label displayName = new label((int) (num * 38 + 18) + 16 - (int) (textWidth(title)/2), height - 62, (int) textWidth(title), 20, title);
+  //  label displayName = new label((int) (num * 38 + 18) + 16 - (int) (textWidth(title)/2), height - 62, (int) textWidth(title), 20, title);
     
-    button btnTaskManager = new button((int) (num * 38 + 18), (int) (height - 38.5), 32, 32, icon); //32
+  //  button btnTaskManager = new button((int) (num * 38 + 18), (int) (height - 38.5), 32, 32, icon); //32
     
-    btnTaskManager.setActive(!isOpen);
-    btnTaskManager.render();
+  //  btnTaskManager.setActive(!isOpen);
+  //  btnTaskManager.render();
     
-    if(btnTaskManager.isClicked)
-    {
-      if(!isOpen)
-      {
-        open();
-        btnTaskManager.setActive(false);
-      }
+  //  if(btnTaskManager.isClicked)
+  //  {
+  //    if(!isOpen)
+  //    {
+  //      open();
+  //      btnTaskManager.setActive(false);
+  //    }
       
-      timer = displayNameTime + 1;
-    } 
-    else if(btnTaskManager.isOver)
-    {
-      String a = dataReader.getAppTitle(systemName, lang);
-      if(title != a)
-      {
-        title = a;
-      }
+  //    timer = displayNameTime + 1;
+  //  } 
+  //  else if(btnTaskManager.isOver)
+  //  {
+  //    String a = dataReader.getAppTitle(systemName, lang);
+  //    if(title != a)
+  //    {
+  //      title = a;
+  //    }
       
-      if(timer < displayNameTime + 1)
-        timer++;
-    }
-    else 
-    {
-      timer = 0;
-    }
+  //    if(timer < displayNameTime + 1)
+  //      timer++;
+  //  }
+  //  else 
+  //  {
+  //    timer = 0;
+  //  }
       
-    if(timer > displayNameTime && timer < displayNameTime + 2)
-    {
-      displayName.render();
-    }
-  }
+  //  if(timer > displayNameTime && timer < displayNameTime + 2)
+  //  {
+  //    displayName.render();
+  //  }
+  //}
   
   void move()
   { 

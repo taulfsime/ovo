@@ -102,6 +102,8 @@ class button extends component
   PImage img1 = null, img2 = null;
   boolean isClicked = false;
   boolean isOver = false;
+  char bindKey;
+  boolean useBindKey = false;
   text showText;
 
   button(int xPos, int yPos, int xLength, int yLength, String text)
@@ -133,6 +135,12 @@ class button extends component
       this.img2 = clicked;
     }
   }
+  
+  void bindKey(char bKey)
+  {
+    bindKey = bKey;
+    useBindKey = true;
+  }
 
   void render()
   {
@@ -146,9 +154,9 @@ class button extends component
     }
     if(this.isActive)
     {
-      if (cb.isOver())
+      if (cb.isOver() || (keyClicked && key == bindKey && useBindKey))
       {
-        if (mouseClicked)
+        if (mouseClicked || (keyClicked && key == bindKey && useBindKey))
         {
           noStroke();
           fill(click); //clicked
@@ -174,12 +182,6 @@ class button extends component
     {
       noStroke();
       fill(over);
-    }
-    
-    if (!this.isActive)
-    {
-      noStroke();
-      fill(normal);
     }
 
     if (img1 == null && img2 == null)
@@ -543,6 +545,7 @@ class textField extends component
   String dText = "";
   collisionBox cb;
   boolean enterText = false;
+  final String symbols = "qwertyuiopasdfghjklzxcvbnm><.,0123456789*-+=!?&";
   
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
@@ -573,21 +576,19 @@ class textField extends component
       
       if (enterText && keyClicked)
       {
-        switch(keyCode)
+        if(key == BACKSPACE)
         {
-          case BACKSPACE:
-            if (text.length() > 0)
-            {
-              text = text.substring(0, text.length() - 1);
-            }
-          break;
-          
-          default:
-            if (keyCode >= 0 && keyCode <= 126 && keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT && keyCode != BACKSPACE && (int) (textWidth(text + (char) key)) < w)
-            {
-              text += (char) key;
-            }
-          break;
+          if (text.length() > 0)
+          {
+            text = text.substring(0, text.length() - 1);
+          }
+        }
+        else
+        {
+          if (checkSymbol((char) key) && (int) (textWidth(text + (char) key)) < w)
+          {
+            text += (char) key;
+          }
         }
       }
       
@@ -616,6 +617,19 @@ class textField extends component
         rect(lx, y + ty + 2, 2, h - 4);
       }
     }
+  }
+  
+  boolean checkSymbol(char ch)
+  {
+    for(int a = 0; a < symbols.length(); a++)
+    {
+      if(ch == symbols.charAt(a))
+      {
+        return true;
+      }
+    }
+    
+    return false;
   }
 }
 
@@ -852,6 +866,20 @@ class image extends component
   {
     super(xPos, yPos, xLength, yLength);
     this.img = null;
+  }
+  
+  PImage createImage(int w, int h, color c)
+  {
+    PGraphics image = createGraphics(w, h);
+    image.beginDraw();
+    image.noStroke();
+    image.fill(c);
+    image.rect(0, 0, w, h);
+    image.endDraw();
+    
+    PImage a = image;
+    
+    return a;
   }
 
   void setImage(PImage img)

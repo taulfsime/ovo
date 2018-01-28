@@ -21,8 +21,8 @@ boolean needTextureUpdate = false;
 
 void setup()
 {  
-  fullScreen();
-  //size(1000, 700);
+  //fullScreen();
+  size(1000, 700);
 
   if(needTextureUpdate)
   {
@@ -42,10 +42,12 @@ void setup()
   system.registerApplication("painter", new painter());
   system.registerApplication("exampleApp", new example());
   system.registerApplication("appMaker", new appMaker());
+  system.registerApplication("command", new command());
   
   taskManager.registerApplication("calculator");
   taskManager.registerApplication("exampleApp");
   taskManager.registerApplication("painter");
+  taskManager.registerApplication("command");
 }
 
 void draw()

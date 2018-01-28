@@ -120,7 +120,6 @@ class painter extends application
   
   void createPicture()
   {
-    println(enterName.getText() ,enterAuthor.getText(), create.isActive);
     create.setActive(false);
     
     if(create.isClicked)
@@ -204,7 +203,7 @@ class painter extends application
 
 class canvas extends component
 {
-  color[][] pixel = new color[101][101];
+  color[][] pixel = new color[100][100];
   
   color background = color(255, 255, 255);
   
@@ -216,9 +215,9 @@ class canvas extends component
   
   void fillBackground()
   {
-    for(int dx = 0; dx <= 100; dx++)
+    for(int dx = 0; dx < 100; dx++)
     {
-      for(int dy = 0; dy <= 100; dy++)
+      for(int dy = 0; dy < 100; dy++)
       {
         pixel[dx][dy] = background;
       }
@@ -254,6 +253,8 @@ class canvas extends component
   
   void render()
   {
+    println(x + tx, y + ty);
+    
     for(int dx = 1; dx <= 500; dx += 5)
     {
       for(int dy = 1; dy <= 500; dy += 5)
@@ -262,27 +263,5 @@ class canvas extends component
         rect(x + dx + tx, y + dy + ty, 5, 5);
       }
     }
-  }
-}
-
-class picture
-{
-  String author;
-  String name;
-  color pixel[][] = new color[500][500];
-  picture(String author, String name)
-  {
-    this.author = author;
-    this.name = name;
-  }
-  
-  void setPicture(color[][] p)
-  {
-    pixel = p;
-  }
-  
-  color[][] getPicture()
-  {
-    return pixel;
   }
 }

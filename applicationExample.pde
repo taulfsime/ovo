@@ -23,8 +23,8 @@ class example extends application
     slider = new slider                (20, 180, 100, 30);
     itemList = new itemList            (150, 220, 100, 300);
     textField = new textField            (20, 260, 100, 30, "Text Field");
-    checkBox1 = new checkBox           (20, 300, 100, 30,  "test1");
-    checkBox2 = new checkBox           (20, 340, 100, 30,  "test2");
+    checkBox1 = new checkBox           (20, 300, 100, 30,  "CheckBox1");
+    checkBox2 = new checkBox           (20, 340, 100, 30,  "CheckBox2");
     
     //Custom settings
     itemList.addItem("iwan1");
@@ -34,6 +34,8 @@ class example extends application
     progressBar.showPercentage(true);
     slider.showPercentage(true);
     progressBar.setColor(150, 0, 255);
+    
+    button.bindKey(ENTER);
     
     //add component to layout
     layout.addComponent(button);

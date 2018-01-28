@@ -51,7 +51,7 @@ class window
     {
       this.app.init();
     }
-    
+    println("OPEN");
     isOpen = true;
   }
   

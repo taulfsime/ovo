@@ -10,18 +10,38 @@ class console extends application
     "open",
     "close",
     "list",
+    "help",
+    "clear"
+  };
+  
+  String[] cmdINFO =
+  {
+    "open <systemName>",
+    "close <systemName>",
+    "list",
+    "help [command:page]",
+    "clear"
   };
   
   String readCommand = "";
   
   void init()
   {
-    main = new layout(500 + 6, 400 + 27);
+    main = new layout               (500, 400);
     enterCommand = new textField    (10, 360, 420, 30, "Enter command:");
     enter = new button              (435, 360, 50, 30, "Enter");
     logger = new cmdLogger          (10, 10, 475, 340); //475
     
     enter.bindKey(ENTER);
+    for(int a = 0; a < COMMANDS.length; a++)
+    {
+      enterCommand.addToLibrary(COMMANDS[a]);
+    }
+    
+    for(int a = 0; a < system.getSystemNames().length; a++)
+    {
+      enterCommand.addToLibrary(system.getSystemNames()[a]);
+    }
     
     main.addComponent(enterCommand);
     main.addComponent(enter);
@@ -60,13 +80,25 @@ class console extends application
       }
       break;
       
+      case "help":
+      {
+        commandHelp(removeChar(readCommand.substring("help".length(), readCommand.length()), ' '));
+      }
+      break;
+      
+      case "clear":
+      {
+        commandClear();
+      }
+      break;
+      
       default:
       {
         if(pressEnter)
         {
           if(readCommand != "")
           {
-            logger.add("Unknown command!", color(245, 0, 0));
+            logger.add("> Unknown command!", color(245, 0, 0));
           }
           pressEnter = false;
         }
@@ -98,7 +130,7 @@ class console extends application
           }
           else
           {
-            b = l + 10;
+            break;
           }
         }
       }
@@ -109,12 +141,14 @@ class console extends application
   String removeChar(String text, char ch)
   {
     String result = "";
-    
-    for(int a = 0; a < text.length(); a++)
+    if(text != "")
     {
-      if(text.charAt(a) != ch)
+      for(int a = 0; a < text.length(); a++)
       {
-        result += text.charAt(a);
+        if(text.charAt(a) != ch)
+        {
+          result += text.charAt(a);
+        }
       }
     }
     return result;
@@ -133,6 +167,68 @@ class console extends application
   }
   
   // WORK ON COMMANDS
+  void commandClear()
+  {
+    logger.clear();
+  }
+    
+  void commandPin(String systemName)
+  {
+    boolean show = false;
+    boolean show1 = false;
+    boolean add = true;
+    
+    int l = system.getSystemNames().length;
+    for(int a = 0; a < l; a++)
+    {
+      if(checkStrings(systemName, system.getSystemNames()[a]))
+      {
+        int l1 = taskManager.getSystemNames().length;
+        for(int b = 0; b < l1; b++)
+        {
+          if(checkStrings(systemName, taskManager.getSystemNames()[b]) && !show1)
+          {
+              logger.add(">'" + systemName + "' window is already added is taskManager!", color(150, 0, 0));
+              b = l1 + 10;
+              a = l + 10;
+              add = false;
+          }
+        }
+      }
+      else
+      {
+        if(!show)
+        {
+          logger.add(">'" + systemName + "' window does not exist!", color(150, 0, 0));
+          show = true;
+        }
+      }
+    }
+    
+    if(add)
+    {
+      taskManager.registerApplication(systemName);
+    }
+  }
+  
+  void commandHelp(String text)
+  {
+    if(text == "")
+    {
+      for(int a = 0; a < cmdINFO.length; a++)
+      {
+        logger.add(cmdINFO[a], color(200, 255, 255));
+      }
+    }
+    else
+    {
+      for(int a = 0; a < system.getSystemNames().length; a++)
+      {
+        logger.add("help for " + system.getSystemNames()[a], color(200, 0, 0));
+      }
+      
+    }
+  }
   
   void commandList()
   {
@@ -153,51 +249,57 @@ class console extends application
         if(!w.isOpen)
         {
           w.open();
-          logger.add("'" + w.systemName + "' window was opened!", color(200, 255, 255));
+          logger.add("> '" + w.systemName + "' window was opened!", color(200, 255, 255));
+          show = true;
         }
         else
         {
-          logger.add("'" + w.systemName + "' window is already opened!", color(200, 0, 0));
-        }
-        return;
-      }
-      else
-      {
-        if(!show)
-        {
-          logger.add("'" + systemName + "' window does not exist!", color(150, 0, 0));
+          logger.add("> '" + w.systemName + "' window is already opened!", color(200, 0, 0));
           show = true;
         }
       }
+    }
+     if(!show)
+    {
+      logger.add("> '" + systemName + "' window does not exist!", color(150, 0, 0));
     }
   }
   
   void commandClose(String systemName)
   {
-    boolean show = false;
-    for(int a = 0; a < system.getSystemNames().length; a++)
+    if(systemName != "")
     {
-      if(checkStrings(systemName, system.getSystemNames()[a]))
+      
+      boolean show = false;
+      for(int a = 0; a < system.getSystemNames().length; a++)
       {
-        window w = system.getWindow(system.getSystemNames()[a]);
-        if(w.isOpen)
+        if(checkStrings(systemName, system.getSystemNames()[a]))
         {
-          w.close();
-          logger.add("'" + w.systemName + "' window was closed!", color(230, 255, 255));
+          window w = system.getWindow(system.getSystemNames()[a]);
+          if(w.isOpen)
+          {
+            w.close();
+            logger.add(">'" + w.systemName + "' window was closed!", color(230, 255, 255));
+            show = true;
+          }
+          else
+          {
+            logger.add(">'" + w.systemName + "' window is already closed!", color(150, 0, 0));
+            show = true;
+          }
+          return;
         }
-        else
-        {
-          logger.add("'" + w.systemName + "' window is already closed!", color(150, 0, 0));
-        }
-        return;
       }
-      else
+      if(!show)
       {
-        if(!show)
-        {
-          logger.add("'" + systemName + "' window does not exist!", color(150, 0, 0));
-          show = true;
-        }
+        logger.add(">'" + systemName + "' window does not exist!", color(150, 0, 0));
+      }
+    }
+    else
+    {
+      if(system.getWindow("console").isOpen)
+      {
+        system.getWindow("console").close();
       }
     }
   }
@@ -244,6 +346,17 @@ class cmdLogger extends component
     }
     texts[col - 1] = text;
     textColor[col - 1] = color(110, 110, 110);
+  }
+  
+  void clear()
+  {
+    for(int a = 0; a < texts.length; a++)
+    {
+      if(texts[a] != "")
+      {
+        texts[a] = "";
+      }
+    }
   }
   
   void render()

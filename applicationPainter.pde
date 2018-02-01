@@ -4,7 +4,7 @@ class painter extends application
   
   //Tools
   String tool = "";
-  boolean drawing = false;
+  boolean drawing;
   
   /* DRAWINNG */
   layout drawingTools;
@@ -34,9 +34,11 @@ class painter extends application
   
   void init()
   {
+    drawing = false;
+    
     /* DRAWING */
+    draw = new layout(576, 501);
     drawingTools = new layout(87, 400);
-    draw = new layout(588, 528);
     canvas = new canvas(x, y, 500, 500);
     toolPencil = new button(510, 10, 25, 25, data.getImage("textures/painter/tools/pencil.png"));
     toolEraser = new button(540, 10, 25, 25, data.getImage("textures/painter/tools/eraser.png"));
@@ -93,8 +95,8 @@ class painter extends application
     
     /* CREATE PICTURE */
     createPicture = new layout(300, 200);
-    create = new button(185, 130, 90, 30, "Create new");
-    load = new button(120, 130, 60, 30, "Load");
+    create = new button(197, 152, 90, 30, "Create new");
+    load = new button(132, 152, 60, 30, "Load");
     enterName = new textField(10, 20, 150, 30, "Name");
     enterAuthor = new textField(10, 55, 150, 30, "Author");
     

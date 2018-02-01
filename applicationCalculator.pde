@@ -1,11 +1,11 @@
-class calculator extends application
+class calculator extends application //<>//
 {
   float fNum = 0.0;
   float sNum = 0.0;
   float result = 0.0;
   String operation = null;
   boolean showResult = false;
-  
+
   button num0;
   button num1;
   button num2;
@@ -16,7 +16,7 @@ class calculator extends application
   button num7;
   button num8;
   button num9;
-  
+
   button dot;
   button plus;
   button minus;
@@ -25,27 +25,27 @@ class calculator extends application
   button equals;
   button percentage;
   button sqrt;
-  
+
   button c;
   button ce;
   button backspace;
-  
+
   button mc;
   button mr;
   button ms;
   button mPlus;
   button mMinus;
-  
+
   button plusMinus;
   button inverse;
-  
+
   label output;
-  
+
   layout layout;
-  
+
   void init()
   {
-    layout = new layout(228, 322);
+    layout = new layout(213, 285);
     mc = new button(11, 85, 34, 27, "MC");
     mr = new button(50, 85, 34, 27, "MR");
     ms = new button(89, 85, 34, 27, "MS");
@@ -75,7 +75,24 @@ class calculator extends application
     num8 = new button(50, 149, 34, 27, "8");
     num9 = new button(89, 149, 34, 27, "9");
     output = new label(11, 30, 190, 50, "");
-    
+
+    num0.bindKey('0');
+    num1.bindKey('1');
+    num2.bindKey('2');
+    num3.bindKey('3');
+    num4.bindKey('4');
+    num5.bindKey('5');
+    num6.bindKey('6');
+    num7.bindKey('7');
+    num8.bindKey('8');
+    num9.bindKey('9');
+    backspace.bindKey(BACKSPACE);
+    plus.bindKey('+');
+    minus.bindKey('-');
+    by.bindKey('*');
+    divide.bindKey('/');
+    equals.bindKey(ENTER);
+
     layout.addComponent(mc);
     layout.addComponent(mr);
     layout.addComponent(ms);
@@ -106,76 +123,75 @@ class calculator extends application
     layout.addComponent(num9);
     layout.addComponent(output);
   }
-    
+
   void update()
   {
-    setLayout(layout); //<>//
-    
+    setLayout(layout);
+
     String a = fNum + operation + sNum + "";
     output.setTextScale(max(30/( max(max(a.length() - 8, 1), (int) result)), 12));
-    
+
     buttonClick();
-    
-    if(showResult)
+
+    if (showResult)
     {
       output.setText(getResult() + "");
-    }
-    else
+    } else
     {
-      if(operation == null)
+      if (operation == null)
       {
         output.setText(fNum + "");
-      }
-      else
+      } else
       {
         output.setText(fNum + operation + sNum + "");
       }
     }
   }
-  
+
   float getResult()
   {
-    switch(operation)
+    if(operation != null)
     {
+      switch(operation)
+      {
       case "+":
         result = fNum + sNum;
         break;
-      
+  
       case "-":
         result = fNum - sNum;
         break;
-      
+  
       case "*":
         result = fNum * sNum;
         break;
-      
+  
       case "/":
         result = fNum / sNum;
         break;
+      }
     }
-    
     return result;
   }
-  
+
   float setNum(float num, int addNum)
   {
-    if(showResult)
+    if (showResult)
     {
       fNum = 0.0;
       sNum = 0.0;
       result = 0.0;
       operation = null;
-      
+
       showResult = false;
     }
-    
-    if(num == 0.0)
+
+    if (num == 0.0)
     {
       num = addNum;
-    }
-    else
+    } else
     {
-      if(num <= 999999)
+      if (num <= 999999)
       {
         num *= 10;
         num += addNum;
@@ -183,191 +199,141 @@ class calculator extends application
     }
     return num;
   }
-  
+
   void buttonClick()
   {
     //Buttons
-    if(num0.isClicked)
+    if (num0.isClicked)
     {
-       if(operation == null)
-       {
-         fNum = setNum(fNum, 0);
-       }
-       else
-       {
-         sNum = setNum(sNum, 0);
-       }
-    }
-    else if(num1.isClicked)
+      if (operation == null)
+      {
+        fNum = setNum(fNum, 0);
+      } else
+      {
+        sNum = setNum(sNum, 0);
+      }
+    } else if (num1.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 1);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 1);
       }
-    }
-    else if(num2.isClicked)
+    } else if (num2.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 2);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 2);
       }
-    }
-    else if(num3.isClicked)
+    } else if (num3.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 3);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 3);
       }
-    }
-    else if(num4.isClicked)
+    } else if (num4.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 4);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 4);
       }
-    }
-    else if(num5.isClicked)
+    } else if (num5.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 5);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 5);
       }
-    }
-    else if(num6.isClicked)
+    } else if (num6.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 6);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 6);
       }
-    }
-    else if(num7.isClicked)
+    } else if (num7.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 7);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 7);
       }
-    }
-    else if(num8.isClicked)
+    } else if (num8.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 8);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 8);
       }
-    }
-    else if(num9.isClicked)
+    } else if (num9.isClicked)
     {
-      if(operation == null)
+      if (operation == null)
       {
         fNum = setNum(fNum, 9);
-      }
-      else
+      } else
       {
         sNum = setNum(sNum, 9);
       }
-    }
-    else if(dot.isClicked)
+    } else if (dot.isClicked)
     {
-      
-    }
-    else if(plus.isClicked)
+    } else if (plus.isClicked)
     {
       operation = "+";
-    }
-    else if(minus.isClicked)
+    } else if (minus.isClicked)
     {
       operation = "-";
-    }
-    else if(by.isClicked)
+    } else if (by.isClicked)
     {
       operation = "*";
-    }
-    else if(divide.isClicked)
+    } else if (divide.isClicked)
     {
       operation = "/";
-    }
-    else if(equals.isClicked)
+    } else if (equals.isClicked)
     {
       showResult = true;
-    }
-    else if(percentage.isClicked)
+    } else if (percentage.isClicked)
     {
-      
-    }
-    else if(sqrt.isClicked)
+    } else if (sqrt.isClicked)
     {
-      
-    }
-    else if(c.isClicked)
+    } else if (c.isClicked)
     {
-      
-    }
-    else if(ce.isClicked)
+    } else if (ce.isClicked)
     {
-      
-    }
-    else if(backspace.isClicked)
+    } else if (backspace.isClicked)
     {
-      
-    }
-    else if(mc.isClicked)
+    } else if (mc.isClicked)
     {
-      
-    }
-    else if(ms.isClicked)
+    } else if (ms.isClicked)
     {
-      
-    }
-    else if(mPlus.isClicked)
+    } else if (mPlus.isClicked)
     {
-      
-    }
-    else if(mMinus.isClicked)
+    } else if (mMinus.isClicked)
     {
-      
-    }
-    else if(sqrt.isClicked)
+    } else if (sqrt.isClicked)
     {
-      
-    }
-    else if(inverse.isClicked)
+    } else if (inverse.isClicked)
     {
-      
-    }
-    else if(plusMinus.isClicked)
+    } else if (plusMinus.isClicked)
     {
-
     }
   }
 }

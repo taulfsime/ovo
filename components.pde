@@ -546,7 +546,8 @@ class textField extends component
   collisionBox cb;
   boolean enterText = false;
   final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
-  
+  ArrayList<String> library = new ArrayList<String>();
+    
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
     super(xPos, yPos, xLength, yLength);
@@ -560,6 +561,11 @@ class textField extends component
       return "";
     }
     return text;
+  }
+  
+  void addToLibrary(String text)
+  {
+    library.add(text);
   }
 
   void render()
@@ -576,19 +582,55 @@ class textField extends component
       
       if (enterText && keyClicked)
       {
-        if(key == BACKSPACE)
+        switch(key)
         {
-          if (text.length() > 0)
+          case BACKSPACE:
           {
-            text = text.substring(0, text.length() - 1);
+            if (text.length() > 0)
+            {
+              text = text.substring(0, text.length() - 1);
+            }
           }
-        }
-        else
-        {
-          if (checkSymbol((char) key) && (int) (textWidth(text + (char) key)) < w)
+          break;
+          
+          case TAB:
           {
-            text += (char) key;
+            if(text.length() > 0)
+            {              
+              boolean match = true;
+              String[] t = split(text, ' ');
+              String testText = t[t.length - 1];
+                            
+              for(int txt = 0; txt < library.size(); txt++)
+              {
+                match = true;
+                for(int a = 0; a < testText.length(); a++)
+                {
+                  if(match && testText.charAt(a) != library.get(txt).charAt(a))
+                  {
+                    match = false;
+                    break;
+                  }
+                }
+                
+                if(match)
+                {
+                  text += library.get(txt).substring(testText.length());
+                  break;
+                }
+              }
+            }
           }
+          break;
+          
+          default:
+          {
+            if (checkSymbol((char) key) && (int) (textWidth(text + (char) key)) < w)
+            {
+              text += (char) key;
+            }
+          }
+          break;
         }
       }
       

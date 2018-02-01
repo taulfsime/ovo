@@ -34,8 +34,12 @@ class example extends application
     progressBar.showPercentage(true);
     slider.showPercentage(true);
     progressBar.setColor(150, 0, 255);
-    
     button.bindKey(ENTER);
+    textField.addToLibrary("text");
+    textField.addToLibrary("test");
+    textField.addToLibrary("iwan");
+    textField.addToLibrary("peter");
+    textField.addToLibrary("peterdwa");
     
     //add component to layout
     layout.addComponent(button);

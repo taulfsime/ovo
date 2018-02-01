@@ -47,10 +47,7 @@ class window
   
   void open() 
   {
-    if(app != null)
-    {
-      this.app.init();
-    }
+    
     isOpen = true;
   }
   
@@ -58,6 +55,11 @@ class window
   {
      x = (width - this.w)/2;
      y = (height - this.h)/2;
+     
+    if(app != null)
+    {
+      this.app.init();
+    }
     
     isOpen = false;
   }
@@ -73,7 +75,7 @@ class window
   }
   
   void render()
-  {
+  {    
     if(isOpen)
     {
       update();
@@ -103,8 +105,8 @@ class window
       if(app != null)
       {
         app.updateComponent(x, y);
-        w = app.w;
-        h = app.h;
+        w = app.w + 12;
+        h = app.h + 27;
         app.update();
         app.render();
       }

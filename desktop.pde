@@ -55,10 +55,33 @@ class taskManager
   {
     this.w = w;
   }
+  
+  String[] getSystemNames()
+  {
+    String st[] = new String[systemNames.size()];
+    for(int a = 0; a < systemNames.size(); a++)
+    {
+      st[a] = systemNames.get(a);
+    }
+    
+    return st;
+  }
 
   void registerApplication(String systemName)
   {
-    this.systemNames.add(systemName);
+    //boolean add = true;
+    //for(int a = 0; a < systemNames.size(); a++)
+    //{
+    //  if(systemName == systemNames.get(a))
+    //  {
+    //    add = false;
+    //  }
+    //} 
+    
+    //if(add)
+    //{
+      this.systemNames.add(systemName);
+    //}
   }
 
   void render()
@@ -68,7 +91,7 @@ class taskManager
     rect(0, height - 42, width - w, 42);
     button[] buttons = new button[systemNames.size()];
 
-    for (int a = 0; a < buttons.length; a++)
+    for (int a = 0; a < systemNames.size(); a++)
     {
       buttons[a] = new button((int) ((a + 1) * 38 + 18), (int) (height - 38.5), 32, 32, system.getWindow(systemNames.get(a)).icon); //system.getWindow(systemNames.get(a)).icon)
       buttons[a].render();

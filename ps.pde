@@ -44,10 +44,7 @@ void setup()
   system.registerApplication("exampleApp", new example());
   system.registerApplication("appMaker", new appMaker());
   system.registerApplication("console", new console());
-  
-  taskManager.registerApplication("calculator");
-  taskManager.registerApplication("exampleApp");
-  taskManager.registerApplication("painter");
+    
   taskManager.registerApplication("console");
 }
 
@@ -55,6 +52,7 @@ void draw()
 {
   background(0);
   
+  fps();
   desktop.render();
   taskManager.render();
   startButton.render();
@@ -64,7 +62,6 @@ void draw()
   mouseDragged = false;
   mouseClicked = false;
   keyClicked = false;
-  fps();
 }
 
 void mouseDragged()

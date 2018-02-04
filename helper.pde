@@ -116,15 +116,15 @@ class data
     this.dir = dir;
   }
   
-  public void writeToFile(String tag, String info)
+  void writeToFile(String tag, String info)
   {
     String[] data = loadStrings("data/tags/" + dir + ".txt");
-    
-    for(int a = 0; a < data.length; a++)
+    if(readFromFile(tag) == null)
     {
-        
+      String[] newData = new String[data.length + 1];
+      newData[data.length] = tag + "=" + info;
+      saveStrings("data/tags/" + dir + ".txt", newData);
     }
-    saveStrings("data/data.txt", data);
   }
   
   String readFromFile(String tag)

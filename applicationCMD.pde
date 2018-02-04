@@ -41,6 +41,7 @@ class console extends application
     for(int a = 0; a < system.getSystemNames().length; a++)
     {
       enterCommand.addToLibrary(system.getSystemNames()[a]);
+      //println(system.getSystemNames()[a]);
     }
     
     main.addComponent(enterCommand);
@@ -124,6 +125,7 @@ class console extends application
           if(text.length() >= l)
           {
             if(checkStrings(COMMANDS[a], text.substring(0, l)))
+            
             {
               return COMMANDS[a];
             }
@@ -213,20 +215,27 @@ class console extends application
   
   void commandHelp(String text)
   {
-    if(text == "")
+    if(text != "")
     {
-      for(int a = 0; a < cmdINFO.length; a++)
+      int n = Integer.parseInt(text);
+      if(n > 0 && n < cmdINFO.length / 5)
       {
-        logger.add(cmdINFO[a], color(200, 255, 255));
+        for(int a = n * 5; a < (n + 1) * 5; a++)
+        {
+          logger.add(cmdINFO[a], color(200, 255, 255));
+        }
+      }
+      else
+      {
+        logger.add("Unknown page!", color(150, 0, 0));
       }
     }
     else
     {
-      for(int a = 0; a < system.getSystemNames().length; a++)
+      for(int a = 0; a < cmdINFO.length; a++)
       {
-        logger.add("help for " + system.getSystemNames()[a], color(200, 0, 0));
+        logger.add(cmdINFO[a], color(200, 0, 0));
       }
-      
     }
   }
   

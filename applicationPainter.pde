@@ -5,6 +5,7 @@ class painter extends application
   //Tools
   String tool = "";
   boolean drawing;
+  boolean saved = false;
   
   /* DRAWINNG */
   layout drawingTools;
@@ -18,9 +19,7 @@ class painter extends application
   slider sliderRed;
   slider sliderGreen;
   slider sliderBlue;
-  button[] colors = new button[20];
-  image[] images = new image[20];
-  
+  button[] colors = new button[20];  
   color drawColor = color(0, 0, 0);
   canvas canvas;
   
@@ -30,7 +29,12 @@ class painter extends application
   button create;
   button load;
   textField enterName;
-  textField enterAuthor;
+  
+  /* SAVING */
+  layout saving;
+  button saveIt;
+  button dSaveIt;
+  label textSave;
   
   void init()
   {
@@ -39,7 +43,7 @@ class painter extends application
     /* DRAWING */
     draw = new layout(576, 501);
     drawingTools = new layout(87, 400);
-    canvas = new canvas(x, y, 500, 500);
+    canvas = new canvas(0, 0, 500, 500);
     toolPencil = new button(510, 10, 25, 25, data.getImage("textures/painter/tools/pencil.png"));
     toolEraser = new button(540, 10, 25, 25, data.getImage("textures/painter/tools/eraser.png"));
     toolBucket = new button(510, 40, 25, 25, data.getImage("textures/painter/tools/bucket.png"));
@@ -67,7 +71,7 @@ class painter extends application
     colors[9] = new button(523, 224, 15, 15, "");
     colors[10] = new button(540, 224, 15, 15, "");
     colors[11] = new button(557, 224, 15, 15, "");
-    
+        
     //add Components
     drawingTools.addComponent(toolPencil);
     drawingTools.addComponent(newFile);
@@ -77,41 +81,50 @@ class painter extends application
     drawingTools.addComponent(sliderBlue);
     drawingTools.addComponent(toolEraser);
     drawingTools.addComponent(toolBucket);
-    drawingTools.addComponent(colors[0]);
-    drawingTools.addComponent(colors[1]);
-    drawingTools.addComponent(colors[2]);
-    drawingTools.addComponent(colors[3]);
-    drawingTools.addComponent(colors[4]);
-    drawingTools.addComponent(colors[5]);
-    drawingTools.addComponent(colors[6]);
-    drawingTools.addComponent(colors[7]);
-    drawingTools.addComponent(colors[8]);
-    drawingTools.addComponent(colors[9]);
-    drawingTools.addComponent(colors[10]);
-    drawingTools.addComponent(colors[11]);
+    
+    for(int a = 0; a < colors.length; a++)
+    {
+      drawingTools.addComponent(colors[a]);
+    }
     
     draw.addComponent(drawingTools);
     draw.addComponent(canvas);
     
     /* CREATE PICTURE */
-    createPicture = new layout(300, 200);
-    create = new button(197, 152, 90, 30, "Create new");
-    load = new button(132, 152, 60, 30, "Load");
-    enterName = new textField(10, 20, 150, 30, "Name");
-    enterAuthor = new textField(10, 55, 150, 30, "Author");
+    createPicture = new layout(250, 100);
+    create = new button(150, 60, 90, 30, "Create new");
+    load = new button(85, 60, 60, 30, "Load");
+    enterName = new textField(10, 10, 230, 30, "Name");
     
     createPicture.addComponent(create);
     createPicture.addComponent(load);
     createPicture.addComponent(enterName);
-    createPicture.addComponent(enterAuthor);
+    
+    /* SAVING */
+    saving = new layout(250, 100);
+    saveIt = new button(150, 60, 90, 30, "Yes!");
+    dSaveIt = new button(85, 60, 60, 30, "No!");
+    textSave = new label(10, 10, 230, 30, "Do you want to save it?");
+    
+    saving.addComponent(saveIt);
+    saving.addComponent(dSaveIt);
+    saving.addComponent(textSave);
   }
   
   void update()
   {
     if(drawing)
     {
-      setLayout(draw);
-      drawing();
+      if(saved)
+      {
+        setLayout(saving);
+        saving();
+      }
+      else
+      {
+        setLayout(draw);
+        drawing();
+      }
     }
     else
     {
@@ -120,13 +133,46 @@ class painter extends application
     }
   } //<>//
   
-  void createPicture()
+  void saving()
   {
-    create.setActive(false);
-    
+    if(saveIt.isClicked)
+    {
+      saved = false;
+      picture p = new picture(enterName.getText());
+      p.save(canvas.getPixel());
+      
+      canvas.empty();
+    }
+    else if(dSaveIt.isClicked)
+    {
+      saved = false;
+      
+      canvas.empty();
+    }
+  }
+  
+  void createPicture()
+  {    
     if(create.isClicked)
     {
       drawing = true;
+    }
+    else if(load.isClicked)
+    {
+      picture p = new picture(enterName.getText());
+      canvas.pixel = p.read();
+      drawing = true;
+    }
+    
+    if(enterName.getText() == "")
+    {
+      create.setActive(false);
+      load.setActive(false);
+    }
+    else
+    {
+      create.setActive(true);
+      load.setActive(true);
     }
   }
   
@@ -164,7 +210,7 @@ class painter extends application
     }
     else if(newFile.isClicked)
     {
-      canvas.setBackground(color(255, 255, 255));
+      saved = true;
       /*
       * TODO: Add suport for change a background color!!
       */
@@ -172,6 +218,12 @@ class painter extends application
     else if(toolBucket.isClicked)
     {
       tool = "bucket";
+    }
+    else if(saveFile.isClicked)
+    {
+      saved = true;
+      picture p = new picture(enterName.getText());
+      p.save(canvas.getPixel());
     }
     
     if(mouseX >= x && mouseX <= x + 500 && mouseY >= y && mouseY <= y + 500)
@@ -182,46 +234,84 @@ class painter extends application
       switch(tool)
       {
         case "pencil":
+        {
           if(mousePressed)
           {
             canvas.setPixel(dx, dy, drawColor);
+            saved = false;
           }
+        }
         break;
         
         case "eraser":
+        {
           if(mousePressed)
           {
             canvas.setPixel(dx, dy, canvas.getBackground());
+            saved = false;
           }
+        }
         break;
         
         case "bucket":
-        
+        {
+          if(mouseClicked)
+          {
+            bucketFill(dx, dy, canvas.getPixel(dx, dy), drawColor);
+            saved = false;
+          }
+        }
         break;
       }
     }
+  }
+  
+  void bucketFill(int x, int y, color prevColor, color newColor)
+  {
+    if(x < 0 || y < 0 || x >= canvas.row || y >= canvas.col || canvas.getPixel(x, y) != prevColor)
+    {
+      return;
+    }
+    
+    canvas.setPixel(x, y, newColor);
+    
+    bucketFill(x + 1, y, prevColor, newColor);
+    bucketFill(x - 1, y, prevColor, newColor);
+    bucketFill(x, y + 1, prevColor, newColor);
+    bucketFill(x, y - 1, prevColor, newColor);
   }
 }
 
 class canvas extends component
 {
-  color[][] pixel = new color[100][100];
+  int col = 100;
+  int row = 100;
+  color[] pixel = new color[row*col];
   
   color background = color(255, 255, 255);
   
   canvas(int xPos, int yPos, int xLength, int yLength) 
   {
     super(xPos, yPos, xLength, yLength);
-    fillBackground();
+    for(int dx = 0; dx < 100; dx++)
+    {
+      for(int dy = 0; dy < 100; dy++)
+      {
+        pixel[dy*row + dx] = background;
+      }
+    }
   }
   
-  void fillBackground()
+  void fillBackground(color newColor)
   {
     for(int dx = 0; dx < 100; dx++)
     {
       for(int dy = 0; dy < 100; dy++)
       {
-        pixel[dx][dy] = background;
+        if(pixel[dy*row + dx] == background)
+        {
+          pixel[dy*row + dx] = newColor;
+        }
       }
     }
   }
@@ -230,7 +320,7 @@ class canvas extends component
   {
     background = c;
     
-    fillBackground();
+    fillBackground(c);
   }
   
   color getBackground()
@@ -240,28 +330,37 @@ class canvas extends component
   
   color getPixel(int x, int y)
   {
-    return pixel[x][y];
+    return pixel[y*row + x];
+  }
+  
+  color[] getPixel()
+  {
+    return pixel;
   }
   
   void setPixel(int x, int y, color c)
   {
-    pixel[x][y] = c;
+    pixel[y*row + x] = c;
   }
   
-  void loadPicture(picture p)
+  void empty()
   {
-    pixel = p.getPicture();
+    for(int dx = 0; dx < 100; dx++)
+    {
+      for(int dy = 0; dy < 100; dy++)
+      {
+        pixel[dy*row + dx] = background;
+      }
+    }
   }
   
   void render()
   {
-    //println(x + tx, y + ty);
-    
     for(int dx = 1; dx <= 500; dx += 5)
     {
       for(int dy = 1; dy <= 500; dy += 5)
       {
-        fill(pixel[dx/5][dy/5]);
+        fill(pixel[(dx/5) + (dy/5)*row]);
         rect(x + dx + tx, y + dy + ty, 5, 5);
       }
     }

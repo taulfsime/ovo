@@ -293,8 +293,10 @@ class calculator extends application //<>//
       {
         sNum = setNum(sNum, 9);
       }
-    } else if (dot.isClicked)
+    } 
+    else if (dot.isClicked)
     {
+      
     } else if (plus.isClicked)
     {
       operation = "+";
@@ -334,6 +336,116 @@ class calculator extends application //<>//
     {
     } else if (plusMinus.isClicked)
     {
+    }
+  }
+}
+
+class carCalculator extends application
+{
+  double lpk1 = 0, lpk2 = 0;
+  double l1 = 0, l2 = 0;
+  double cp1 = 0, cp2 = 0;
+
+  textField[] enter;
+  label[] texts;
+  layout main;
+  button finish;
+  
+  void init()
+  {
+    enter = new textField[7];
+    texts = new label[6];
+    
+    main = new layout(275, 260);
+    
+    texts[1] = new label(10, 5, 125, 30, "Car1");
+    texts[2] = new label(140, 5, 125, 30, "Car2");
+    
+    enter[0] = new textField(10, 40, 125, 30, "Fuel for 100km:");
+    enter[1] = new textField(140, 40, 125, 30, "Fuel for 100km:");
+    
+    enter[2] = new textField(10, 75, 125, 30, "Price for liter:");
+    enter[3] = new textField(140, 75, 125, 30, "Price for liter:");
+    
+    enter[4] = new textField(10, 110, 125, 30, "Price engine:");
+    enter[5] = new textField(140, 110, 125, 30, "Price engine:");
+    
+    finish = new button(10, 150, 125, 30, "Calculate");
+    texts[0] = new label(140, 150, 125, 30, "");
+    
+    texts[3] = new label(140, 185, 125, 30, "");
+    enter[6] = new textField(10, 185, 125, 30, "km per year:");
+    
+    texts[4] = new label(10, 220, 125, 30, "");
+    texts[5] = new label(140, 220, 125, 30, "");
+    
+    for(int a = 0; a < 7; a++)
+    {
+      enter[a].setFilter("0123456789.");
+      main.addComponent(enter[a]);
+    }
+    main.addComponent(finish);
+    
+    for(int a = 0; a < 6; a++)
+    {
+      main.addComponent(texts[a]);
+    }
+  }
+  
+  void update()
+  {
+    setLayout(main);    
+    
+    boolean active = true;
+    for(int a = 0; a < 6; a++)
+    {
+      if(enter[a].getText() == "")
+      {
+        active = false;
+      }
+    }
+    finish.setActive(active);
+    
+    if(finish.isClicked)
+    {
+      double a1 = Double.parseDouble(enter[0].getText());
+      double a2 = Double.parseDouble(enter[1].getText());
+      
+      double b1 = Double.parseDouble(enter[2].getText());
+      double b2 = Double.parseDouble(enter[3].getText());
+      
+      double c1 = Double.parseDouble(enter[4].getText());
+      double c2 = Double.parseDouble(enter[5].getText());
+      
+      double d1 = Double.parseDouble(enter[6].getText());
+      
+      if(a1 > a2 && c1 < c2)
+      {
+        String r = String.format("%.2f", ((c2 - c1)/(a1*b1 - a2*b2))*100);
+        texts[3].setText(String.format("%.2f", (dmax(c1, c2)/(a1*b1 - a2*b2))*100));
+        texts[0].setText("" + r);
+      }
+      else if(a1 > a2 && c1 > c2)
+      {
+        String r = String.format("%.2f", ((c1 - c2)/(a2*b2 - a1*b1))*100);
+        texts[3].setText(String.format("%.2f", (dmax(c1, c2)/(a2*b2 - a1*b1))*100));
+        texts[0].setText("" + r);
+      }
+      
+      texts[4].setText(String.format("%.2f", (a1*b1*d1/100)));
+      texts[5].setText(String.format("%.2f", (a2*b2*d1/100)));
+    }
+  }
+  
+  double dmax(double m1, double m2)
+  {
+    if(m1 > m2)
+    {
+      return m1;
+    }
+    else
+    {
+      return m2;
     }
   }
 }

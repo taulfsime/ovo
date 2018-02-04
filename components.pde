@@ -7,6 +7,7 @@
  - Text
  - Progress Bar
  - Text Field
+ - Text Area
  - Layout
  - Slider
  - Item List
@@ -25,9 +26,6 @@ class component
   public int y;
   public int w;
   public int h;
-
-  public boolean isActive = true;
-  public boolean isVisible = true;
 
   final int borderWidth = 1;
   color normal = color(183, 183, 183);
@@ -72,20 +70,26 @@ class component
   }
 
   void render() {}
-  void setActive(boolean active) {this.isActive = active;}
 }
 
 //Collision Box
 class collisionBox extends component
 {
+  boolean isActive = true;
+  
   collisionBox(int x, int y, int w, int h) 
   {
     super(x, y, w, h);
   }
+  
+  void setActive(boolean active) 
+  {
+    this.isActive = active;
+  }
 
   public boolean isOver()
   {
-    if (this.isActive)
+    if (isActive)
     {
       return (mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h);
     }
@@ -105,6 +109,7 @@ class button extends component
   char bindKey;
   boolean useBindKey = false;
   text showText;
+  boolean isActive = true;
 
   button(int xPos, int yPos, int xLength, int yLength, String text)
   {
@@ -136,6 +141,11 @@ class button extends component
     }
   }
   
+  void setActive(boolean active)
+  {
+    isActive = active;
+  }
+  
   void bindKey(char bKey)
   {
     bindKey = bKey;
@@ -152,7 +162,8 @@ class button extends component
       fill(border);
       rect(x + tx, y + ty, w, h);
     }
-    if(this.isActive)
+    
+    if(isActive)
     {
       if (cb.isOver() || (keyClicked && key == bindKey && useBindKey))
       {
@@ -287,28 +298,25 @@ class label extends component
 
   void render()
   {
-    if (isActive)
+    if (text == null && img != null)
     {
-      if (text == null && img != null)
-      {
-        noStroke();
-        fill(border);
-        rect(x, y, w, h);
-        image(img, x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
-      } 
-      else if (text != null && img == null)
-      {
-        noStroke();
-        fill(border);
-        rect(x + tx, y + ty, w, h);
-        fill(normal);
-        rect(x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
+      noStroke();
+      fill(border);
+      rect(x, y, w, h);
+      image(img, x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
+    } 
+    else if (text != null && img == null)
+    {
+      noStroke();
+      fill(border);
+      rect(x + tx, y + ty, w, h);
+      fill(normal);
+      rect(x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
 
-        fill(0);
-        textSize(textScale);
-        String t = showText.toString(text);
-        text(t, x + tx + w/2 - (int) textWidth(t)/2, y + ty + h*2/3);
-      }
+      fill(0);
+      textSize(textScale);
+      String t = showText.toString(text);
+      text(t, x + tx + w/2 - (int) textWidth(t)/2, y + ty + h*2/3);
     }
   }
 
@@ -346,6 +354,7 @@ class switchButton extends component
   String text = null;
   collisionBox cb;
   text showText;
+  boolean isActive = true;
 
   switchButton(int xPos, int yPos, int xLength, int yLength, String text)
   {
@@ -365,6 +374,11 @@ class switchButton extends component
   {
     super(xPos, yPos, xLength, yLength);
     this.imgOn = img;
+  }
+  
+  void setActive(boolean active) 
+  {
+    this.isActive = active;
   }
 
   void setClicked(boolean clicked)
@@ -457,7 +471,7 @@ class switchButton extends component
 
       rect(x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
 
-      if (text != null && imgOn == null)
+      if (imgOn == null)
       {
         fill(0);
         textSize((int) (this.h * 0.5));
@@ -546,12 +560,19 @@ class textField extends component
   collisionBox cb;
   boolean enterText = false;
   final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
+  String filter = null;
   ArrayList<String> library = new ArrayList<String>();
+  boolean isActive = true;
     
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
     super(xPos, yPos, xLength, yLength);
     this.dText = displayText;
+  }
+  
+  void setActive(boolean active) 
+  {
+    this.isActive = active;
   }
   
   String getText()
@@ -563,6 +584,11 @@ class textField extends component
     return text;
   }
   
+  void setFilter(String f)
+  {
+    filter = f;
+  }
+  
   void addToLibrary(String text)
   {
     library.add(text);
@@ -570,7 +596,7 @@ class textField extends component
 
   void render()
   {
-    if (this.isActive)
+    if (isActive)
     {
       cb = new collisionBox(x + tx, y + ty, w, h);
       if (mouseClicked)
@@ -667,6 +693,174 @@ class textField extends component
     {
       if(ch == symbols.charAt(a))
       {
+        if(filter != null)
+        {
+          for(int b = 0; b < filter.length(); b++)
+          {
+            if(ch == filter.charAt(b))
+            {
+              return true;
+            }
+          }
+        }
+        else
+        {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+}
+
+//Text Area
+class textArea extends component
+{
+  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
+  int maxLines = h / 22;
+  String[] text = new String[maxLines];
+  int curLine = 0;
+  int textPointerX = 0;
+  boolean enterText = false;
+  collisionBox cb;
+  boolean isActive = true;
+  
+  textArea(int xPos, int yPos, int xLength, int yLength)
+  {
+    super(xPos, yPos, xLength, yLength);
+    
+    for(int a = 0; a < maxLines; a++)
+    {
+      text[a] = "";
+    }
+  }
+  
+  void setActive(boolean active) 
+  {
+    this.isActive = active;
+  }
+  
+  void render()
+  {
+    if(isActive)
+    {
+      cb = new collisionBox(x + tx, y + ty, w, h);
+      if (mouseClicked)
+      {
+        enterText = cb.isOver();
+      }
+      
+      if(keyClicked)
+      {
+        switch(key)
+        {
+          case BACKSPACE:
+          {
+            if (text[curLine].length() > 0)
+            {
+              text[curLine] = text[curLine].substring(0, text[curLine].length() - 1);
+              textPointerX = (int) textWidth(text[curLine]);
+            }
+          }
+          break;
+          
+          case ENTER:
+          {
+            //if(curLine < maxLines - 1)
+            //{
+            //  curLine++;
+            //  textPointerX = (int) textWidth(text[curLine]);
+            //}
+          }
+          break;
+          
+          default:
+          {
+            switch(keyCode)
+            {
+              case UP:
+              {
+                if(curLine > 0)
+                {
+                  curLine--;
+                  if(textPointerX > textWidth(text[curLine]))
+                  {
+                    textPointerX = (int) textWidth(text[curLine]);
+                  }
+                }
+              }
+              break;
+              
+              case DOWN:
+              {
+                if(curLine < maxLines - 1)
+                {
+                  curLine++;
+                  if(textPointerX > textWidth(text[curLine]))
+                  {
+                    textPointerX = (int) textWidth(text[curLine]);  
+                  }
+                }
+              }
+              break;
+              
+              case LEFT:
+              {
+                String t = text[curLine];
+                //println(textWidth(t.charAt(t.length() - textPointerX)));////////////////ERROR
+                textPointerX -= textWidth(t.charAt(t.length() - textPointerX));//(int) textWidth(text[curLine].charAt(textPointerX));
+              }
+              break;
+              
+              case RIGHT:
+              {
+                
+              }
+              break;
+              
+              default:
+              {
+                if (checkSymbol((char) key) && (int) (textWidth(text[curLine] + (char) key)) < w)
+                {
+                  text[curLine] += (char) key;
+                  textPointerX = (int) textWidth(text[curLine]);
+                }    
+              }
+              break;
+            }
+          }
+          break;
+        }
+      }
+      
+      fill(border);
+      rect(x + tx, y + ty, w, h);
+      
+      fill(normal);
+      rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
+      
+      textSize(14);
+      fill(0, 0, 0);
+      for(int a = 0; a < text.length; a++)
+      {
+        text(text[a], x + borderWidth + tx + 5, y + ty + 20 + 22*a);
+      }
+      
+      if(enterText)
+      {
+        fill(0, 0, 0);
+        rect(x + tx + borderWidth + 5 + textPointerX, y + ty + 2 + 22*curLine, 2, 20);
+      }
+    }
+  }
+  
+  boolean checkSymbol(char ch)
+  {
+    for(int a = 0; a < symbols.length(); a++)
+    {
+      if(ch == symbols.charAt(a))
+      {
         return true;
       }
     }
@@ -679,10 +873,16 @@ class textField extends component
 class layout extends component
 {
   ArrayList<component> components = new ArrayList<component>();
+  boolean isActive = true;
 
   layout(int xLength, int yLength)
   {
     super(0, 0, xLength, yLength);
+  }
+  
+  void setActive(boolean active) 
+  {
+    this.isActive = active;
   }
 
   void addComponent(component c)
@@ -713,28 +913,17 @@ class layout extends component
 
   void render()
   {
-    if (this.isActive)
+    if (isActive)
     {
       for (component comp : components) 
       {
-        if(!comp.isActive)
-        {
-          comp.isActive = true;
-        }
-        
         comp.translate(this.x + this.tx, this.y + this.ty);
         comp.render();
       }
     } 
     else
     {
-      for(component comp : components)
-      {
-        if(comp.isActive)
-        {
-          comp.isActive = false;
-        }
-      }
+      
     }
   }
 }
@@ -999,12 +1188,13 @@ class checkBox extends component
 //Text
 class text
 {
-  int w;
-  text(int w) {this.w = w;}
+  double w;
+  text(double w) {this.w = w;}
   
   String toString(String text)
   {
-    if(textWidth(text) > w)
+    //println(text);
+    if(text != null && textWidth(text) > w)
     {
       String r = "";
       for(int a = 0; a < text.length(); a++)

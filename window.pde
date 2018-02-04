@@ -47,7 +47,6 @@ class window
   
   void open() 
   {
-    
     isOpen = true;
   }
   
@@ -105,6 +104,16 @@ class window
       if(app != null)
       {
         app.updateComponent(x, y);
+        if(app.w + 12 > width - this.x)
+        {
+          this.x = (width - this.w)/2;
+        }
+        
+        if(app.h + 27 > height - this.y)
+        {
+          this.y = (height - this.h)/2;
+        }
+        
         w = app.w + 12;
         h = app.h + 27;
         app.update();
@@ -202,7 +211,6 @@ class window
   {
     if(isActive && mouseDragged && isOpen)
     {
-      needTextureUpdate = true;
       if(!isLocked) //move
       {
         if(mouseX - newX >= 0 && mouseX - newX + w < width)
@@ -222,44 +230,28 @@ class dialog
 {
   int x;
   int y;
-  int w;
-  int h;
-  application app;
+  layout main;
   boolean isOpen = false;
   
-  dialog(int w, int h, application app)
+  dialog(layout l)
   {
-    this.w = w;
-    this.h = h;
-    this.app = app;
-  }
-  
-  dialog(int w, int h)
-  {
-    this.w = w;
-    this.h = h;
+    this.main = l;
   }
   
   void open(int x, int y)
   {
     this.x = x;
     this.y = y;
-    needTextureUpdate = true;
-    
+
     if(!isOpen)
     {
-      if(app != null)
-      {
-        app.init();
-      }
-      
       isOpen = true;
     }
   }
   
   void close()
   {
-    if(mouseClicked && (mouseX < x || mouseX > x + w || mouseY < y || mouseY > y + h))
+    if(mouseClicked && (mouseX < x || mouseX > x + main.w || mouseY < y || mouseY > y + main.h))
     {
       isOpen = false;
     }
@@ -273,19 +265,16 @@ class dialog
       
       //border
       fill(216, 216, 216);
-      rect(x, y, w, h);
+      rect(x, y, main.w + 12, main.h + 12);
       
       //base
       fill(200, 200, 200);
-      rect(x + 6, y + 6, w - 12, h - 12);
+      rect(x + 6, y + 6, main.w, main.h);
       
-      if(app != null)
+      if(main != null)
       {
-        app.updateComponent(x + 6, y + 6);
-        w = app.w - 12;
-        h = app.h - 12;
-        app.init();
-        app.render();
+        main.updateComponent(x + 6, y + 6);
+        this.main.render();
       }
       
       close();

@@ -1,4 +1,0 @@
-testing = iwandaw
-iwan = peter
-dawd = dwa 
-dwiajkda = dwad 

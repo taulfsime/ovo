@@ -69,19 +69,7 @@ class taskManager
 
   void registerApplication(String systemName)
   {
-    //boolean add = true;
-    //for(int a = 0; a < systemNames.size(); a++)
-    //{
-    //  if(systemName == systemNames.get(a))
-    //  {
-    //    add = false;
-    //  }
-    //} 
-    
-    //if(add)
-    //{
-      this.systemNames.add(systemName);
-    //}
+    this.systemNames.add(systemName);
   }
 
   void render()
@@ -109,16 +97,36 @@ class taskBar
   int w = 191;
   int rw = w;
 
-  button clock;
+  button btnClock;
   dialog clockDialog;
+  layout lClock;
+  label clockDisplay;
+  image displayClock;
+  PGraphics imgClock;
+  int cx, cy;
+  int radius;
 
   ArrayList<PImage> icons = new ArrayList<PImage>();
   ArrayList<dialog> dialogs = new ArrayList<dialog>();
 
   taskBar()
   {
-    clock = new button(width - 73, height - 39, 70, 30, "");
-    clockDialog = new dialog(320, 235, new clock());
+    btnClock = new button(width - 73, height - 39, 70, 30, "");
+    
+    lClock = new layout(320, 235);
+    displayClock = new image(1, 1, 180, 180);
+    imgClock = createGraphics(displayClock.w, displayClock.h);
+    clockDisplay = new label(3, 190, 177, 30, "");
+        
+    cx = imgClock.width / 2;
+    cy = imgClock.height / 2;
+    
+    radius = min(cx, cy) - 2;
+    
+    lClock.addComponent(displayClock);
+    lClock.addComponent(clockDisplay);
+    
+    clockDialog = new dialog(lClock);
   }
 
   void updateWidth()
@@ -134,15 +142,14 @@ class taskBar
     return w;
   }
 
-  void registerApplication(PImage icon, application app) 
+  void registerApplication(PImage icon, layout l) 
   {
     if (icons.size() < 6)
     {
       this.icons.add(icon);
-      if (app != null)
+      if (l != null)
       {
-        dialog d = new dialog(250, 250, app);
-        this.dialogs.add(d);
+        this.dialogs.add(new dialog(l));
       }
 
       updateWidth();
@@ -155,13 +162,15 @@ class taskBar
     stroke(0);
     rect(width - w, height - 42, w, 42);
 
-    clock.render();
+    btnClock.render();
     clockDialog.render();
-    clock.setText(clock(false));
+    btnClock.setText(clock(false));
+    
+    drawClock();
 
-    if (clock.isClicked)
+    if (btnClock.isClicked)
     {
-      clockDialog.open(mouseX - clockDialog.w, height - 42 - clockDialog.h);
+      clockDialog.open(mouseX - clockDialog.main.w - 12, height - 42 - clockDialog.main.h - 12);
     }
 
     for (int a = 0; a < icons.size(); a++)
@@ -174,14 +183,50 @@ class taskBar
 
       if (buttons[a].isClicked)
       {
-        dialogs.get(a).open(mouseX - 250, height - 42 - 250);
+        dialogs.get(a).open(mouseX - dialogs.get(a).main.w - 12, height - 42 - dialogs.get(a).main.h - 12);
       }
     }
+  }
+  
+  void drawClock()
+  {
+    //Start To Create Clock Image
+    imgClock.beginDraw();
+    imgClock.fill(80);
+    imgClock.noStroke();
+    imgClock.ellipse(cx, cy, radius *1.8, radius *1.8);
+    
+    float s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
+    float m = map(minute() + norm(second(), 0, 60), 0, 60, 0, TWO_PI) - HALF_PI; 
+    float h = map(hour() + norm(minute(), 0, 60), 0, 24, 0, TWO_PI * 2) - HALF_PI;
+    
+    imgClock.stroke(255);
+    imgClock.strokeWeight(1);
+    imgClock.line(cx, cy, cx + cos(s) * radius * 0.72, cy + sin(s) * radius * 0.72);
+    imgClock.strokeWeight(2);
+    imgClock.line(cx, cy, cx + cos(m) * radius * 0.6, cy + sin(m) * radius * 0.6);
+    imgClock.strokeWeight(4);
+    imgClock.line(cx, cy, cx + cos(h) * radius * 0.5, cy + sin(h) * radius * 0.5);
+    
+    imgClock.strokeWeight(2);
+    imgClock.beginShape(POINTS);
+    for (int a = 0; a < 360; a += 6) 
+    {
+      float angle = radians(a);
+      float x = cx + cos(angle) * radius * 0.72;
+      float y = cy + sin(angle) * radius * 0.72;
+      imgClock.vertex(x, y);
+    }
+    imgClock.endDraw();
+    //End Of Create Clock Image
+    
+    displayClock.setImage(imgClock);
+    clockDisplay.setText(clock(true));
   }
 
   String clock(boolean showSecs)
   {
-    String clockText;
+    String clockText = "";
 
     if (minute() < 10)
     {

@@ -2,6 +2,8 @@ class painter extends application
 {
   dataReader data = new dataReader();
   
+  picture pic;
+  
   //Tools
   String tool = "";
   boolean drawing;
@@ -138,8 +140,7 @@ class painter extends application
     if(saveIt.isClicked)
     {
       saved = false;
-      picture p = new picture(enterName.getText());
-      p.save(canvas.getPixel());
+      pic.save(canvas.getPixel());
       
       canvas.empty();
     }
@@ -159,20 +160,20 @@ class painter extends application
     }
     else if(load.isClicked)
     {
-      picture p = new picture(enterName.getText());
-      canvas.pixel = p.read();
+      pic = new picture(enterName.getText());
+      canvas.pixel = pic.read();
       drawing = true;
     }
     
     if(enterName.getText() == "")
     {
-      create.setActive(false);
-      load.setActive(false);
+      create.setWorking(false);
+      load.setWorking(false);
     }
     else
     {
-      create.setActive(true);
-      load.setActive(true);
+      create.setWorking(true);
+      load.setWorking(true);
     }
   }
   
@@ -211,9 +212,6 @@ class painter extends application
     else if(newFile.isClicked)
     {
       saved = true;
-      /*
-      * TODO: Add suport for change a background color!!
-      */
     }
     else if(toolBucket.isClicked)
     {
@@ -221,7 +219,6 @@ class painter extends application
     }
     else if(saveFile.isClicked)
     {
-      saved = true;
       picture p = new picture(enterName.getText());
       p.save(canvas.getPixel());
     }

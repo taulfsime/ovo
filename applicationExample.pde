@@ -43,8 +43,6 @@ class example extends application
     textField.addToLibrary("peter");
     textField.addToLibrary("peterdwa");
     
-    button.setActive(false);
-    
     //add component to layout
     layout.addComponent(button);
     layout.addComponent(label);
@@ -65,5 +63,5 @@ class example extends application
     itemList.setOpen(switchButton.isClicked);
     
     progressBar.setProgress(slider.getPercentage());
-  } //<>//
+  }  //<>//
 }

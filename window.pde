@@ -16,6 +16,7 @@ class window
   boolean isOpen = false;
   boolean isLocked = true;
   boolean isActive = true;
+  boolean isToolBarActive = true;
   button btnClose;
   label lbIcon;
   collisionBox toolBar;
@@ -24,6 +25,7 @@ class window
   window(String systemName, application app)
   {
     this.app = app;
+    this.app.setActive(isActive);
     this.app.init();
     this.app.update();
     this.w = app.w;
@@ -41,8 +43,11 @@ class window
   void setActive(boolean active) 
   {
     this.isActive = active;
-    
-    btnClose.setActive(active);
+  }
+  
+  void setToolBarActive(boolean active)
+  {
+    isToolBarActive = active;
   }
   
   void open() 
@@ -98,6 +103,8 @@ class window
         text(title + " | " + addToTitle, x + 24, y + 15.5);
       }
       
+      btnClose.setActive(isToolBarActive);
+      
       btnClose.render();
       lbIcon.render();
       
@@ -116,113 +123,54 @@ class window
         
         w = app.w + 12;
         h = app.h + 27;
+        app.setActive(isActive);
         app.update();
         app.render();
       }
         
-      mousePress();
-      mouseDrag();
+      if(isToolBarActive && mouseClicked && isOpen && mouseButton == LEFT)
+      {
+        if(toolBar.isOver())
+        {
+          isLocked = false;
+        }
+        else 
+        {
+          isLocked = true;
+        }
+      }
+      
+      if(isToolBarActive && mouseDragged && isOpen)
+      {
+        if(!isLocked) //move
+        {
+          if(mouseX - newX >= 0 && mouseX - newX + w < width)
+          {
+            x = mouseX - newX;
+          }
+          if(mouseY - newY >= 0 && mouseY - newY + h < height)
+          {
+            y = mouseY - newY;
+          }
+        }
+      }
       
       if(mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height)
       {
         isLocked = true;
       }
       
-      if(isActive)
+      if(btnClose.isClicked)
       {
-        if(btnClose.isClicked)
-        {
-          close();
-        }
+        close();
       }
     }
   }
-  
-  void addToTitle(String text)
-  {
-    this.addToTitle = text;
-  }
-  
-  //void renderAtTaskManager(int num)
-  //{
-  //  int displayNameTime = 30; //Timer
-    
-  //  label displayName = new label((int) (num * 38 + 18) + 16 - (int) (textWidth(title)/2), height - 62, (int) textWidth(title), 20, title);
-    
-  //  button btnTaskManager = new button((int) (num * 38 + 18), (int) (height - 38.5), 32, 32, icon); //32
-    
-  //  btnTaskManager.setActive(!isOpen);
-  //  btnTaskManager.render();
-    
-  //  if(btnTaskManager.isClicked)
-  //  {
-  //    if(!isOpen)
-  //    {
-  //      open();
-  //      btnTaskManager.setActive(false);
-  //    }
-      
-  //    timer = displayNameTime + 1;
-  //  } 
-  //  else if(btnTaskManager.isOver)
-  //  {
-  //    String a = dataReader.getAppTitle(systemName, lang);
-  //    if(title != a)
-  //    {
-  //      title = a;
-  //    }
-      
-  //    if(timer < displayNameTime + 1)
-  //      timer++;
-  //  }
-  //  else 
-  //  {
-  //    timer = 0;
-  //  }
-      
-  //  if(timer > displayNameTime && timer < displayNameTime + 2)
-  //  {
-  //    displayName.render();
-  //  }
-  //}
   
   void move()
-  { 
-      newX = mouseX - x;
-      newY = mouseY - y;
-  }
-  
-  void mousePress()
   {
-    if(isActive && mouseClicked && isOpen && mouseButton == LEFT)
-    {
-      if(toolBar.isOver())
-      {
-        isLocked = false;
-      }
-      else 
-      {
-        isLocked = true;
-      }
-    }
-  }
-  
-  public void mouseDrag()
-  {
-    if(isActive && mouseDragged && isOpen)
-    {
-      if(!isLocked) //move
-      {
-        if(mouseX - newX >= 0 && mouseX - newX + w < width)
-        {
-          x = mouseX - newX;
-        }
-        if(mouseY - newY >= 0 && mouseY - newY + h < height)
-        {
-          y = mouseY - newY;
-        }
-      }
-    }
+    newX = mouseX - x;
+    newY = mouseY - y;
   }
 }
 

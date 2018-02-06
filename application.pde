@@ -5,12 +5,20 @@ class application
   public int y;
   public int w;
   public int h;
+  public boolean isActive = true;
   
   void init() {}
   void update() {}
   
+  void setActive(boolean active)
+  {
+    isActive = active;
+  }
+  
   void render()
   {
+    layout.setActive(isActive);
+    
     layout.updateComponent(x, y);
     layout.render(); //<>//
   }

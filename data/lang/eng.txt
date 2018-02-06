@@ -2,4 +2,4 @@ window.calculator.title = Calculator
 window.exampleApp.title = Example App
 window.console.title = Command Prompt
 window.painter.title = Painter
-window.snakeGame.title = Simple Snake Game
+window.appMaker.title = Application Maker

@@ -8,6 +8,7 @@ String lang = "eng.txt";
 final String VERSION = "alpha v0.1";
 boolean mouseClicked = false;
 boolean mouseDragged = false;
+boolean mouseReleased = false;
 boolean keyClicked = false;
 
 /*******************
@@ -15,7 +16,7 @@ boolean keyClicked = false;
   *TODO: check for file exist (langs) /helper/
   *TODO: Add suport for change a background color!! /painter/
   *TODO: Add a scrollbar in cmdLogger /applicationCMD/
-
+  
 *******************/
 
 void setup()
@@ -36,6 +37,9 @@ void setup()
   system.registerApplication("calculator", new calculator());
   system.registerApplication("exampleApp", new example());
   system.registerApplication("carCalculator", new carCalculator());
+  system.registerApplication("testTextArea", new testTextArea());
+  system.registerApplication("appMaker", new appMaker());
+
   system.registerApplication("console", new console());
 
   for(String s : system.getSystemNames())
@@ -58,6 +62,7 @@ void draw()
   mouseDragged = false;
   mouseClicked = false;
   keyClicked = false;
+  mouseReleased = false;
 }
 
 void mouseDragged()
@@ -77,7 +82,7 @@ void keyPressed()
 
 void mouseReleased()
 {
-  
+  mouseReleased = true;
 }
 
 void fps()
@@ -99,9 +104,38 @@ void fps()
   text(frameRate, width - 65, 50);
 }
 
+boolean checkStrings(String s1, String s2)
+{
+  if(s1.length() != s2.length())
+  {
+    return false;
+  }
+  
+  for(int a = 0; a < s1.length(); a++)
+  {
+    if(s1.charAt(a) != s2.charAt(a))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+String replaceChar(String text, char prevCh, char newCh)
+{
+  for(int a = 0; a < text.length(); a++)
+  {
+    if(text.charAt(a) == prevCh)
+    {
+      text = text.substring(0, a - 1) + newCh + text.substring(a);
+    }
+  }
+  return text;
+}
+
 layout setting()
 {
   layout main = new layout(250, 250);
   
-  return main; //<>//
+  return main; //<>// //<>//
 }

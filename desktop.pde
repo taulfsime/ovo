@@ -85,7 +85,7 @@ class taskManager
       buttons[a].render();
       if(buttons[a].isClicked)
       {
-        system.getWindow(systemNames.get(a)).open();
+        system.open(systemNames.get(a));
       }
     }
   }

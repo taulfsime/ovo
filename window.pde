@@ -123,7 +123,7 @@ class window
         
         w = app.w + 12;
         h = app.h + 27;
-        app.setActive(isActive);
+        app.setActive(isActive && isLocked);
         app.update();
         app.render();
       }

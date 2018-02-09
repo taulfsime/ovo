@@ -10,7 +10,6 @@ class painter extends application
   boolean saved = false;
   
   /* DRAWINNG */
-  layout drawingTools;
   layout draw;
   
   button toolPencil;
@@ -44,7 +43,6 @@ class painter extends application
     
     /* DRAWING */
     draw = new layout(576, 501);
-    drawingTools = new layout(87, 400);
     canvas = new canvas(0, 0, 500, 500);
     toolPencil = new button(510, 10, 25, 25, data.getImage("textures/painter/tools/pencil.png"));
     toolEraser = new button(540, 10, 25, 25, data.getImage("textures/painter/tools/eraser.png"));
@@ -75,21 +73,20 @@ class painter extends application
     colors[11] = new button(557, 224, 15, 15, "");
         
     //add Components
-    drawingTools.addComponent(toolPencil);
-    drawingTools.addComponent(newFile);
-    drawingTools.addComponent(saveFile);
-    drawingTools.addComponent(sliderRed);
-    drawingTools.addComponent(sliderGreen);
-    drawingTools.addComponent(sliderBlue);
-    drawingTools.addComponent(toolEraser);
-    drawingTools.addComponent(toolBucket);
+    draw.addComponent(toolPencil);
+    draw.addComponent(newFile);
+    draw.addComponent(saveFile);
+    draw.addComponent(sliderRed);
+    draw.addComponent(sliderGreen);
+    draw.addComponent(sliderBlue);
+    draw.addComponent(toolEraser);
+    draw.addComponent(toolBucket);
     
     for(int a = 0; a < colors.length; a++)
     {
-      drawingTools.addComponent(colors[a]);
+      draw.addComponent(colors[a]);
     }
     
-    draw.addComponent(drawingTools);
     draw.addComponent(canvas);
     
     /* CREATE PICTURE */
@@ -281,9 +278,11 @@ class painter extends application
 
 class canvas extends component
 {
+  boolean isActive = true;
   int col = 100;
   int row = 100;
   color[] pixel = new color[row*col];
+  collisionBox cb;
   
   color background = color(255, 255, 255);
   
@@ -297,6 +296,11 @@ class canvas extends component
         pixel[dy*row + dx] = background;
       }
     }
+  }
+  
+  void setActive(boolean active)
+  {
+    isActive = active;
   }
   
   void fillBackground(color newColor)
@@ -337,7 +341,14 @@ class canvas extends component
   
   void setPixel(int x, int y, color c)
   {
-    pixel[y*row + x] = c;
+    int p = y*row + x;
+    
+                              /* ERROR */
+    
+    if(isActive && p < 10000/* && cb.isOver()*/) 
+    {
+      pixel[p] = c;
+    }
   }
   
   void empty()
@@ -353,6 +364,8 @@ class canvas extends component
   
   void render()
   {
+    cb = new collisionBox(x + tx, y + ty, w, h);
+    
     for(int dx = 1; dx <= 500; dx += 5)
     {
       for(int dy = 1; dy <= 500; dy += 5)

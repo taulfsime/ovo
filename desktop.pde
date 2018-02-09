@@ -47,6 +47,7 @@ class startButton
 //Task Manager
 class taskManager
 {
+  int displayNameTime = 30; //Timer
   int w;
 
   ArrayList<String> systemNames = new ArrayList<String>();
@@ -78,15 +79,33 @@ class taskManager
     stroke(0);
     rect(0, height - 42, width - w, 42);
     button[] buttons = new button[systemNames.size()];
+    label[] showNames = new label[systemNames.size()];
+    //label showName;
 
     for (int a = 0; a < systemNames.size(); a++)
     {
-      buttons[a] = new button((int) ((a + 1) * 38 + 18), (int) (height - 38.5), 32, 32, system.getWindow(systemNames.get(a)).icon); //system.getWindow(systemNames.get(a)).icon)
+      showNames[a] = new label((int) (a * 38 + 18) + 16 - (int) (textWidth(systemNames.get(a))/2), height - 62, (int) textWidth(systemNames.get(a)), 20, systemNames.get(a));
+      buttons[a] = new button((int) ((a + 1) * 38 + 18), (int) (height - 38.5), 32, 32, system.getWindow(systemNames.get(a)).icon);
       buttons[a].render();
       if(buttons[a].isClicked)
       {
         system.open(systemNames.get(a));
+        //cTimer[a] = displayNameTime + 5;
       }
+      
+      //if(buttons[a].isOver && cTimer[a] <= displayNameTime)
+      //{
+      //  cTimer[a]++;
+      //}
+      //else
+      //{
+      //  cTimer[a] = 0;
+      //}
+      //println(cTimer[a], buttons[a].isOver);
+      //if(cTimer[a] > displayNameTime && cTimer[a] < displayNameTime + 2)
+      //{
+      //  showNames[a].render();
+      //}
     }
   }
 }

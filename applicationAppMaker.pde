@@ -14,6 +14,7 @@ class appMaker extends application
   button drawButton;
   button export;
   textField[] coord = new textField[4];
+  textField text;
   
   /* CREATE */
   layout createLayout;
@@ -109,11 +110,13 @@ class appMaker extends application
     coord[1] = new textField(ww + 15 + 45, 90, 40, 30, "Y:");
     coord[2] = new textField(ww + 15 + 90, 90, 40, 30, "W:");
     coord[3] = new textField(ww + 15 + 135, 90, 40, 30, "H:");
+    text = new textField(ww + 15, 140, 160, 30, "Text:");
     
     main.addComponent(ae);
     main.addComponent(drawLabel);
     main.addComponent(drawButton);
     main.addComponent(export);
+    main.addComponent(text);
     
     for(int a = 0; a < coord.length; a++)
     {
@@ -129,8 +132,8 @@ class appMaker extends application
     {
       for(int a = 0; a < components.size(); a++)
       {
-        component c = components.get(a);
-        collisionBox cba = new collisionBox(x + c.x, y + c.y, c.w, c.h);
+        component comp = components.get(a);
+        collisionBox cba = new collisionBox(x + comp.x, y + comp.y, comp.w, comp.h);
         collisionBox cb = new collisionBox(x + ae.x, y + ae.y, ae.w, ae.h);
         
         if(mouseClicked && cb.isOver())
@@ -155,7 +158,7 @@ class appMaker extends application
     }
     
     if(editComponent >= 0)
-    {      
+    {
       /* COMPONENT X */
       if(coord[0].getText().length() > 0)
       {
@@ -200,6 +203,7 @@ class appMaker extends application
         components.get(editComponent).y = ae.y;
       }
       
+      /* COMPONENT WIDTH */
       if(coord[2].getText().length() > 0)
       {
         int n = Integer.parseInt(coord[2].getText());
@@ -210,9 +214,9 @@ class appMaker extends application
         }        
       }
       
+      /* COMPONENT HEIGHT */
       if(coord[3].getText().length() > 0)
       {
-        
         int n = Integer.parseInt(coord[3].getText());
         
         if(n > 0 && n < ae.h - components.get(editComponent).y)
@@ -220,13 +224,57 @@ class appMaker extends application
           components.get(editComponent).h = n;
         }        
       }
+      
+      /* COMPONENT TEXT */
+      if(text.getText().length() > 0)
+      {
+        //components.get(editComponent).text = text.getText();
+      }
+      
+      String fType = "";
+      String test = components.get(editComponent).getClass().toString();
+      
+      for(int q = 0; q < test.length(); q++)
+      {
+        if(test.charAt(q) == '$')
+        {
+          fType = test.substring(q + 1);
+          break;
+        }
+      }
+      
+      component c = components.get(editComponent);
+      switch(fType)
+      {
+        case "button":
+        {
+          /* ERROR */
+          //text.setWorking(true);
+          if(text.getText().length() > 0)
+          {
+            button bTest = new button(c.x, c.y, c.w, c.h, text.getText());
+            components.set(editComponent, bTest);
+          } //<>//
+        }
+        break;
+        
+        case "label":
+        {
+          
+        }
+        break;
+      }
     }
     else
     {
+      /* EMPTY TEXT FIELDS */
+      
       for(int a = 0; a < coord.length; a++)
       {
         coord[a].setText("");
       }
+      text.setText("");
+      //text.setWorking(false);
     }
     
     if(ae.isReady)
@@ -239,6 +287,11 @@ class appMaker extends application
   }
   
   void export()
+  {
+    
+  }
+  
+  void load()
   {
     
   }

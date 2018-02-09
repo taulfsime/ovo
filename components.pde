@@ -27,7 +27,7 @@ class component
   public int y;
   public int w;
   public int h;
-  
+    
   public boolean isActive = true;
 
   final int borderWidth = 1;
@@ -597,6 +597,7 @@ class textField extends component
   ArrayList<String> library = new ArrayList<String>();
   String example = null;
   boolean isActive = true;
+  boolean isWorking = true;
     
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
@@ -607,6 +608,11 @@ class textField extends component
   void setActive(boolean active) 
   {
     this.isActive = active;
+  }
+  
+  void setWorking(boolean work)
+  {
+    isWorking = work;
   }
   
   String getText()
@@ -637,7 +643,7 @@ class textField extends component
   {
     cb = new collisionBox(x + tx, y + ty, w, h);
     cb.setActive(isActive);
-    if (isActive)
+    if (isActive && isWorking)
     {
       if (mouseClicked)
       {

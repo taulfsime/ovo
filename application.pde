@@ -21,7 +21,7 @@ class application
     
     layout.updateComponent(x, y);
     layout.render(); //<>//
-  }
+  } //<>//
   
   void setLayout(layout newLayout)
   {

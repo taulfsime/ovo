@@ -36,9 +36,21 @@ class system
   {
     for(window w : windows)
     {
-      if(w.systemName == systemName)
+      if(w.systemName == systemName && !w.isOpen)
       {
         getWindow(systemName).open();
+        break;
+      }
+    }
+  }
+  
+  void close(String systemName)
+  {
+    for(window w : windows)
+    {
+      if(w.systemName == systemName && w.isOpen)
+      {
+        getWindow(systemName).close();
         break;
       }
     }

@@ -408,6 +408,7 @@ class carCalculator extends application
     
     if(finish.isClicked)
     {
+      
       double a1 = Double.parseDouble(enter[0].getText());
       double a2 = Double.parseDouble(enter[1].getText());
       

@@ -3,3 +3,4 @@ window.exampleApp.title = Example App
 window.console.title = Command Prompt
 window.painter.title = Painter
 window.appMaker.title = Application Maker
+window.consoleNewV.title = Command Prompt v2

@@ -39,6 +39,7 @@ void setup()
   system.registerApplication("carCalculator", new carCalculator());
   system.registerApplication("testTextArea", new testTextArea());
   system.registerApplication("appMaker", new appMaker());
+  system.registerApplication("consoleNewV", new consoleNewV());
 
   system.registerApplication("console", new console());
 

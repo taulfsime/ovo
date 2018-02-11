@@ -21,8 +21,8 @@ boolean keyClicked = false;
 
 void setup()
 {  
-  fullScreen();
-  //size(1000, 700);
+  //fullScreen();
+  size(1000, 700);
   
   background(0);
   system = new system();
@@ -31,7 +31,8 @@ void setup()
   startButton = new startButton();
   desktop = new desktop();
     
-  taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), setting());
+  taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new setting());
+  taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new testTextArea());
 
   system.registerApplication("painter", new painter());
   system.registerApplication("calculator", new calculator());
@@ -42,7 +43,7 @@ void setup()
   system.registerApplication("consoleNewV", new consoleNewV());
 
   system.registerApplication("console", new console());
-
+  
   for(String s : system.getSystemNames())
   {
     taskManager.registerApplication(s);
@@ -88,7 +89,6 @@ void mouseReleased()
 
 void fps()
 {
-  //frameRate(60);
   if(frameRate < 60)
   {
     fill(255, 0, 0);
@@ -134,9 +134,123 @@ String replaceChar(String text, char prevCh, char newCh)
   return text;
 }
 
-layout setting()
+String clock(boolean showSecs)
+  {
+    String clockText = "";
+
+    if (minute() < 10)
+    {
+      if (hour() < 10)
+      {
+        clockText = "0" + hour() + ":0" + minute();
+      } 
+      else
+      {
+        clockText = hour() + ":0" + minute();
+      }
+    }
+    else
+    {
+      if (hour() < 10)
+      {
+        clockText = "0" + hour() + ":" + minute();
+      } 
+      else 
+      {
+        clockText = hour() + ":" + minute();
+      }
+
+      if (showSecs)
+      {
+        if (second() < 10)
+        {
+          clockText += ":0" + second();
+        } 
+        else 
+        {
+          clockText += ":" + second();
+        }
+      }
+    }
+
+    return clockText;
+  }
+
+class setting extends application
 {
   layout main = new layout(250, 250);
+  void init()
+  {
+    
+  }
   
-  return main; //<>// //<>//
+  void update()
+  {
+    setLayout(main);
+  } //<>//
+}
+
+class clockTaskBar extends application
+{
+  layout main;
+  label clockDisplay;
+  image displayClock;
+  PGraphics imgClock;
+  int cx, cy;
+  int radius;
+  
+  void init()
+  {
+    main = new layout(320, 235);
+    
+    displayClock = new image(1, 1, 180, 180);
+    imgClock = createGraphics(displayClock.w, displayClock.h);
+    clockDisplay = new label(5, 185, 177, 30, "");
+        
+    cx = imgClock.width / 2;
+    cy = imgClock.height / 2;
+    
+    radius = min(cx, cy) - 2;
+    
+    main.addComponent(displayClock);
+    main.addComponent(clockDisplay);
+  }
+  
+  void update()
+  {
+    setLayout(main);
+    
+    //Start To Create Clock Image
+    imgClock.beginDraw();
+    imgClock.fill(80);
+    imgClock.noStroke();
+    imgClock.ellipse(cx, cy, radius *1.8, radius *1.8);
+    
+    float s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
+    float m = map(minute() + norm(second(), 0, 60), 0, 60, 0, TWO_PI) - HALF_PI; 
+    float h = map(hour() + norm(minute(), 0, 60), 0, 24, 0, TWO_PI * 2) - HALF_PI;
+    
+    imgClock.stroke(255);
+    imgClock.strokeWeight(1);
+    imgClock.line(cx, cy, cx + cos(s) * radius * 0.72, cy + sin(s) * radius * 0.72);
+    imgClock.strokeWeight(2);
+    imgClock.line(cx, cy, cx + cos(m) * radius * 0.6, cy + sin(m) * radius * 0.6);
+    imgClock.strokeWeight(4);
+    imgClock.line(cx, cy, cx + cos(h) * radius * 0.5, cy + sin(h) * radius * 0.5);
+    
+    imgClock.strokeWeight(2);
+    imgClock.beginShape(POINTS);
+    for (int a = 0; a < 360; a += 6) 
+    {
+      float angle = radians(a);
+      float x = cx + cos(angle) * radius * 0.72;
+      float y = cy + sin(angle) * radius * 0.72;
+      imgClock.vertex(x, y);
+    }
+    imgClock.endDraw();
+    //End Of Create Clock Image
+    
+    displayClock.setImage(imgClock);
+    clockDisplay.setText(clock(true));
+  }
 }

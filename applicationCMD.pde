@@ -48,7 +48,7 @@ class consoleNewV extends application
     {
       case "open":
       {
-        commandOpen(cmd.substring(cmd.length()));
+        commandOpen(readCommand.substring(cmd.length()));
       }
       break;
       
@@ -150,7 +150,7 @@ class consoleNewV extends application
     String[] test = split(text, ' ');
     for(int a = 0; a < test.length; a++)
     {
-      if(test[a] != "")
+      if(test[a].length() > 0)
       {
         systemName = test[a];
         break;
@@ -229,10 +229,10 @@ class consoleNewV extends application
     boolean show = false;
     String systemName = "";
     
-    String[] test = split(text, ' ');
+    String[] test = split(text, ' ');  
     for(int a = 0; a < test.length; a++)
     {
-      if(test[a] != "")
+      if(test[a].length() > 0)
       {
         systemName = test[a];
         break;
@@ -263,8 +263,20 @@ class consoleNewV extends application
     }
   }
   
-  void commandClose(String systemName)
+  void commandClose(String text)
   {
+    String systemName = "";
+    String[] test = split(text, ' ');
+    
+    for(int a = 0; a < test.length; a++)
+    {
+      if(test[a].length() > 0)
+      {
+        systemName = test[a];
+        break;
+      }
+    }
+    
     if(systemName != "")
     {
       

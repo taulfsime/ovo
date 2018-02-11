@@ -4,6 +4,7 @@ class appMaker extends application
   int wh = 680;
   
   ArrayList<component> components = new ArrayList<component>();
+  ArrayList<String> save = new ArrayList<String>();
   int editComponent = -1;
   boolean creating = false;
   
@@ -282,13 +283,48 @@ class appMaker extends application
       component c = ae.getComponent();
       main.addComponent(c);
       components.add(c);
+      save.add("init " + ae.getType() + " " + ae.getType() + save.size() + " (" + c.x + "$" + c.y + "$" + c.w + "$" + c.h + ")");
       ae.reset();
     }
   }
   
   void export()
   {
+    ArrayList<String> init = new ArrayList<String>();
+    ArrayList<String> initF = new ArrayList<String>();
     
+    for(String s : save)
+    {
+      String[] c = split(s, ' ');
+      
+      String arg = "";
+      for(int a = 0; a < c[3].length(); a++)
+      {
+        if(c[3].charAt(a) != '$')
+        {
+          arg += c[3].charAt(a);
+        }
+        else
+        {
+          arg += ", ";
+        }
+      }
+      
+      switch(c[0])
+      {
+        case "init":
+        {
+          init.add((c[1] + " " + c[2]));
+          
+          initF.add(c[2] + " = new " + c[1] + arg);
+          
+        }
+        break;
+      }
+    }
+    
+    printArray(init);
+    printArray(initF);
   }
   
   void load()

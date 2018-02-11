@@ -9,10 +9,8 @@ class window
   
   int newX;
   int newY;
-  int timer = 0;
   String systemName;
   String title;
-  String addToTitle = null;
   boolean isOpen = false;
   boolean isLocked = true;
   boolean isActive = true;
@@ -94,14 +92,7 @@ class window
       
       fill(0);
       textSize(13);
-      if(addToTitle == null)
-      {
-        text(title, x + 24, y + 15.5);
-      }
-      else
-      {
-        text(title + " | " + addToTitle, x + 24, y + 15.5);
-      }
+      text(title, x + 24, y + 15.5);
       
       btnClose.setActive(isToolBarActive);
       
@@ -178,12 +169,14 @@ class dialog
 {
   int x;
   int y;
-  layout main;
+  application app;
   boolean isOpen = false;
   
-  dialog(layout l)
+  dialog(application app)
   {
-    this.main = l;
+    this.app = app;
+    this.app.init();
+    this.app.update();
   }
   
   void open(int x, int y)
@@ -193,13 +186,14 @@ class dialog
 
     if(!isOpen)
     {
+      app.init();
       isOpen = true;
     }
   }
   
   void close()
   {
-    if(mouseClicked && (mouseX < x || mouseX > x + main.w || mouseY < y || mouseY > y + main.h))
+    if(isOpen)
     {
       isOpen = false;
     }
@@ -213,19 +207,23 @@ class dialog
       
       //border
       fill(216, 216, 216);
-      rect(x, y, main.w + 12, main.h + 12);
+      rect(x, y, app.w + 12, app.h + 12);
       
       //base
       fill(200, 200, 200);
-      rect(x + 6, y + 6, main.w, main.h);
+      rect(x + 6, y + 6, app.w, app.h);
       
-      if(main != null)
+      if(app != null)
       {
-        main.updateComponent(x + 6, y + 6);
-        this.main.render();
+        app.updateComponent(x, y);
+        app.update();
+        app.render();
       }
       
-      close();
+      if(mouseClicked && (mouseX < x || mouseX > x + app.w + 12 || mouseY < y || mouseY > y + app.h + 12))
+      {
+        close();
+      }
     }
   }
 }

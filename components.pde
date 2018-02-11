@@ -778,7 +778,7 @@ class textArea extends component
   int maxLines;
   String[] text;
   int curLine = 0;
-  double textPointerX = 0;
+  float textPointerX = 0;
   boolean enterText = false;
   collisionBox cb;
   boolean isActive = true;
@@ -880,7 +880,7 @@ class textArea extends component
               
               default:
               {
-                if (checkSymbol((char) key) && (int) (textWidth(text[curLine] + (char) key)) < w)
+                if (checkSymbol((char) key) && textWidth(text[curLine] + (char) key) < w)
                 {
                   text[curLine] += (char) key;
                 }    
@@ -893,7 +893,9 @@ class textArea extends component
       }
     }
       
-    textPointerX = textWidth(text[curLine]);
+    textPointerX = textWidth(text[curLine]); //<>//
+    
+    //println(textPointerX, textWidth(text[curLine]));
     
     fill(border);
     rect(x + tx, y + ty, w, h);
@@ -911,7 +913,7 @@ class textArea extends component
     if(enterText)
     {
       fill(0, 0, 0);
-      rect(x + tx + borderWidth + 5 + (float) textPointerX, y + ty + 2 + 22*curLine, 2, 20);
+      rect((float) (x + tx + borderWidth + 5 + textPointerX), y + ty + 2 + 22*curLine, 2, 20);
     }
     
     //println(textWidth(text[curLine]), textPointerX);

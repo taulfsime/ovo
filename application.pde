@@ -20,14 +20,14 @@ class application
     layout.setActive(isActive);
     
     layout.updateComponent(x, y);
-    layout.render(); //<>//
-  } //<>//
+    layout.render();
+  }
   
   void setLayout(layout newLayout)
   {
     if(newLayout != null)
     {
-      layout = newLayout; //<>//
+      layout = newLayout;
       
       w = layout.w;
       h = layout.h;

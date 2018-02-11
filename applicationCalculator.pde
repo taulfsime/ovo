@@ -92,7 +92,8 @@ class calculator extends application //<>//
     by.bindKey('*');
     divide.bindKey('/');
     equals.bindKey(ENTER);
-
+    ce.bindKey(DELETE);
+    
     layout.addComponent(mc);
     layout.addComponent(mr);
     layout.addComponent(ms);
@@ -320,7 +321,13 @@ class calculator extends application //<>//
     {
     } else if (ce.isClicked)
     {
-    } else if (backspace.isClicked)
+      result = 0.0;
+      fNum = 0.0;
+      sNum = 0;
+      showResult = false;
+      operation = null;
+    } 
+    else if (backspace.isClicked)
     {
     } else if (mc.isClicked)
     {

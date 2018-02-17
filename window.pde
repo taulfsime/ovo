@@ -119,7 +119,7 @@ class window
         app.render();
       }
         
-      if(isToolBarActive && mouseClicked && isOpen && mouseButton == LEFT)
+      if(isToolBarActive && isOpen && mouseButton == LEFT && mouseClicked)
       {
         if(toolBar.isOver())
         {
@@ -130,6 +130,7 @@ class window
           isLocked = true;
         }
       }
+      
       
       if(isToolBarActive && mouseDragged && isOpen)
       {

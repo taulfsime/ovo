@@ -15,14 +15,13 @@ boolean keyClicked = false;
 
   *TODO: check for file exist (langs) /helper/
   *TODO: Add suport for change a background color!! /painter/
-  *TODO: Add a scrollbar in cmdLogger /applicationCMD/
   
 *******************/
 
 void setup()
 {  
-  //fullScreen();
-  size(1000, 700);
+  fullScreen();
+  //size(1000, 700);
   
   background(0);
   system = new system();
@@ -40,8 +39,8 @@ void setup()
   system.registerApplication("carCalculator", new carCalculator());
   system.registerApplication("testTextArea", new testTextArea());
   system.registerApplication("appMaker", new appMaker());
-  system.registerApplication("consoleNewV", new consoleNewV());
-
+  system.registerApplication("snakeGame", new gameSnakeGame());
+  
   system.registerApplication("console", new console());
   
   for(String s : system.getSystemNames())

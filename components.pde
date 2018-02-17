@@ -14,6 +14,7 @@
  - Item List
  - Image
  - CheckBox
+ - Scroll Bar
  - Text 
  ***************************/
 
@@ -990,7 +991,9 @@ class layout extends component
 class slider extends component
 {
   int sx = 0;
+  int sy = 0;
   int newX;
+  int newY;
   PImage img = null;
   collisionBox cb;
   final int sliderWidth = 5;
@@ -998,6 +1001,7 @@ class slider extends component
   color slider = color(80, 80, 80);
   text showText;
   boolean isActive = true;
+  boolean vertical = false;
 
   slider(int xPos, int yPos, int xLength, int yLength)
   {
@@ -1008,6 +1012,26 @@ class slider extends component
   {
     super(xPos, yPos, xLength, yLength);
     this.img = img;
+  }
+  
+  void setType(String t)
+  {
+    if(t.toLowerCase() == "vertical")
+    {
+      vertical = true;
+    }
+  }
+  
+  void setPercentage(float per)
+  {
+    if(vertical)
+    {
+      sy = (int) (per*(this.h - sliderWidth));
+    }
+    else
+    {
+      sx = (int) (per*(this.w - sliderWidth));
+    }
   }
   
   void setActive(boolean active)
@@ -1023,7 +1047,14 @@ class slider extends component
 
   float getPercentage()
   {
-    return (float) (sx / (float) (this.w - sliderWidth));
+    if(vertical)
+    {
+      return (float) (sy / (float) (this.h - sliderWidth));
+    }
+    else
+    {
+      return (float) (sx / (float) (this.w - sliderWidth));
+    }
   }
 
   void setImage(PImage img)
@@ -1038,38 +1069,82 @@ class slider extends component
     
     if(isActive)
     {
-      newX = (mouseX - (x + tx + sliderWidth/2));
-  
-      if (mousePressed && cb.isOver())
+      if(!vertical)
       {
-        if (newX > w - sliderWidth)
+        newX = (mouseX - (x + tx + sliderWidth/2));
+    
+        if (mousePressed && cb.isOver())
         {
-          sx = w - sliderWidth;
-        } 
-        else if (newX < 0)
+          if (newX > w - sliderWidth)
+          {
+            sx = w - sliderWidth;
+          } 
+          else if (newX < 0)
+          {
+            sx = 0;
+          } 
+          else
+          {
+            sx = newX;
+          }
+        }
+      }
+      else
+      {
+        newY = (mouseY - (y + ty + sliderWidth/2));
+        
+        if (mousePressed && cb.isOver())
         {
-          sx = 0;
-        } 
-        else
-        {
-          sx = newX;
+          if (newY > h - sliderWidth - 2)
+          {
+            sy = h - sliderWidth;
+          } 
+          else if (newY < 0)
+          {
+            sy = 0;
+          } 
+          else
+          {
+            sy = newY;
+          }
         }
       }
     }
 
     //border
     fill(border);
-    rect(x + tx, y + ty + 2, w, h - 4);
+    if(!vertical)
+    {
+      rect(x + tx, y + ty + 2, w, h - 4);
+    }
+    else
+    {
+      rect(x + tx + 2, y + ty, w - 4, h);
+    }
 
     //base
     if (img == null)
     {
       fill(normal);
-      rect(x + borderWidth + tx, y + borderWidth + 2 + ty, w - borderWidth*2, h - borderWidth*2 - 4);
+      if(!vertical)
+      {
+        rect(x + borderWidth + tx, y + borderWidth + ty + 2, w - borderWidth*2, h - borderWidth*2 - 4);
+      }
+      else
+      {
+        rect(x + borderWidth + tx + 2, y + borderWidth + ty, w - borderWidth*2 - 4, h - borderWidth*2);
+      }
     }
     else
     {
-      image(img, x + borderWidth + tx, y + borderWidth + 2 + ty, w - borderWidth*2, h - borderWidth*2 - 4);
+      if(!vertical)
+      {
+        image(img, x + borderWidth + tx, y + borderWidth + ty + 2, w - borderWidth*2, h - borderWidth*2 - 4);
+      }
+      else
+      {
+        image(img, x + borderWidth + tx + 2, y + borderWidth + ty, w - borderWidth*2 - 4, h - borderWidth*2);
+      }
     }
     
     //text
@@ -1080,10 +1155,17 @@ class slider extends component
       fill(0, 0, 0);
       text(per, tx + x + w/2 - textWidth(per)/2, ty + y + h*0.62);
     }
-
-    //slider
     fill(slider);
-    rect(x + sx + tx, y + ty, sliderWidth, h);
+    if(!vertical)
+    {
+      //slider
+      rect(x + sx + tx, y + ty, sliderWidth, h);
+    }
+    else
+    {
+      //slider
+      rect(x + tx, y + ty + sy, w, sliderWidth);
+    }
   }
 }
 
@@ -1272,6 +1354,89 @@ class checkBox extends component
         fill(normal);
       }
       rect(x + tx + borderWidth + 7, y + ty + borderWidth + 7, h - borderWidth*2 - 14, h - borderWidth*2 - 14);
+    }
+  }
+}
+
+//Scroll Bar
+class scrollBar extends component
+{
+  boolean isActive = true;
+  int sy = 0;
+  int newY;
+  int sScale = 0;
+  collisionBox cb;
+  color c = normal;
+  scrollBar(int xPos, int yPos, int xLength, int yLength)
+  {
+    super(xPos, yPos, xLength, yLength);
+  }
+  
+  void setActive(boolean active)
+  {
+    isActive = active;
+  }
+  
+  void setColor(color c)
+  {
+    this.c = c;
+  }
+  
+  void setScrollSize(int w)
+  {
+    sScale = w;
+  }
+  
+  float getPer()
+  {
+    return (float) (sy / (float) (h - sScale));
+  }
+  
+  void render()
+  {
+    if(isActive)
+    {
+      cb = new collisionBox(x + tx, y + ty, w, h);
+      newY = mouseY - (y + ty + sScale/2);
+      
+      if(mousePressed && cb.isOver())
+      {
+        if(newY > h - sScale)
+        {
+          sy = h - sScale;
+        }
+        else if(newY < 0)
+        {
+          sy = 0;
+        }
+        else
+        {
+          sy = newY;
+        }
+      }
+      
+      if(sy + sScale > h)
+      {
+        sy = h - sScale;
+      }
+      
+      if(sScale < w)
+      {
+        sScale = w;
+      }
+      
+      fill(c, 230);
+      rect(x + tx, y + ty, w, h);
+      
+      if(cb.isOver())
+      {
+        fill(click, 240);
+      }
+      else
+      {
+        fill(over, 240);
+      }
+      rect(x + tx + 1, y + ty + sy, w - 2, sScale);
     }
   }
 }

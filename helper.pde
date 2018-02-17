@@ -113,17 +113,39 @@ class data
   String dir;
   data(String dir)
   {
+    String[] data = loadStrings("data/tags/" + dir + ".txt");
+    if(data.length <= 0)
+    {
+      createOutput("data/tags/" + dir + ".txt");
+    }
     this.dir = dir;
   }
   
   void writeToFile(String tag, String info)
   {
     String[] data = loadStrings("data/tags/" + dir + ".txt");
-    if(readFromFile(tag) == null)
+    if(readFromFile(tag).length() <= 0)
     {
       String[] newData = new String[data.length + 1];
+      for(int a = 0; a < data.length; a++)
+      {
+        newData[a] = data[a];
+      }
       newData[data.length] = tag + "=" + info;
       saveStrings("data/tags/" + dir + ".txt", newData);
+    }
+    else
+    {
+      for(int a = 0; a < data.length; a++)
+      {
+        if(check(data[a].substring(0, tag.length()), tag))
+        {
+          println(data[a].substring(0, tag.length()));
+          data[a] = tag + "=" + info;
+          break;
+        }
+      }
+      saveStrings("data/tags/" + dir + ".txt", data);
     }
   }
   
@@ -165,7 +187,7 @@ class data
         return result;
       }
     }
-    return null;
+    return "";
   }
   
   boolean check(String t1, String t2)

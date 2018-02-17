@@ -23,6 +23,7 @@ class painter extends application
   button[] colors = new button[20];  
   color drawColor = color(0, 0, 0);
   canvas canvas;
+  showColor sc;
   
   /* CREATE PICTURE */
   layout createPicture;
@@ -71,6 +72,8 @@ class painter extends application
     colors[9] = new button(523, 224, 15, 15, "");
     colors[10] = new button(540, 224, 15, 15, "");
     colors[11] = new button(557, 224, 15, 15, "");
+    
+    sc = new showColor(504, 245, 68, 25, drawColor);
         
     //add Components
     draw.addComponent(toolPencil);
@@ -81,6 +84,7 @@ class painter extends application
     draw.addComponent(sliderBlue);
     draw.addComponent(toolEraser);
     draw.addComponent(toolBucket);
+    draw.addComponent(sc);
     
     for(int a = 0; a < colors.length; a++)
     {
@@ -177,6 +181,7 @@ class painter extends application
   void drawing()
   {
     drawColor = color(sliderRed.getPercentage()*255, sliderGreen.getPercentage()*255, sliderBlue.getPercentage()*255);
+    sc.setColor(drawColor);
     
     if(colors[0].isClicked)
     {
@@ -273,6 +278,42 @@ class painter extends application
     bucketFill(x - 1, y, prevColor, newColor);
     bucketFill(x, y + 1, prevColor, newColor);
     bucketFill(x, y - 1, prevColor, newColor);
+  }
+}
+
+class showColor extends component
+{
+  color c;
+  boolean isActive = true;
+  showColor(int xPos, int yPos, int xLenght, int yLength, color c)
+  {
+    super(xPos, yPos, xLenght, yLength);
+    this.c = c;
+  }
+  
+  void setActive(boolean active)
+  {
+    this.isActive = active;
+  }
+  
+  void setColor(color c)
+  {
+    if(this.c != c)
+    {
+      this.c = c;
+    }
+  }
+  
+  void render()
+  {
+    if(isActive)
+    {
+      fill(border);
+      rect(x + tx, y + ty, w, h);
+      
+      fill(c);
+      rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
+    }
   }
 }
 

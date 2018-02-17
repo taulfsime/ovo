@@ -131,7 +131,7 @@ class appMaker extends application
     
     if(components.size() > 0)
     {
-      for(int a = 0; a < components.size(); a++)
+      for(int a = components.size() - 1; a >= 0 ; a--)
       {
         component comp = components.get(a);
         collisionBox cba = new collisionBox(x + comp.x, y + comp.y, comp.w, comp.h);

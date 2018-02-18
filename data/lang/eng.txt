@@ -4,4 +4,4 @@ window.painter.title = Painter
 window.appMaker.title = Application Maker
 window.console.title = Command Prompt
 window.snakeGame.title = Simple Snake Game
-window.consoleNewV.title = Command Prompt v2
+window.carCalculator.title = Car Calculator

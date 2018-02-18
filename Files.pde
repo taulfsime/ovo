@@ -1,14 +1,17 @@
 class file
 {
-  file() {}
+  String name;
+  file(String name) 
+  {
+    this.name = name;
+  }
 }
 
 class picture extends file
 {
-  String name;
   picture(String name)
   {
-    this.name = name;
+    super(name);
   }
   
   void save(color[] p)

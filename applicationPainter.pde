@@ -1,7 +1,5 @@
 class painter extends application
 {
-  dataReader data = new dataReader();
-  
   picture pic;
   
   //Tools
@@ -45,15 +43,15 @@ class painter extends application
     /* DRAWING */
     draw = new layout(576, 501);
     canvas = new canvas(0, 0, 500, 500);
-    toolPencil = new button(510, 10, 25, 25, data.getImage("textures/painter/tools/pencil.png"));
-    toolEraser = new button(540, 10, 25, 25, data.getImage("textures/painter/tools/eraser.png"));
-    toolBucket = new button(510, 40, 25, 25, data.getImage("textures/painter/tools/bucket.png"));
-    saveFile = new button(510, 70, 25, 25, data.getImage("textures/painter/tools/saveFile.png"));
-    newFile = new button(540, 70, 25, 25, data.getImage("textures/painter/tools/newFile.png"));
+    toolPencil = new button(510, 10, 25, 25, getImage("textures/painter/tools/pencil.png"));
+    toolEraser = new button(540, 10, 25, 25, getImage("textures/painter/tools/eraser.png"));
+    toolBucket = new button(510, 40, 25, 25, getImage("textures/painter/tools/bucket.png"));
+    saveFile = new button(510, 70, 25, 25, getImage("textures/painter/tools/saveFile.png"));
+    newFile = new button(540, 70, 25, 25, getImage("textures/painter/tools/newFile.png"));
     
-    sliderRed = new slider(504, 100, 68, 25, data.getImage("textures/painter/tools/redSlider.png"));
-    sliderGreen = new slider(504, 130, 68, 25, data.getImage("textures/painter/tools/greenSlider.png"));
-    sliderBlue = new slider(504, 160, 68, 25, data.getImage("textures/painter/tools/blueSlider.png"));
+    sliderRed = new slider(504, 100, 68, 25, getImage("textures/painter/tools/redSlider.png"));
+    sliderGreen = new slider(504, 130, 68, 25, getImage("textures/painter/tools/greenSlider.png"));
+    sliderBlue = new slider(504, 160, 68, 25, getImage("textures/painter/tools/blueSlider.png"));
     
     //first line
     colors[0] = new button(506, 190, 15, 15, "");

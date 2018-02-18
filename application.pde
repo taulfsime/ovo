@@ -38,7 +38,6 @@ class application
   {
     this.x = x + 6;
     this.y = y + 21;
-    layout = new layout(w, h);
     layout.x = this.x;
     layout.y = this.y;
   }

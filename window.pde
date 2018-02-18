@@ -29,6 +29,10 @@ class window
     this.w = app.w;
     this.h = app.h;
     
+    icon = getImage("textures/applicationIcon/" + systemName + ".png");
+    lbIcon = new label(x + 2, y + 2, 17, 17, icon);
+    btnClose = new button(x + w - 42, y, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
+    
     x = (width - this.w)/2;
     y = (height - this.h)/2;
     
@@ -50,6 +54,9 @@ class window
   
   void open() 
   {
+    title = dataReader.readData("window", systemName, "title", "data/lang/eng.txt");
+    icon = getImage("textures/applicationIcon/" + systemName + ".png");
+    lbIcon.setImage(icon);
     isOpen = true;
   }
   
@@ -67,13 +74,10 @@ class window
   }
   
   void update()
-  {
+  {    
     toolBar = new collisionBox(x, y + 7, w, 14);
-    
-    icon = dataReader.getImage("textures/applicationIcon/" + systemName + ".png");
-    lbIcon = new label(x + 2, y + 2, 17, 17, icon);
-    title = dataReader.getAppTitle(systemName, lang);
-    btnClose = new button(x + w - 42, y, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
+    btnClose.updateComponent(x + w - 42, y);
+    lbIcon.updateComponent(x + 2, y + 2);
   }
   
   void render()
@@ -119,7 +123,7 @@ class window
         app.render();
       }
         
-      if(isToolBarActive && isOpen && mouseButton == LEFT && mouseClicked)
+      if(isToolBarActive && mouseButton == LEFT && mouseClicked)
       {
         if(toolBar.isOver())
         {
@@ -147,7 +151,7 @@ class window
         }
       }
       
-      if(mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height)
+      if(mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height || mouseReleased)
       {
         isLocked = true;
       }

@@ -1,3 +1,8 @@
+import processing.net.*;
+
+Server mainServer;
+int port;
+
 taskManager taskManager;
 taskBar taskBar;
 desktop desktop;
@@ -15,6 +20,7 @@ boolean keyClicked = false;
 
   *TODO: check for file exist (langs) /helper/
   *TODO: Add suport for change a background color!! /painter/
+  *TODO: Remake save pic /files/
   
 *******************/
 
@@ -22,6 +28,13 @@ void setup()
 {  
   fullScreen();
   //size(1000, 700);
+  
+  for(int a = (int) random(4, 5); a > 0 ; a--)
+  {
+    port = port*10 + (int) random(1, 9);
+  }
+  
+  mainServer = new Server(this, port);
   
   background(0);
   system = new system();
@@ -39,7 +52,7 @@ void setup()
   system.registerApplication("carCalculator", new carCalculator());
   system.registerApplication("testTextArea", new testTextArea());
   system.registerApplication("appMaker", new appMaker());
-  system.registerApplication("snakeGame", new gameSnakeGame());
+  system.registerApplication("snakeGame", new snakeGame());
   
   system.registerApplication("console", new console());
   
@@ -119,6 +132,20 @@ boolean checkStrings(String s1, String s2)
     }
   }
   return true;
+}
+
+PImage getImage(String dir)
+{
+  PImage img = null;
+  
+  img = loadImage(dir);
+  
+  if(img != null) 
+  {
+    return img;
+  }
+  
+  return loadImage("textures/unknown.png");
 }
 
 String replaceChar(String text, char prevCh, char newCh)

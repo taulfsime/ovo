@@ -10,11 +10,10 @@ class console extends application
     {"open", "open <systemName>"}, 
     {"close", "close <systemName>"}, 
     {"list", "list"}, 
-    {"help", "help [command:page]"}, 
+    {"help", "help [command]"}, 
     {"clear", "clear"}, 
-    {"file", "file [crete:delete] <type> <fileName>"}, 
-    {"test", ""}, 
-    {"tag", ""}
+    {"file", "file [crete:delete:rename:copy:find] <fileName> <type>"},
+    {"exit", "exit"}
   };
 
   String readCommand = "";
@@ -31,11 +30,13 @@ class console extends application
     main.addComponent(enterCommand);
     main.addComponent(enter);
     main.addComponent(logger);
+    
+    setLayout(main);
   }
 
   void update()
   {
-    setLayout(main);
+    
 
     if (enter.isClicked)
     {
@@ -48,54 +49,49 @@ class console extends application
     String cmd = getCommand(readCommand);
     switch(cmd)
     {
-    case "open":
+      case "open":
       {
         commandOpen(readCommand.substring(cmd.length()));
       }
       break;
 
-    case "close":
+      case "close":
       {
+        commandClose(readCommand.substring(cmd.length()));
       }
       break;
 
-    case "test":
-      {
-        commandTest(readCommand.substring(cmd.length()));
-      }
-      break;
-
-    case "list":
+      case "list":
       {
         commandList();
       }
       break;
 
-    case "help":
+      case "help":
       {
-        commandHelp("");
+        commandHelp(readCommand.substring(cmd.length()));
       }
       break;
 
-    case "file":
+      case "file":
       {
         commandFile(readCommand.substring(cmd.length()));
       }
       break;
 
-    case "clear":
+      case "clear":
       {
         commandClear();
       }
       break;
       
-    case "tag":
+      case "exit":
       {
-        commandTestTegs(readCommand.substring(cmd.length()));
+        exit();
       }
       break;
 
-    default:
+      default:
       {
         if (pressEnter)
         {
@@ -131,7 +127,8 @@ class console extends application
             {
               return COMMANDS[a][0];
             }
-          } else
+          } 
+          else
           {
             break;
           }
@@ -142,84 +139,62 @@ class console extends application
   }
 
   /* COMMANDS */
-  void commandTestTegs(String text)
-  {
-    data tData = new data("CMDTestTags");
-    String tag = null, arg = null, data = null;
-    if (text.length() > 0)
-    {
-      String[] t = split(text, ' ');
-      for (String s : t)
-      {
-        if (s.length() > 0)
-        {
-          if (arg == null)
-          {
-            arg = s;
-          } 
-          else if (tag == null)
-          {
-            tag = s;
-          } 
-          else if (data == null)
-          {
-            data = s;
-          }
-        }
-      }
-
-      switch(arg)
-      {
-      case "read":
-        {
-          logger.add("> Data: " + tData.readFromFile(tag), color(200, 10, 200));
-        }
-        break;
-
-      case "write":
-        {
-          logger.add("Added tag " + tag + " with " + data, color(255, 0, 0));
-          tData.writeToFile(tag, data);
-        }
-        break;
-
-      default:
-        {
-        }
-        break;
-      }
-    }
-  }
-
-  void commandTest(String text)
-  {
-    int n = 0;
-
-    if (text.length() > 0)
-    {
-      String[] t = split(text, ' ');
-      for (String e : t)
-      {
-        if (e.length() > 0)
-        {
-          n = Integer.parseInt(e);
-          break;
-        }
-      }
-    } else
-    {
-      n = 200;
-    }
-
-    for (int a = 0; a < n; a++)
-    {
-      logger.add(a + "");
-    }
-  }
-
   void commandFile(String text)
   {
-    println(text);
+    //file [crete:delete:rename:copy:find] <fileName> [type:newFileName]"
+    String c = null, fName = null, type = null;
+    String[] t = split(text, ' ');
+    for(String s : t)
+    {
+      if(s.length() > 0)
+      {
+        if(c == null)
+        {
+          c = s;
+        }
+        else if(fName == null)
+        {
+          fName = s;
+        }
+        else if(type == null)
+        {
+          type = s;
+        }
+      }
+    }
+    
+    switch(c)
+    {
+      case "delete":
+      {
+        
+      }
+      break;
+      
+      case "rename":
+      {
+        
+      }
+      break;
+      
+      case "copy":
+      {
+        
+      }
+      break;
+      
+      case "find":
+      {
+        
+      }
+      break;
+      
+      case "create":
+      {
+        
+      }
+      break;
+    }
   }
 
   void commandClear()
@@ -260,7 +235,8 @@ class console extends application
             add = false;
           }
         }
-      } else
+      }
+      else
       {
         if (!show)
         {
@@ -278,33 +254,43 @@ class console extends application
 
   void commandHelp(String text)
   {
-    if (text != "")
+    String[] t = split(text, ' ');
+    String systemName = "";
+    for(String s : t)
     {
-      int n = Integer.parseInt(text);
-      if (n > 0 && n < COMMANDS.length / 5)
+      if(s.length() > 0)
       {
-        for (int a = n * 5; a < (n + 1) * 5; a++)
-        {
-          logger.add(COMMANDS[a][1], color(200, 255, 255));
-        }
-      } else
-      {
-        logger.add("Unknown page!", color(150, 0, 0));
+        systemName = s;
+        break;
       }
-    } else
+    }
+    
+    
+    if (systemName != "")
+    {
+      for(int a = 0; a < COMMANDS.length; a++)
+      {
+        if(checkStrings(COMMANDS[a][0], systemName))
+        {
+          logger.add("> " + COMMANDS[a][1], color(200, 255, 255));
+          return;
+        }
+      }
+    } 
+    else
     {
       for (int a = 0; a < COMMANDS.length; a++)
       {
-        logger.add(COMMANDS[a][1], color(200, 0, 0));
+        logger.add("> " + COMMANDS[a][1], color(200, 255, 255));
       }
     }
   }
 
   void commandList()
   {
-    for (int a = 0; a < system.getSystemNames().length; a++)
+    for (String s : system.getSystemNames())
     {
-      logger.add(a + ": " + system.getSystemNames()[a], color(200, 255, 255));
+      logger.add("> '" + s + "' is " + system.getWindow(s).title, color(200, 255, 255));
     }
   }
 
@@ -333,7 +319,8 @@ class console extends application
           w.open();
           logger.add("> '" + w.systemName + "' window was opened!", color(200, 255, 255));
           show = true;
-        } else
+        }
+        else
         {
           logger.add("> '" + w.systemName + "' window is already opened!", color(200, 0, 0));
           show = true;
@@ -362,7 +349,7 @@ class console extends application
 
     if (systemName != "")
     {
-
+      
       boolean show = false;
       for (int a = 0; a < system.getSystemNames().length; a++)
       {
@@ -374,7 +361,8 @@ class console extends application
             w.close();
             logger.add(">'" + w.systemName + "' window was closed!", color(230, 255, 255));
             show = true;
-          } else
+          } 
+          else
           {
             logger.add(">'" + w.systemName + "' window is already closed!", color(150, 0, 0));
             show = true;
@@ -386,7 +374,8 @@ class console extends application
       {
         logger.add(">'" + systemName + "' window does not exist!", color(150, 0, 0));
       }
-    } else
+    } 
+    else
     {
       if (system.getWindow("console").isOpen)
       {

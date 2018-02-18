@@ -599,11 +599,20 @@ class textField extends component
   String example = null;
   boolean isActive = true;
   boolean isWorking = true;
+  int maxSymbols = 0;
     
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
   {
     super(xPos, yPos, xLength, yLength);
     this.dText = displayText;
+  }
+  
+  void setMaxSymbols(int n)
+  {
+    if(n >= 0)
+    {
+      maxSymbols = n;
+    }
   }
   
   void setActive(boolean active) 
@@ -678,7 +687,14 @@ class textField extends component
           {
             if (checkSymbol((char) key) && (int) (textWidth(text + (char) key)) < w)
             {
-              text += (char) key;
+              if(maxSymbols == 0)
+              {
+                text += (char) key;
+              }
+              else if(text.length() < maxSymbols)
+              {
+                text += (char) key;
+              }
             }
             
             if(text.length() > 0)

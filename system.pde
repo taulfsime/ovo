@@ -1,9 +1,16 @@
 class system
 {
+  window subwindow;
   ArrayList<window> windows = new ArrayList<window>();
   ArrayList<String> renderWindows = new ArrayList<String>();
   
-  system() {}
+  system(){}
+  
+  void openSubwindow(window w)
+  {
+    subwindow = w;
+    subwindow.open();
+  }
   
   void registerApplication(String systemName, application app)
   {
@@ -126,19 +133,32 @@ class system
     for(int a = 0; a < renderWindows.size(); a++)
     {
       String w = renderWindows.get(a);
-      if(a == renderWindows.size() - 1)
+      if(a == renderWindows.size() - 1 && subwindow == null)
       {
         getWindow(w).setActive(true);
-        //getWindow(w).setToolBarActive(true);
+        getWindow(w).setToolBarActive(true);
       }
       else
       {
         getWindow(w).setActive(false);
-        //getWindow(w).setToolBarActive(false);
+        getWindow(w).setToolBarActive(false);
       }
       
       getWindow(w).render();
       getWindow(w).move();
+    }
+    
+    if(subwindow != null)
+    {
+      if(subwindow.isOpen)
+      {
+        subwindow.render();
+        subwindow.move();
+      }
+      else
+      {
+        subwindow = null;
+      }
     }
   }
 }

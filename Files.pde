@@ -7,6 +7,29 @@ class file
   }
 }
 
+class dtext extends file
+{
+  dtext(String name)
+  {
+    super(name);
+  }
+  
+  void save(String[] s)
+  {
+    saveStrings("data/files/dtext/" + name + ".txt", s);
+  }
+  
+  String[] load()
+  {
+    String d = "data/files/dtext/" + name + ".txt";
+    if(isFileExist(d))
+    {
+      return loadStrings(d);
+    }
+    return null;
+  }
+}
+
 class picture extends file
 {
   picture(String name)
@@ -16,30 +39,86 @@ class picture extends file
   
   void save(color[] p)
   {
-    String[] saves = new String[p.length];
-    for(int line = 0; line < p.length; line++)
+    ArrayList<String> save = new ArrayList<String>();
+    
+    int s = 1;
+    for(int a = 0; a < p.length - 1; a++)
     {
-      saves[line] = (int) red(p[line]) + "-" + (int) green(p[line]) + "-" + (int) blue(p[line]);
+      if(p[a] == p[a + 1])
+      {
+        if(a == p.length - 2)
+        {
+          save.add(p[a] + (s == 1 ? "" : "^" + s));
+          break;
+        }
+        s++;
+      }
+      else
+      {
+        save.add(p[a] + (s == 1 ? "" : "^" + s));
+        s = 1;
+      }
     }
     
-    saveStrings("data/files/pictures/" + name + ".txt", saves);
+    save.add(p[p.length - 1] + "");
+    
+    String[] sv = new String[save.size()];
+    
+    for(int a = 0; a < save.size(); a++)
+    {
+      sv[a] = save.get(a);
+    }
+    
+    saveStrings("data/files/pictures/" + name + ".pic", sv);
   }
   
-  color[] read()
+  color[] load()
   {
-    color[] p = new color[10000];
-    String[] loadFile = loadStrings("data/files/pictures/" + name + ".txt");
-    for(int line = 0; line < loadFile.length; line++)
+    if(isFileExist("data/files/pictures/" + name + ".pic"))
     {
-      String[] ch = split(loadFile[line], '-');
+      ArrayList<Integer> p = new ArrayList<Integer>();
+      String[] loadFile = loadStrings("data/files/pictures/" + name + ".pic");
+      for(String s : loadFile)
+      {
+        boolean hasCh = false;
+        for(int a = 0; a < s.length(); a++)
+        {
+          if(s.charAt(a) == '^')
+          {
+            hasCh = true;
+            break;
+          }
+        }
+        
+        if(hasCh)
+        {
+          String[] t = split(s, '^');
+          for(int a = 0; a < Integer.parseInt(t[1]); a++)
+          {
+            p.add(Integer.parseInt(t[0]));
+          }
+        }
+        else
+        {
+          p.add(Integer.parseInt(s));
+        }
+      }
       
-      int c1 = Integer.parseInt(ch[0]);
-      int c2 = Integer.parseInt(ch[1]);
-      int c3 = Integer.parseInt(ch[2]);
-      
-      p[line] = color(c1, c2, c3);
+      color[] c = new color[p.size()];
+      for(int a = 0; a < p.size(); a++)
+      {
+        c[a] = p.get(a);
+      }
+      return c;
     }
     
-    return p;
+    return null;
+  }
+  
+  color[] customLoad(String file)
+  {
+    PImage img = loadImage("data/files/pictures/" + file);
+    
+    return img.pixels;
   }
 }

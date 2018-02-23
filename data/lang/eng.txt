@@ -5,3 +5,6 @@ window.appMaker.title = Application Maker
 window.console.title = Command Prompt
 window.snakeGame.title = Simple Snake Game
 window.carCalculator.title = Car Calculator
+window.textEditor.title = Text Editor
+window.windowMessage.title = Message
+window.fileBrowser.title = File Browser

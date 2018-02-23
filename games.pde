@@ -1,6 +1,5 @@
 class snakeGame extends application
 {
-  String stage = "menu";
   data data;
     
   color headColor = color(0, 175, 0);
@@ -12,7 +11,6 @@ class snakeGame extends application
   layout menu;
   button start;
   button settings;
-  button server;
   
   layout setting;
   button back;
@@ -27,20 +25,9 @@ class snakeGame extends application
   showColor sc1;
   button save;
   
-  layout setUpServer;
-  label showIp;
-  button startServer;
-  button stopServer;
-  textField enterIp;
-  button connect;
-  button disconnect;
-  label info;
-  label info1;
-  
   void init()
   {
     data = new data("snakeGame");
-    stage = "menu";
     
     //////////////GAME/////////////////
     main = new layout(800, 600);
@@ -52,11 +39,9 @@ class snakeGame extends application
     menu = new layout(400, 300);
     start = new button(100, 70, 200, 30, "Start");
     settings = new button(100, 105, 200, 30, "Settings");
-    server = new button(100, 140, 200, 30, "Server");
     
     menu.addComponent(start);
     menu.addComponent(settings);
-    menu.addComponent(server);
     
     //////////////SETTINGS/////////////////
     setting = new layout(400, 300);
@@ -86,73 +71,18 @@ class snakeGame extends application
     setting.addComponent(sc1);
     setting.addComponent(save);
     
-    /////////////////SERVER////////////////////
-    setUpServer = new layout(400, 300);
-    info = new label              (10, 40, 190, 30, "Your IP:");
-    info1 = new label             (205, 40, 190, 30, "Connect to Server");
-    showIp = new label            (10, 75, 190, 30, "");
-    startServer = new button      (10, 145, 92, 30, "Start server");
-    stopServer = new button       (107, 145, 93, 30, "Stop server");
-    enterIp = new textField       (205, 75, 190, 30, "IP:");
-    connect = new button          (205, 145, 92, 30, "Connect");
-    disconnect = new button       (302, 145, 92, 30, "Disconnect");
-    
-    setUpServer.addComponent(back);
-    setUpServer.addComponent(showIp);
-    setUpServer.addComponent(startServer);
-    setUpServer.addComponent(stopServer);
-    setUpServer.addComponent(connect);
-    setUpServer.addComponent(enterIp);
-    setUpServer.addComponent(disconnect);
-    setUpServer.addComponent(info);
-    setUpServer.addComponent(info1);
+    setLayout(menu);
   }
   
   void update()
   {
-    switch(stage)
+    if(getLayout() == menu)
     {
-      case "menu":
-        setLayout(menu);
-        menu();
-      break;
-      
-      case "game":
-        setLayout(main);
-      break;
-      
-      case "setting":
-        setLayout(setting);
-        setting();
-      break;
-      
-      case "setUpServer":
-        setLayout(setUpServer);
-        setUpServer();
-      break;
+      menu();
     }
-  }
-  
-  void setUpServer()
-  {
-    stopServer.setWorking(mainServer.active());
-    startServer.setWorking(!mainServer.active());
-    showIp.setText(mainServer.ip() + ":" + port);
-    
-    if(back.isClicked)
+    else if(getLayout() == setting)
     {
-      stage = "menu";
-    }
-    else if(stopServer.isClicked)
-    {
-      if(mainServer.active())
-      {
-        mainServer.stop();
-      }
-    }
-    else if(startServer.isClicked)
-    {
-      mainServer.run();
+      setting();
     }
   }
   
@@ -162,59 +92,55 @@ class snakeGame extends application
     {
       s.setHeadColor(headColor);
       s.setTailColor(tailColor);
-      stage = "game";
+      setLayout(main);
     }
     else if(settings.isClicked)
     {
-      stage = "setting";
+      setLayout(setting);
       
       String load;
       
-      load = data.readFromFile("getRed_head");
+      load = data.getTag("getRed_head");
       if(load.length() > 0)
       {
         getRed.setPercentage(Float.parseFloat(load));
       }
       
-      load = data.readFromFile("getGreen_head");
+      load = data.getTag("getGreen_head");
       if(load.length() > 0)
       {
         getGreen.setPercentage(Float.parseFloat(load));
       }
       
-      load = data.readFromFile("getBlue_head");
+      load = data.getTag("getBlue_head");
       if(load.length() > 0)
       {
         getBlue.setPercentage(Float.parseFloat(load));
       }
       
-      load = data.readFromFile("getRed_tail");
+      load = data.getTag("getRed_tail");
       if(load.length() > 0)
       {
         getRed1.setPercentage(Float.parseFloat(load));
       }
       
-      load = data.readFromFile("getGreen_tail");
+      load = data.getTag("getGreen_tail");
       if(load.length() > 0)
       {
         getGreen1.setPercentage(Float.parseFloat(load));
       }
       
-      load = data.readFromFile("getBlue_tail");
+      load = data.getTag("getBlue_tail");
       if(load.length() > 0)
       {
         getBlue1.setPercentage(Float.parseFloat(load));
       }
       
-      load = data.readFromFile("name");
+      load = data.getTag("name");
       if(load.length() > 0)
       {
         enterName.setText(load);
       }
-    }
-    else if(server.isClicked)
-    {
-      stage = "setUpServer";
     }
   }
   
@@ -222,19 +148,19 @@ class snakeGame extends application
   {
     if(back.isClicked)
     {
-      stage = "menu";
+      setLayout(menu);
     }
     else if(save.isClicked)
     {
-      data.writeToFile("name", enterName.getText());
-      data.writeToFile("getRed_head", String.valueOf(getRed.getPercentage()));
-      data.writeToFile("getGreen_head", String.valueOf(getGreen.getPercentage()));
-      data.writeToFile("getBlue_head", String.valueOf(getBlue.getPercentage()));
-      data.writeToFile("name", enterName.getText());
+      data.toTag("name", enterName.getText());
+      data.toTag("getRed_head", String.valueOf(getRed.getPercentage()));
+      data.toTag("getGreen_head", String.valueOf(getGreen.getPercentage()));
+      data.toTag("getBlue_head", String.valueOf(getBlue.getPercentage()));
+      data.toTag("name", enterName.getText());
       
-      data.writeToFile("getRed_tail", String.valueOf(getRed1.getPercentage()));
-      data.writeToFile("getGreen_tail", String.valueOf(getGreen1.getPercentage()));
-      data.writeToFile("getBlue_tail", String.valueOf(getBlue1.getPercentage()));
+      data.toTag("getRed_tail", String.valueOf(getRed1.getPercentage()));
+      data.toTag("getGreen_tail", String.valueOf(getGreen1.getPercentage()));
+      data.toTag("getBlue_tail", String.valueOf(getBlue1.getPercentage()));
       
       headColor = color(getRed.getPercentage()*255, getGreen.getPercentage()*255, getBlue.getPercentage()*255);
       tailColor = color(getRed1.getPercentage()*255, getGreen1.getPercentage()*255, getBlue1.getPercentage()*255);
@@ -246,7 +172,6 @@ class snakeGame extends application
 
 class compSnakeGame extends component
 {
-  boolean isActive = true;
   ArrayList<snakePlayer> players = new ArrayList<snakePlayer>();
   ArrayList<Integer> foodX = new ArrayList<Integer>();
   ArrayList<Integer> foodY = new ArrayList<Integer>();
@@ -257,11 +182,6 @@ class compSnakeGame extends component
   {
     super(xPos, yPos, xLength, yLenght);
     players.add(new snakePlayer("test", w/2, h/2, "up", 5));
-  }
-  
-  void setActive(boolean active)
-  {
-    this.isActive = active;
   }
   
   void setHeadColor(color c)

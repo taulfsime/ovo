@@ -49,6 +49,7 @@ class taskManager
 {
   int displayNameTime = 30; //Timer
   int w;
+  data data = new data("taskManagerApps");
 
   ArrayList<String> systemNames = new ArrayList<String>();
 
@@ -67,10 +68,47 @@ class taskManager
     
     return st;
   }
+  
+  void save()
+  {
+    data.clear();
+    int n = 0;
+    for(String s : systemNames)
+    {
+      data.toTag("appSlot" + n, s);
+      n++;
+    }
+  }
+  
+  void read()
+  {
+    for(String s : data.getTags())
+    {
+      for(String t : system.getSystemNames())
+      {
+        if(checkStrings(data.getTag(s), t) && !checkStrings(t, "console"))
+        {
+          registerApplication(t);
+          break;
+        } 
+      }
+    }
+  }
 
   void registerApplication(String systemName)
   {
-    this.systemNames.add(systemName);
+    for(String s : system.getSystemNames())
+    {
+      if(checkStrings(s, systemName))
+      {
+        this.systemNames.add(s);
+      }
+    }
+  }
+  
+  void unregisterApplication(String systemName)
+  {
+    systemNames.remove(systemName);
   }
 
   void render()
@@ -80,7 +118,6 @@ class taskManager
     rect(0, height - 42, width - w, 42);
     button[] buttons = new button[systemNames.size()];
     label[] showNames = new label[systemNames.size()];
-    //label showName;
 
     for (int a = 0; a < systemNames.size(); a++)
     {

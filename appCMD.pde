@@ -5,6 +5,11 @@ class console extends application
   button enter;
   cmdLogger logger;
   boolean pressEnter = false;
+  
+  color errorColor = color(245, 0, 0);
+  color outputColor = color(200, 255, 255);
+  color messageColor = color(200, 0, 0);
+  
   String[][] COMMANDS = 
     {
     {"open", "open <systemName>"}, 
@@ -13,7 +18,9 @@ class console extends application
     {"help", "help [command]"}, 
     {"clear", "clear"}, 
     {"file", "file [crete:delete:rename:copy:find] <fileName> <type>"},
-    {"exit", "exit"}
+    {"exit", "exit"},
+    {"pin", "pin [add:remove:list] [systemName]"},
+    {"tag", "tag <command> [tag] [data]"}
   };
 
   String readCommand = "";
@@ -30,14 +37,12 @@ class console extends application
     main.addComponent(enterCommand);
     main.addComponent(enter);
     main.addComponent(logger);
-    
+        
     setLayout(main);
   }
 
   void update()
   {
-    
-
     if (enter.isClicked)
     {
       readCommand = enterCommand.getText();
@@ -78,6 +83,18 @@ class console extends application
         commandFile(readCommand.substring(cmd.length()));
       }
       break;
+      
+      case "pin":
+      {
+        commandPin(readCommand.substring(cmd.length()));
+      }
+      break;
+      
+      case "tag":
+      {
+        commandTag(readCommand.substring(cmd.length()));
+      }
+      break;
 
       case "clear":
       {
@@ -97,7 +114,7 @@ class console extends application
         {
           if (readCommand != "")
           {
-            logger.add("> Unknown command!", color(245, 0, 0));
+            logger.add(">> Unknown command!", errorColor);
           }
           pressEnter = false;
         }
@@ -139,12 +156,167 @@ class console extends application
   }
 
   /* COMMANDS */
+  void commandTag(String text)
+  {
+    data d = new data("CMDTestTags");
+    String command = null;
+    String tag = null;
+    String data = null;
+    
+    for(String s : split(text, ' '))
+    {
+      if(s.length() > 0)
+      {
+        if(command == null)
+        {
+          command = s;
+        }
+        else if(tag == null)
+        {
+          tag = s;
+        }
+        else if(data == null)
+        {
+          data = s;
+        }
+      }
+    }
+    
+    switch(command)
+    {
+      case "write":
+      {
+        logger.add("write " + tag + ", " + data);
+        d.toTag(tag, data);
+      }
+      break;
+      
+      case "read":
+      {
+        logger.add(d.getTag(tag));
+      }
+      break;
+      
+      case "remove":
+      {
+        logger.add("remove " + tag);
+        
+        d.removeTag(tag);
+      }
+      break;
+      
+      case "getTags":
+      {
+        for(String s : d.getTags())
+        {
+          logger.add(s);
+        }
+      }
+      break;
+      
+      case "clear":
+      {
+        logger.add("clear");
+        d.clear();
+      }
+      break;
+    }
+  }
+  
+  void commandPin(String text)
+  {
+    String systemName = null;
+    String command = null;
+    for(String s : split(text, ' '))
+    {
+      if(s.length() > 0)
+      {
+        if(command == null)
+        {
+          command = s;
+        }
+        else if(systemName == null)
+        {
+          systemName = s;
+        }
+      }
+    }
+    
+    if(command != null)
+    {
+      switch(command)
+      {
+        case "add":
+        {
+          if(systemName != null)
+          {
+            for(String s : system.getSystemNames())
+            {
+              if(checkStrings(s, systemName))
+              {
+                for(String t : taskManager.getSystemNames())
+                {
+                  if(checkStrings(t, s))
+                  {
+                    logger.add(">> '" + s + "' window is already added!", messageColor);
+                    return;
+                  }
+                }
+                logger.add(">> '" + s + "' window has been added to Task Manager!", outputColor);
+                taskManager.registerApplication(s);
+                taskManager.save();
+                return;
+              }
+            }
+            logger.add(">> '" + systemName + "' window does not exist!", errorColor);
+          }
+        }
+        break;
+        
+        case "remove":
+        {
+          if(systemName != null)
+          {
+            for(String s : taskManager.getSystemNames())
+            {
+              if(checkStrings(s, systemName))
+              {
+                logger.add(">> '" + s + "' window has been removed from Task Manager!", outputColor);
+                taskManager.unregisterApplication(systemName);
+                taskManager.save();
+                return;
+              }
+            }
+            logger.add(">> '" + systemName + "' window is already removed or does not exist!", errorColor);
+          }
+        }
+        break;
+        
+        case "list":
+        {
+          int n = 1;
+          for(String s : taskManager.getSystemNames())
+          {
+            logger.add(">> '" + s + "' window is at " + n +  " position at task manager!", outputColor);
+            n++;
+          }
+        }
+        break;
+        
+        default:
+        {
+          logger.add(">> Unknown command!", errorColor);
+        }
+        break;
+      }
+    }
+  }
+  
   void commandFile(String text)
   {
     //file [crete:delete:rename:copy:find] <fileName> [type:newFileName]"
     String c = null, fName = null, type = null;
-    String[] t = split(text, ' ');
-    for(String s : t)
+    for(String s : split(text, ' '))
     {
       if(s.length() > 0)
       {
@@ -163,93 +335,46 @@ class console extends application
       }
     }
     
-    switch(c)
+    if(c != null)
     {
-      case "delete":
+      switch(c)
       {
+        case "delete":
+        {
+          
+        }
+        break;
         
-      }
-      break;
-      
-      case "rename":
-      {
+        case "rename":
+        {
+          
+        }
+        break;
         
-      }
-      break;
-      
-      case "copy":
-      {
+        case "copy":
+        {
+          
+        }
+        break;
         
-      }
-      break;
-      
-      case "find":
-      {
+        case "find":
+        {
+          
+        }
+        break;
         
+        case "create":
+        {
+          
+        }
+        break;
       }
-      break;
-      
-      case "create":
-      {
-        
-      }
-      break;
     }
   }
 
   void commandClear()
   {
     logger.clear();
-  }
-
-  void commandPin(String text)
-  {
-    boolean show = false;
-    boolean show1 = false;
-    boolean add = true;
-    String systemName = "";
-
-    String[] test = split(text, ' ');
-    for (int a = 0; a < test.length; a++)
-    {
-      if (test[a].length() > 0)
-      {
-        systemName = test[a];
-        break;
-      }
-    }
-
-    int l = system.getSystemNames().length;
-    for (int a = 0; a < l; a++)
-    {
-      if (checkStrings(systemName, system.getSystemNames()[a]))
-      {
-        int l1 = taskManager.getSystemNames().length;
-        for (int b = 0; b < l1; b++)
-        {
-          if (checkStrings(systemName, taskManager.getSystemNames()[b]) && !show1)
-          {
-            logger.add(">'" + systemName + "' window is already added is taskManager!", color(150, 0, 0));
-            b = l1 + 10;
-            a = l + 10;
-            add = false;
-          }
-        }
-      }
-      else
-      {
-        if (!show)
-        {
-          logger.add(">'" + systemName + "' window does not exist!", color(150, 0, 0));
-          show = true;
-        }
-      }
-    }
-
-    if (add)
-    {
-      taskManager.registerApplication(systemName);
-    }
   }
 
   void commandHelp(String text)
@@ -272,7 +397,7 @@ class console extends application
       {
         if(checkStrings(COMMANDS[a][0], systemName))
         {
-          logger.add("> " + COMMANDS[a][1], color(200, 255, 255));
+          logger.add("> " + COMMANDS[a][1], outputColor);
           return;
         }
       }
@@ -281,7 +406,7 @@ class console extends application
     {
       for (int a = 0; a < COMMANDS.length; a++)
       {
-        logger.add("> " + COMMANDS[a][1], color(200, 255, 255));
+        logger.add(">> " + COMMANDS[a][1], outputColor);
       }
     }
   }
@@ -290,7 +415,7 @@ class console extends application
   {
     for (String s : system.getSystemNames())
     {
-      logger.add("> '" + s + "' is " + system.getWindow(s).title, color(200, 255, 255));
+      logger.add(">> '" + s + "' is " + system.getWindow(s).title, outputColor);
     }
   }
 
@@ -317,19 +442,19 @@ class console extends application
         if (!w.isOpen)
         {
           w.open();
-          logger.add("> '" + w.systemName + "' window was opened!", color(200, 255, 255));
+          logger.add(">> '" + w.systemName + "' window was opened!", outputColor);
           show = true;
         }
         else
         {
-          logger.add("> '" + w.systemName + "' window is already opened!", color(200, 0, 0));
+          logger.add(">> '" + w.systemName + "' window is already opened!", messageColor);
           show = true;
         }
       }
     }
     if (!show)
     {
-      logger.add("> '" + systemName + "' window does not exist!", color(150, 0, 0));
+      logger.add(">> '" + systemName + "' window does not exist!", errorColor);
     }
   }
 
@@ -359,12 +484,12 @@ class console extends application
           if (w.isOpen)
           {
             w.close();
-            logger.add(">'" + w.systemName + "' window was closed!", color(230, 255, 255));
+            logger.add(">>'" + w.systemName + "' window was closed!", outputColor);
             show = true;
           } 
           else
           {
-            logger.add(">'" + w.systemName + "' window is already closed!", color(150, 0, 0));
+            logger.add(">>'" + w.systemName + "' window is already closed!", messageColor);
             show = true;
           }
           return;
@@ -372,14 +497,14 @@ class console extends application
       }
       if (!show)
       {
-        logger.add(">'" + systemName + "' window does not exist!", color(150, 0, 0));
+        logger.add(">>'" + systemName + "' window does not exist!", errorColor);
       }
     } 
     else
     {
       if (system.getWindow("console").isOpen)
       {
-        system.getWindow("console").close();
+        system.close("console");
       }
     }
   }

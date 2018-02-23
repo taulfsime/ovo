@@ -1,11 +1,12 @@
 class application
 {
-  layout layout;
+  layout layout = new layout(500, 500);;
   public int x;
   public int y;
   public int w;
   public int h;
   public boolean isActive = true;
+  public String title;
   
   void init() {}
   void update() {}
@@ -13,6 +14,21 @@ class application
   void setActive(boolean active)
   {
     isActive = active;
+  }
+  
+  layout getLayout()
+  {
+    return layout;
+  }
+  
+  void addToTitle(String s)
+  {
+    title = s;
+  }
+  
+  void addComponent(component c)
+  {
+    layout.addComponent(c);
   }
   
   void render()
@@ -36,8 +52,8 @@ class application
   
   void updateComponent(int x, int y)
   {
-    this.x = x + 6;
-    this.y = y + 21;
+    this.x = x;
+    this.y = y;
     layout.x = this.x;
     layout.y = this.y;
   }

@@ -22,16 +22,32 @@ class window
   
   window(String systemName, application app)
   {
-    this.app = app;
-    this.app.setActive(isActive);
-    this.app.init();
-    this.app.update();
-    this.w = app.w;
-    this.h = app.h;
+    if(app != null)
+    {
+      this.app = app;
+      this.app.setActive(isActive);
+      this.app.init();
+      this.app.update();
+      this.w = app.w;
+      this.h = app.h;
+    }
+    else
+    {
+      this.w = 500;
+      this.h = 500;
+    }
     
     icon = getImage("textures/applicationIcon/" + systemName + ".png");
     lbIcon = new label(x + 2, y + 2, 17, 17, icon);
     btnClose = new button(x + w - 42, y, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
+    if(app != null)
+    {
+      title = dataReader.readData("window", systemName, "title", "data/lang/" + lang) + (app.title != null ? (" | " + app.title) : "");
+    }
+    else
+    {
+      title = dataReader.readData("window", systemName, "title", "data/lang/" + lang);
+    }
     
     x = (width - this.w)/2;
     y = (height - this.h)/2;
@@ -54,7 +70,10 @@ class window
   
   void open() 
   {
-    title = dataReader.readData("window", systemName, "title", "data/lang/eng.txt");
+    if(app != null)
+    {
+      title = dataReader.readData("window", systemName, "title", "data/lang/" + lang) + (app.title != null ? (" | " + app.title) : "");
+    }
     icon = getImage("textures/applicationIcon/" + systemName + ".png");
     lbIcon.setImage(icon);
     isOpen = true;
@@ -68,6 +87,7 @@ class window
     if(app != null)
     {
       this.app.init();
+      this.app.update();
     }
     
     isOpen = false;
@@ -105,7 +125,7 @@ class window
       
       if(app != null)
       {
-        app.updateComponent(x, y);
+        app.updateComponent(x + 6, y + 21);
         if(app.w + 12 > width - this.x)
         {
           this.x = (width - this.w)/2;
@@ -170,6 +190,27 @@ class window
   }
 }
 
+class windowMessage extends window
+{
+  windowMessage(String text)
+  {
+    super("windowMessage", new application() 
+    {
+      layout main;
+      label mess;
+      void init()
+      {
+        main = new layout(250, 100);
+        mess = new label(20, 10, 210, 80, "It`s a message!");
+        
+        main.addComponent(mess);
+        
+        setLayout(main);
+      }
+    });
+  }
+}
+
 class dialog
 {
   int x;
@@ -220,7 +261,7 @@ class dialog
       
       if(app != null)
       {
-        app.updateComponent(x, y);
+        app.updateComponent(x + 6, y + 6);
         app.update();
         app.render();
       }

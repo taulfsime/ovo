@@ -1,0 +1,6 @@
+appSlot0=console
+appSlot1=painter
+appSlot2=exampleApp
+appSlot3=appMaker
+appSlot4=textEditor
+appSlot5=fileBrowser

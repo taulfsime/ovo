@@ -1,9 +1,4 @@
-import processing.net.*;
-
-Server mainServer;
-int port;
-
-taskManager taskManager;
+taskManager taskManager; //<>//
 taskBar taskBar;
 desktop desktop;
 startButton startButton;
@@ -17,62 +12,63 @@ boolean mouseReleased = false;
 boolean keyClicked = false;
 
 /*******************
-
-  *TODO: check for file exist (langs) /helper/
-  *TODO: Add suport for change a background color!! /painter/
-  *TODO: Remake save pic /files/
-  
-*******************/
+ 
+ *TODO: Add suport for change a background color!! /painter/
+ *TODO: Remake textSize in components with text /components/
+ *TODO: Finish file command /applicationCMD/
+ *TODO: appMaker - editor /appMaker/
+ 
+ *******************/
 
 void setup()
 {  
   fullScreen();
   //size(1000, 700);
-  
-  for(int a = (int) random(4, 5); a > 0 ; a--)
-  {
-    port = port*10 + (int) random(1, 9);
-  }
-  
-  mainServer = new Server(this, port);
-  
+
   background(0);
   system = new system();
   taskBar = new taskBar();
   taskManager = new taskManager(taskBar.getWidth());
   startButton = new startButton();
   desktop = new desktop();
-    
+
   taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new setting());
-  taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new testTextArea());
 
   system.registerApplication("painter", new painter());
   system.registerApplication("calculator", new calculator());
   system.registerApplication("exampleApp", new example());
   system.registerApplication("carCalculator", new carCalculator());
-  system.registerApplication("testTextArea", new testTextArea());
+  //system.registerApplication("testTextArea", new application() 
+  //{
+  //  layout l;
+  //  void init() 
+  //  {
+  //    l = new layout(500, 400);
+  //    l.addComponent(new textArea(10, 50, 480, 345));
+  //    setLayout(l);
+  //  }
+  //});
   system.registerApplication("appMaker", new appMaker());
   system.registerApplication("snakeGame", new snakeGame());
-  
+  system.registerApplication("textEditor", new textEditor());
+  system.registerApplication("fileBrowser", new fileBrowser());
   system.registerApplication("console", new console());
-  
-  for(String s : system.getSystemNames())
-  {
-    taskManager.registerApplication(s);
-  }
+
+  taskManager.registerApplication("console");
+  taskManager.read();
 }
 
 void draw()
 {
   background(0);
-  
+
   fps();
   desktop.render();
   taskManager.render();
   startButton.render();
   taskBar.render();
   system.render();
-  
+
   mouseDragged = false;
   mouseClicked = false;
   keyClicked = false;
@@ -101,11 +97,11 @@ void mouseReleased()
 
 void fps()
 {
-  if(frameRate < 60)
+  if (frameRate < 60)
   {
     fill(255, 0, 0);
-  }
-  else if(frameRate > 60)
+  } 
+  else if (frameRate > 60)
   {
     fill(0, 255, 0);
   }
@@ -117,16 +113,37 @@ void fps()
   text(frameRate, width - 65, 50);
 }
 
+boolean isFileExist(String dir)
+{
+  String[] s = null;
+  s = loadStrings(dir);
+  if (s != null)
+  {
+    return true;
+  }
+
+  return false;  
+}
+
+PImage createPImage(color c, int w, int h)
+{
+  PGraphics img = createGraphics(w, h);
+  img.beginDraw();
+  img.background(c);
+  img.endDraw();
+  return img;
+}
+
 boolean checkStrings(String s1, String s2)
 {
-  if(s1.length() != s2.length())
+  if (s1.length() != s2.length())
   {
     return false;
   }
-  
-  for(int a = 0; a < s1.length(); a++)
+
+  for (int a = 0; a < s1.length(); a++)
   {
-    if(s1.charAt(a) != s2.charAt(a))
+    if (s1.charAt(a) != s2.charAt(a))
     {
       return false;
     }
@@ -137,22 +154,29 @@ boolean checkStrings(String s1, String s2)
 PImage getImage(String dir)
 {
   PImage img = null;
-  
+
   img = loadImage(dir);
-  
-  if(img != null) 
+
+  if (img != null) 
   {
     return img;
   }
-  
+
   return loadImage("textures/unknown.png");
+}
+
+String[] getFolderData(String dir)
+{
+  File d = new File(dataPath(dir));
+    
+  return d.list();
 }
 
 String replaceChar(String text, char prevCh, char newCh)
 {
-  for(int a = 0; a < text.length(); a++)
+  for (int a = 0; a < text.length(); a++)
   {
-    if(text.charAt(a) == prevCh)
+    if (text.charAt(a) == prevCh)
     {
       text = text.substring(0, a - 1) + newCh + text.substring(a);
     }
@@ -161,59 +185,54 @@ String replaceChar(String text, char prevCh, char newCh)
 }
 
 String clock(boolean showSecs)
+{
+  String clockText = "";
+
+  if (minute() < 10)
   {
-    String clockText = "";
-
-    if (minute() < 10)
+    if (hour() < 10)
     {
-      if (hour() < 10)
-      {
-        clockText = "0" + hour() + ":0" + minute();
-      } 
-      else
-      {
-        clockText = hour() + ":0" + minute();
-      }
+      clockText = "0" + hour() + ":0" + minute();
+    } else
+    {
+      clockText = hour() + ":0" + minute();
     }
-    else
+  } else
+  {
+    if (hour() < 10)
     {
-      if (hour() < 10)
-      {
-        clockText = "0" + hour() + ":" + minute();
-      } 
-      else 
-      {
-        clockText = hour() + ":" + minute();
-      }
-
-      if (showSecs)
-      {
-        if (second() < 10)
-        {
-          clockText += ":0" + second();
-        } 
-        else 
-        {
-          clockText += ":" + second();
-        }
-      }
+      clockText = "0" + hour() + ":" + minute();
+    } else 
+    {
+      clockText = hour() + ":" + minute();
     }
 
-    return clockText;
+    if (showSecs)
+    {
+      if (second() < 10)
+      {
+        clockText += ":0" + second();
+      } else 
+      {
+        clockText += ":" + second();
+      }
+    }
   }
+
+  return clockText;
+}
 
 class setting extends application
 {
   layout main = new layout(250, 250);
   void init()
   {
-    
   }
-  
+
   void update()
   {
     setLayout(main);
-  } //<>//
+  }
 }
 
 class clockTaskBar extends application
@@ -224,38 +243,38 @@ class clockTaskBar extends application
   PGraphics imgClock;
   int cx, cy;
   int radius;
-  
+
   void init()
   {
     main = new layout(320, 235);
-    
+
     displayClock = new image(1, 1, 180, 180);
     imgClock = createGraphics(displayClock.w, displayClock.h);
     clockDisplay = new label(5, 185, 177, 30, "");
-        
+
     cx = imgClock.width / 2;
     cy = imgClock.height / 2;
-    
+
     radius = min(cx, cy) - 2;
-    
+
     main.addComponent(displayClock);
     main.addComponent(clockDisplay);
   }
-  
+
   void update()
   {
     setLayout(main);
-    
+
     //Start To Create Clock Image
     imgClock.beginDraw();
     imgClock.fill(80);
     imgClock.noStroke();
     imgClock.ellipse(cx, cy, radius *1.8, radius *1.8);
-    
+
     float s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
     float m = map(minute() + norm(second(), 0, 60), 0, 60, 0, TWO_PI) - HALF_PI; 
     float h = map(hour() + norm(minute(), 0, 60), 0, 24, 0, TWO_PI * 2) - HALF_PI;
-    
+
     imgClock.stroke(255);
     imgClock.strokeWeight(1);
     imgClock.line(cx, cy, cx + cos(s) * radius * 0.72, cy + sin(s) * radius * 0.72);
@@ -263,7 +282,7 @@ class clockTaskBar extends application
     imgClock.line(cx, cy, cx + cos(m) * radius * 0.6, cy + sin(m) * radius * 0.6);
     imgClock.strokeWeight(4);
     imgClock.line(cx, cy, cx + cos(h) * radius * 0.5, cy + sin(h) * radius * 0.5);
-    
+
     imgClock.strokeWeight(2);
     imgClock.beginShape(POINTS);
     for (int a = 0; a < 360; a += 6) 
@@ -275,7 +294,7 @@ class clockTaskBar extends application
     }
     imgClock.endDraw();
     //End Of Create Clock Image
-    
+
     displayClock.setImage(imgClock);
     clockDisplay.setText(clock(true));
   }

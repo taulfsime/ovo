@@ -6,7 +6,6 @@ class appMaker extends application
   ArrayList<component> components = new ArrayList<component>();
   ArrayList<String> save = new ArrayList<String>();
   int editComponent = -1;
-  boolean creating = false;
   
   /* CREATING */
   layout main;
@@ -24,11 +23,16 @@ class appMaker extends application
   textField enterHeight;
   button createButton;
   button loadButton;
+  button edit;
   
+  /* EDITOR */
+  layout editor;
+  textArea codeArea;
+  label showCurComponent;
+  itemList show;
+  button back;
   void init()
   {
-    creating = false;
-    
     initCreating();
     
     /* CREATE */
@@ -47,19 +51,46 @@ class appMaker extends application
     createLayout.addComponent(enterHeight);
     createLayout.addComponent(createButton);
     createLayout.addComponent(loadButton);
+    
+    setLayout(createLayout);
   }
   
   void update()
   {
-    if(creating)
+    if(getLayout() == main)
     {
-      setLayout(main);
       creating();
     }
-    else
+    else if(getLayout() == createLayout)
     {
-      setLayout(createLayout);
       create();
+    }
+    else if(getLayout() == editor)
+    {
+      editor();
+    }
+  }
+  
+  void editor()
+  {
+    if(back.isClicked)
+    {
+      setLayout(main);
+    }
+    
+    for(String s : save)
+    {
+      String[] t = split(s, ' ');
+      if(checkStrings(t[0], "function") && show.getSelected() != null)
+      {
+        if(checkStrings(t[1], show.getSelected()))
+        {
+          //showCurComponent.setText(t[1]);
+          //codeArea.text[0] = "function " + "f_" + t[1] + "()";
+          //codeArea.text[1] = t[2].charAt(0) + "";
+        }
+        
+      }
     }
   }
   
@@ -95,33 +126,7 @@ class appMaker extends application
       this.wh = wh;
       initCreating();
       
-      creating = true;
-    }
-  }
-  
-  void initCreating()
-  {
-     /* CREATING */
-    main = new layout(ww + 200, wh);
-    ae = new appElement(10, 10, ww, wh - 20);
-    drawLabel = new button(ww + 15, 10, 60, 30, "Label");
-    drawButton = new button(ww + 85, 10, 60, 30, "Button");
-    export = new button(ww + 15, 50, 160, 30, "Export Application");
-    coord[0] = new textField(ww + 15, 90, 40, 30, "X:");
-    coord[1] = new textField(ww + 15 + 45, 90, 40, 30, "Y:");
-    coord[2] = new textField(ww + 15 + 90, 90, 40, 30, "W:");
-    coord[3] = new textField(ww + 15 + 135, 90, 40, 30, "H:");
-    text = new textField(ww + 15, 140, 160, 30, "Text:");
-    
-    main.addComponent(ae);
-    main.addComponent(drawLabel);
-    main.addComponent(drawButton);
-    main.addComponent(export);
-    main.addComponent(text);
-    
-    for(int a = 0; a < coord.length; a++)
-    {
-      main.addComponent(coord[a]);
+      setLayout(main);
     }
   }
   
@@ -255,7 +260,7 @@ class appMaker extends application
           {
             button bTest = new button(c.x, c.y, c.w, c.h, text.getText());
             components.set(editComponent, bTest);
-          } //<>//
+          }
         }
         break;
         
@@ -283,7 +288,9 @@ class appMaker extends application
       component c = ae.getComponent();
       main.addComponent(c);
       components.add(c);
-      save.add("init " + ae.getType() + " " + ae.getType() + save.size() + " (" + c.x + "$" + c.y + "$" + c.w + "$" + c.h + ")");
+      String name = ae.getType() + save.size()/2;
+      save.add("init " + ae.getType() + " " + name + " (" + c.x + "$" + c.y + "$" + c.w + "$" + c.h + ")");
+      save.add("function " + name + " {}");
       ae.reset();
     }
   }
@@ -346,6 +353,59 @@ class appMaker extends application
     {
       export();
     }
+    else if(edit.isClicked)
+    {
+      show.clear();
+      for(String s : save)
+      {
+        String[] t = split(s, ' ');
+        if(checkStrings(t[0], "init"))
+        {
+          show.addItem(t[2]);
+        }
+      }
+      setLayout(editor);
+    }
+  }
+  
+  void initCreating()
+  {
+      /* CREATING */
+    main = new layout(ww + 200, wh);
+    ae = new appElement(10, 10, ww, wh - 20);
+    drawLabel = new button(ww + 15, 10, 60, 30, "Label");
+    drawButton = new button(ww + 85, 10, 60, 30, "Button");
+    export = new button(ww + 15, 50, 160, 30, "Export Application");
+    coord[0] = new textField(ww + 15, 90, 40, 30, "X:");
+    coord[1] = new textField(ww + 15 + 45, 90, 40, 30, "Y:");
+    coord[2] = new textField(ww + 15 + 90, 90, 40, 30, "W:");
+    coord[3] = new textField(ww + 15 + 135, 90, 40, 30, "H:");
+    text = new textField(ww + 15, 140, 160, 30, "Text:");
+    edit = new button(ww + 15, 190, 160, 30, "Editor");
+    
+    main.addComponent(ae);
+    main.addComponent(drawLabel);
+    main.addComponent(drawButton);
+    main.addComponent(export);
+    main.addComponent(text);
+    main.addComponent(edit);
+    
+    for(int a = 0; a < coord.length; a++)
+    {
+      main.addComponent(coord[a]);
+    }
+    
+    /* EDITOR */
+    editor = new layout(main.w, main.h);
+    codeArea = new textArea(10, 45, ww, wh - 75);
+    showCurComponent = new label(50, 10, 300, 30, " ");
+    show = new itemList(ww + 20, 45, 150, wh - 75);
+    back = new button(10, 10, 30, 30, "<");
+    
+    editor.addComponent(codeArea);
+    editor.addComponent(showCurComponent);
+    editor.addComponent(show);
+    editor.addComponent(back);
   }
 }
 

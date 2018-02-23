@@ -5,7 +5,6 @@
  - Button
  - Label
  - Switch Button
- - Text
  - Progress Bar
  - Text Field
  - Text Area
@@ -118,7 +117,6 @@ class button extends component
   char bindKey;
   boolean useBindKey = false;
   text showText;
-  boolean isActive = true;
   boolean isWorking = true;
 
   button(int xPos, int yPos, int xLength, int yLength, String text)
@@ -154,11 +152,6 @@ class button extends component
   void setWorking(boolean work)
   {
     isWorking = work;
-  }
-  
-  void setActive(boolean active)
-  {
-    isActive = active;
   }
   
   void bindKey(char bKey)
@@ -208,7 +201,9 @@ class button extends component
     else
     {
       noStroke();
-      fill(over);
+      fill(normal); //normal
+      this.isOver = false;
+      this.isClicked = false;
     }
 
     if (img1 == null && img2 == null)
@@ -589,15 +584,15 @@ class progressBar extends component
 //Text Field
 class textField extends component
 {
+  color textColor = color(0, 0, 0);
   String text = "";
   String dText = "";
   collisionBox cb;
   boolean enterText = false;
-  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
+  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& /";
   String filter = null;
   ArrayList<String> library = new ArrayList<String>();
   String example = null;
-  boolean isActive = true;
   boolean isWorking = true;
   int maxSymbols = 0;
     
@@ -613,11 +608,6 @@ class textField extends component
     {
       maxSymbols = n;
     }
-  }
-  
-  void setActive(boolean active) 
-  {
-    this.isActive = active;
   }
   
   void setWorking(boolean work)
@@ -738,7 +728,7 @@ class textField extends component
     textSize(14);
     if(text != "")
     {
-      fill(0, 0, 0);
+      fill(textColor);
       text(text, x + borderWidth + tx + 5, y + ty + 20);
       
       if(example != null)
@@ -759,6 +749,11 @@ class textField extends component
       int lx = (int) (textWidth(text) + x + tx + borderWidth + 6); 
       rect(lx, y + ty + 2, 2, h - 4);
     }
+  }
+  
+  void setTextColor(color c)
+  {
+    textColor = c;
   }
   
   boolean checkSymbol(char ch)
@@ -792,35 +787,59 @@ class textField extends component
 class textArea extends component
 {
   final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
-  int maxLines;
-  String[] text;
+  ArrayList<String> texts = new ArrayList<String>();
   int curLine = 0;
-  float textPointerX = 0;
+  int vLines;
+  int maxLines = -1;
+  int pc = 20;
   boolean enterText = false;
   collisionBox cb;
-  boolean isActive = true;
+  scrollBar scroll;
   
   textArea(int xPos, int yPos, int xLength, int yLength)
   {
     super(xPos, yPos, xLength, yLength);
-    maxLines = h / 22;
-    text = new String[maxLines];
+    texts.add("");
+    pc = texts.get(0).length();
     
-    for(int a = 0; a < maxLines; a++)
+    vLines = w/15;
+    
+    scroll = new scrollBar(x + w - 15, y , 15, h - 4);
+    scroll.setScrollSize(50);
+
+    scroll.setColor(normal);
+  }
+  
+  void setMaxLines(int m)
+  {
+    maxLines = m;
+  }
+  
+  void setText(String[] s)
+  {
+    texts.clear();
+    for(String t : s)
     {
-      text[a] = "";
+      texts.add(t);
     }
   }
   
-  void setActive(boolean active) 
+  String[] getText()
   {
-    this.isActive = active;
+    String[] s = new String[texts.size()];
+    for(int a = 0; a < texts.size(); a++)
+    {
+      s[a] = texts.get(a);
+    }
+    
+    return s;
   }
   
   void render()
   {
     cb = new collisionBox(x + tx, y + ty, w, h);
     cb.setActive(isActive);
+    //println(curLine, vLines);
     
     if(isActive)
     {
@@ -831,24 +850,42 @@ class textArea extends component
       
       if(keyClicked && enterText)
       {
-        switch(key)
+        char ch = key;
+        switch(ch)
         {
           case BACKSPACE:
           {
-            if (text[curLine].length() > 0)
+            if (texts.get(curLine).length() > 0)
             {
-              text[curLine] = text[curLine].substring(0, text[curLine].length() - 1);
+              texts.set(curLine, texts.get(curLine).substring(0, texts.get(curLine).length() - 1));
+            }
+            else
+            {
+              if(texts.get(curLine).length() <= 0 && curLine > 0)
+              {
+                curLine--;
+              }
             }
           }
           break;
           
           case ENTER:
           {
-            //if(curLine < maxLines - 1)
-            //{
-            //  curLine++;
-            //  textPointerX = (int) textWidth(text[curLine]);
-            //}
+            if(maxLines >= 0)
+            {
+              if(curLine < maxLines - 1)
+              {
+                texts.add("");
+                curLine++;
+                pc = texts.get(curLine).length();
+              }
+            }
+            else
+            {
+              texts.add("");
+              curLine++;
+              pc = texts.get(curLine).length();
+            }
           }
           break;
           
@@ -861,9 +898,9 @@ class textArea extends component
                 if(curLine > 0)
                 {
                   curLine--;
-                  if(textPointerX > textWidth(text[curLine]))
+                  if(pc > texts.get(curLine).length())
                   {
-                    textPointerX = textWidth(text[curLine]);
+                    pc = texts.get(curLine).length();
                   }
                 }
               }
@@ -871,12 +908,12 @@ class textArea extends component
               
               case DOWN:
               {
-                if(curLine < maxLines - 1)
+                if(curLine < texts.size() - 1)
                 {
                   curLine++;
-                  if(textPointerX > textWidth(text[curLine]))
+                  if(pc > texts.get(curLine).length())
                   {
-                    textPointerX = textWidth(text[curLine]);  
+                    pc = texts.get(curLine).length();
                   }
                 }
               }
@@ -884,22 +921,28 @@ class textArea extends component
               
               case LEFT:
               {
-                //String t = text[curLine];
-                
+                if(pc > 0)
+                {
+                  pc--;
+                }
               }
               break;
               
               case RIGHT:
               {
-                
+                if(pc < texts.get(curLine).length())
+                {
+                  pc++;
+                }
               }
               break;
               
               default:
               {
-                if (checkSymbol((char) key) && textWidth(text[curLine] + (char) key) < w)
+                if (checkSymbol(ch) && textWidth(texts.get(curLine) + ch) < w)
                 {
-                  text[curLine] += (char) key;
+                  texts.set(curLine, writeTotText(texts.get(curLine), pc, ch));//texts.get(curLine) + ch)
+                  pc++;
                 }    
               }
               break;
@@ -908,32 +951,67 @@ class textArea extends component
           break;
         }
       }
-    }
-      
-    textPointerX = textWidth(text[curLine]); //<>//
-    
-    //println(textPointerX, textWidth(text[curLine]));
-    
+      if(texts.size() > vLines)
+      {
+        int sc = min(scroll.h/2 - (int) (texts.size()*0.5), scroll.h/2);
+        if(sc != scroll.sScale)
+        {
+          scroll.sy = scroll.h - scroll.sScale;
+        }
+        scroll.setScrollSize(sc > 20 ? (sc < scroll.h/2 ? sc : scroll.h) : 20);
+      }
+    } //<>//
+        
     fill(border);
     rect(x + tx, y + ty, w, h);
     
     fill(normal);
     rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
     
-    textSize(14);
+    if(texts.size() > vLines)
+    {
+      scroll.updateComponent(x + tx + w - scroll.w - 2, y + ty + 2);
+      scroll.render();
+    }
     fill(0, 0, 0);
-    for(int a = 0; a < text.length; a++)
+    textSize(14);
+    if (texts.size() > 0)
     {
-      text(text[a], x + borderWidth + tx + 5, y + ty + 20 + 22*a);
+      int start = texts.size() > vLines ? (int) (scroll.getPer()*(texts.size() - vLines)) : 0;
+      int finish = texts.size() > vLines ? (start + vLines < texts.size() ? start + vLines : texts.size()) : texts.size();
+      for (int a = start; a < finish; a++)
+      {
+        fill(0, 0, 0);
+        text(texts.get(a), x + tx + borderWidth + 3, y + ty + borderWidth + 15*((a - start) + 1));
+      }
+      
+      if(enterText)
+      {
+        fill(0, 0, 0);
+        float ax = x + tx + borderWidth + 5 + pointerX(pc);
+        rect(ax > 0 ? ax : 0, y + ty + 2 + 15* (curLine > vLines ? curLine - start : curLine), 2, 20);
+      }
+    }
+  }
+  
+  String writeTotText(String text, int num, char ch)
+  {
+    if(text.length() > num)
+    {
+      return text.substring(0, num) + ch + text.substring(num);
     }
     
-    if(enterText)
+    return text + ch;
+  }
+  
+  float pointerX(int num)
+  {
+    if(texts.get(curLine).length() > num)
     {
-      fill(0, 0, 0);
-      rect((float) (x + tx + borderWidth + 5 + textPointerX), y + ty + 2 + 22*curLine, 2, 20);
+      return textWidth(texts.get(curLine).substring(0, num));
     }
     
-    //println(textWidth(text[curLine]), textPointerX);
+    return textWidth(texts.get(curLine));
   }
   
   boolean checkSymbol(char ch)
@@ -1190,17 +1268,18 @@ class itemList extends component
 {
   ArrayList<String> itemTitle = new ArrayList<String>();
   int selected = -1;
-  boolean isOpen = false;
-  boolean isActive = true;
+  scrollBar scroll;
+  int vLines;
+  boolean visible = true;
 
   itemList(int xPos, int yPos, int xLength, int yLength)
   {
     super(xPos, yPos, xLength, yLength);
-  }
-  
-  void setActive(boolean active)
-  {
-    isActive = active;
+    vLines = h/40;
+    scroll = new scrollBar(x + w - 15, y + 4, 15, h - 8);
+    scroll.setScrollSize(50);
+
+    scroll.setColor(normal);
   }
 
   void addItem(String itemTitle)
@@ -1208,25 +1287,24 @@ class itemList extends component
     this.itemTitle.add(itemTitle);
   }
   
-  void setOpen(boolean open)
+  void clear()
   {
-    this.isOpen = open;
+    itemTitle.clear();
+  }
+  
+  void setItemVisible(boolean v)
+  {
+    visible = v;
   }
 
   void removeItem(String itemTitle)
   {
-    for (int a = 0; a < this.itemTitle.size(); a++)
-    {
-      if (this.itemTitle.get(a).toLowerCase() == itemTitle.toLowerCase())
-      {
-        this.itemTitle.remove(this.itemTitle.get(a));
-      }
-    }
+    this.itemTitle.remove(itemTitle);
   }
 
   String getSelected()
   {
-    if (selected >= 0)
+    if (selected >= 0 && selected < itemTitle.size())
     {
       return itemTitle.get(selected);
     }
@@ -1245,12 +1323,49 @@ class itemList extends component
 
   void render()
   {
-    if (isOpen && isActive)
+    if (itemTitle.size() > vLines)
     {
-      for(int a = 0; a < this.itemTitle.size(); a++)
+      scroll.updateComponent(x + tx + w - scroll.w - 2 + borderWidth, y + ty + borderWidth + 4);
+      scroll.render();
+
+      int sc = min(scroll.h/2 - (int) (itemTitle.size()*0.5), scroll.h/2);
+
+      scroll.setScrollSize(sc > 20 ? (sc < scroll.h/2 ? sc : scroll.h) : 20);
+    }
+    
+    int start;
+    int finish;
+    
+    if (itemTitle.size() > 0)
+    {
+      start = itemTitle.size() > vLines ? (int) (scroll.getPer()*(itemTitle.size() - vLines)) : 0;
+      finish = itemTitle.size() > vLines ? (start + vLines < itemTitle.size() ? start + vLines : itemTitle.size()) : vLines;
+    }
+    else
+    {
+      start = 0;
+      finish = vLines;
+    }
+    
+    for (int a = start; a < finish; a++)
+    {
+      button b = new button(x + tx, y + ty + 40*(a - start), itemTitle.size() > vLines ? (w - borderWidth*2) - 17 : (w - borderWidth*2), 39, itemTitle.size() > a ? itemTitle.get(a) : "");
+      
+      if(visible)
       {
-        button b = new button(x + tx, y + ty + a*(h/8) + 20, w, h/8, itemTitle.get(a));
         b.render();
+      }
+      else
+      {
+        if(b.text.length() > 0)
+        {
+          b.render();
+        }
+      }
+      
+      if(b.isClicked)
+      {
+        selected = a;
       }
     }
   }
@@ -1440,20 +1555,20 @@ class scrollBar extends component
       {
         sScale = w;
       }
-      
-      fill(c, 230);
-      rect(x + tx, y + ty, w, h);
-      
-      if(cb.isOver())
-      {
-        fill(click, 240);
-      }
-      else
-      {
-        fill(over, 240);
-      }
-      rect(x + tx + 1, y + ty + sy, w - 2, sScale);
     }
+      
+    fill(c, 230);
+    rect(x + tx, y + ty, w, h);
+    
+    if(cb.isOver() && isActive)
+    {
+      fill(click, 240);
+    }
+    else
+    {
+      fill(over, 240);
+    }
+    rect(x + tx + 1, y + ty + sy, w - 2, sScale);
   }
 }
 

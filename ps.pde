@@ -17,6 +17,7 @@ boolean keyClicked = false;
  *TODO: Remake textSize in components with text /components/
  *TODO: Finish file command /applicationCMD/
  *TODO: appMaker - editor /appMaker/
+ *TODO: fileBrowser *pic for emty and full folder
  
  *******************/
 
@@ -38,20 +39,11 @@ void setup()
   system.registerApplication("calculator", new calculator());
   system.registerApplication("exampleApp", new example());
   system.registerApplication("carCalculator", new carCalculator());
-  //system.registerApplication("testTextArea", new application() 
-  //{
-  //  layout l;
-  //  void init() 
-  //  {
-  //    l = new layout(500, 400);
-  //    l.addComponent(new textArea(10, 50, 480, 345));
-  //    setLayout(l);
-  //  }
-  //});
   system.registerApplication("appMaker", new appMaker());
   system.registerApplication("snakeGame", new snakeGame());
   system.registerApplication("textEditor", new textEditor());
   system.registerApplication("fileBrowser", new fileBrowser());
+  system.registerApplication("appManager", new appManager());
   system.registerApplication("console", new console());
 
   taskManager.registerApplication("console");
@@ -168,7 +160,6 @@ PImage getImage(String dir)
 String[] getFolderData(String dir)
 {
   File d = new File(dataPath(dir));
-    
   return d.list();
 }
 

@@ -1,7 +1,0 @@
-name=edenwein
-getRed_head=0.43783784
-getRed_tail=0.37297297
-getGreen_head=0.827027
-getGreen_tail=0.8864865
-getBlue_head=0.44324324
-getBlue_tail=0.2972973

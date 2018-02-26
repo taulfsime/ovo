@@ -20,7 +20,8 @@ class console extends application
     {"file", "file [crete:delete:rename:copy:find] <fileName> <type>"},
     {"exit", "exit"},
     {"pin", "pin [add:remove:list] [systemName]"},
-    {"tag", "tag <command> [tag] [data]"}
+    {"tag", "tag <command> [tag] [data]"},
+    {"info", "info <systemName>"}
   };
 
   String readCommand = "";
@@ -75,6 +76,12 @@ class console extends application
       case "help":
       {
         commandHelp(readCommand.substring(cmd.length()));
+      }
+      break;
+      
+      case "info":
+      {
+        commandInfo(readCommand.substring(cmd.length()));
       }
       break;
 
@@ -156,6 +163,38 @@ class console extends application
   }
 
   /* COMMANDS */
+  void commandInfo(String text)
+  {
+    String systemName = null;
+    for(String s : split(text, ' '))
+    {
+      if(s.length() > 0)
+      {
+        systemName = s;
+        break;
+      }
+    }
+    
+    if(systemName != null)
+    {
+      for(String s : system.getSystemNames())
+      {
+        if(checkStrings(s, systemName))
+        {
+          JSONObject o = loadJSONArray("data/apps/" + s + ".json").getJSONObject(0);
+          logger.add(s + ": ");
+          logger.add(o.getString("systemName"));
+          logger.add(o.getString("appFile"));
+          logger.add(o.getString("author"));
+          logger.add(o.getFloat("version") + "");
+          logger.add(o.getString("description"));
+          
+          break;
+        }
+      }
+    }
+  }
+  
   void commandTag(String text)
   {
     data d = new data("CMDTestTags");

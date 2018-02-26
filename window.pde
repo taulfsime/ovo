@@ -19,17 +19,29 @@ class window
   label lbIcon;
   collisionBox toolBar;
   dataReader dataReader = new dataReader();
+  PGraphics window;
   
   window(String systemName, application app)
   {
-    if(app != null)
+    this.app = app;
+    this.systemName = systemName;
+    
+    if(this.app != null)
     {
-      this.app = app;
-      this.app.setActive(isActive);
       this.app.init();
       this.app.update();
-      this.w = app.w;
-      this.h = app.h;
+    }
+    
+    init();
+  }
+  
+  void init()
+  {
+    if(app != null)
+    {
+      this.app.setActive(isActive);
+      this.w = app.w + 12;
+      this.h = app.h + 27;
     }
     else
     {
@@ -37,9 +49,25 @@ class window
       this.h = 500;
     }
     
+    x = (width - this.w)/2;
+    y = (height - this.h)/2;
+    
+    window = createGraphics(w + 1, h + 1);
+    
+    window.beginDraw();
+    window.stroke(0);
+    window.fill(216, 216, 216);
+    window.rect(0, 0, w, 21);
+    window.fill(216, 216, 216);
+    window.rect(0, 21, w, h - 21);
+    window.fill(200, 200, 200);
+    window.rect(6, 21, w - 12, h - 27);
+    window.endDraw();
+    
     icon = getImage("textures/applicationIcon/" + systemName + ".png");
-    lbIcon = new label(x + 2, y + 2, 17, 17, icon);
-    btnClose = new button(x + w - 42, y, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
+    lbIcon = new label(2, 2, 17, 17, icon);
+    toolBar = new collisionBox(0, 7, w, 14);
+    btnClose = new button(w - 42, 0, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
     if(app != null)
     {
       title = dataReader.readData("window", systemName, "title", "data/lang/" + lang) + (app.title != null ? (" | " + app.title) : "");
@@ -48,13 +76,13 @@ class window
     {
       title = dataReader.readData("window", systemName, "title", "data/lang/" + lang);
     }
-    
-    x = (width - this.w)/2;
-    y = (height - this.h)/2;
-    
-    this.systemName = systemName;
-    
-    update();
+  }
+  
+  void addComponent(component c)
+  {
+    app.addComponent(c);
+    app.init();
+    app.update();
   }
   
   //SETS
@@ -93,35 +121,14 @@ class window
     isOpen = false;
   }
   
-  void update()
-  {    
-    toolBar = new collisionBox(x, y + 7, w, 14);
-    btnClose.updateComponent(x + w - 42, y);
-    lbIcon.updateComponent(x + 2, y + 2);
-  }
-  
   void render()
   {    
     if(isOpen)
     {
-      update();
-      
-      stroke(0);
-      fill(216, 216, 216);
-      rect(x, y, w, 21);
-      fill(216, 216, 216);
-      rect(x, y + 21, w, h - 21);
-      fill(200, 200, 200);
-      rect(x + 6, y + 21, w - 12, h - 27);
-      
-      fill(0);
-      textSize(13);
-      text(title, x + 24, y + 15.5);
-      
+      toolBar.translate(x, y);
+      lbIcon.translate(x, y);
+      btnClose.translate(x, y);
       btnClose.setActive(isToolBarActive);
-      
-      btnClose.render();
-      lbIcon.render();
       
       if(app != null)
       {
@@ -136,11 +143,24 @@ class window
           this.y = (height - this.h)/2;
         }
         
-        w = app.w + 12;
-        h = app.h + 27;
+        if(this.w != app.w + 12 || this.h != app.h + 27)
+        {
+          init();
+          
+          //this.w = app.w + 12;
+          //this.h = app.h + 27;
+        }
         app.setActive(isActive && isLocked);
+        
+        image(window, x, y);
+        btnClose.render();
+        lbIcon.render();
         app.update();
         app.render();
+        
+        fill(0);
+        textSize(13);
+        text(title, x + 24, y + 15.5);
       }
         
       if(isToolBarActive && mouseButton == LEFT && mouseClicked)
@@ -208,6 +228,57 @@ class windowMessage extends window
         setLayout(main);
       }
     });
+  }
+}
+
+class windowGetInfo extends window
+{
+  String info = "";
+  layout main;
+  button done;
+  button cancel;
+  textField enterInfo;
+  
+  windowGetInfo()
+  {
+    super("windowGetInfo", null);
+  }
+  
+  void open()
+  {
+    super.open();
+    
+    main = new layout(250, 150);
+    enterInfo = new textField(10, 70, 230, 30, "Enter:");
+    done = new button(35, 110, 100, 30, "Done");
+    cancel = new button(140, 110, 100, 30, "Cancel");
+    
+    ////////ERROR////////////
+    
+    main.addComponent(enterInfo);
+    main.addComponent(done);
+    main.addComponent(cancel);
+    
+    app.setLayout(main);
+  }
+  
+  void render()
+  {
+    super.render();
+    if(done.isClicked)
+    {
+      info = enterInfo.getText();
+      super.close();
+    }
+    else if(cancel.isClicked)
+    {
+      super.close();
+    }
+  }
+  
+  String getInfo()
+  {
+    return info;
   }
 }
 

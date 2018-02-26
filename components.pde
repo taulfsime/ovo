@@ -29,6 +29,7 @@ class component
   public int h;
     
   public boolean isActive = true;
+  public boolean isEnable = true;
 
   final int borderWidth = 1;
   color normal = color(183, 183, 183);
@@ -55,6 +56,11 @@ class component
   void setActive(boolean active)
   {
     isActive = active;
+  }
+  
+  void setEnable(boolean enable)
+  {
+    isEnable = enable;
   }
 
   void updateComponent(int x, int y)
@@ -83,23 +89,16 @@ class component
 //Collision Box
 class collisionBox extends component
 {
-  boolean isActive = true;
-  
   collisionBox(int x, int y, int w, int h) 
   {
     super(x, y, w, h);
-  }
-  
-  void setActive(boolean active) 
-  {
-    this.isActive = active;
   }
 
   public boolean isOver()
   {
     if (isActive)
     {
-      return (mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h);
+      return (mouseX >= (x + tx) && mouseX <= (x + ty + w) && mouseY >= (y + ty) && mouseY <= (y + h + ty));
     }
     return false;
   }
@@ -117,7 +116,6 @@ class button extends component
   char bindKey;
   boolean useBindKey = false;
   text showText;
-  boolean isWorking = true;
 
   button(int xPos, int yPos, int xLength, int yLength, String text)
   {
@@ -137,6 +135,16 @@ class button extends component
       this.img = image;
     }
   }
+  
+  button(int xPos, int yPos, int xLength, int yLength, PImage image, PImage image1)
+  {
+    super(xPos, yPos, xLength, yLength);
+    if (this.text == null)
+    {
+      this.img = image;
+      this.img1 = image1;
+    }
+  }
 
   button(int xPos, int yPos, int xLength, int yLength, PImage normal, PImage over, PImage clicked)
   {
@@ -149,11 +157,6 @@ class button extends component
     }
   }
   
-  void setWorking(boolean work)
-  {
-    isWorking = work;
-  }
-  
   void bindKey(char bKey)
   {
     bindKey = bKey;
@@ -163,18 +166,18 @@ class button extends component
   void render()
   {
     cb = new collisionBox(x + tx, y + ty, w, h);
-    cb.setActive(isActive && isWorking);
+    cb.setActive(isActive && isEnable);
 
-    if (img1 == null && img2 == null)
+    if (img2 == null)
     {
       noStroke();
       fill(border);
       rect(x + tx, y + ty, w, h);
     }
     
-    if(isActive && isWorking)
+    if(isEnable)
     {
-      if (cb.isOver() || (keyClicked && key == bindKey && useBindKey))
+      if (isActive && (cb.isOver() || (keyClicked && key == bindKey && useBindKey)))
       {
         if (mouseClicked || (keyClicked && key == bindKey && useBindKey))
         {
@@ -200,13 +203,23 @@ class button extends component
     }
     else
     {
-      noStroke();
-      fill(normal); //normal
-      this.isOver = false;
-      this.isClicked = false;
+      if(img1 == null)
+      {
+        noStroke();
+        fill(click); //normal
+        this.isOver = false;
+        this.isClicked = false;
+      }
+      else
+      {
+        noStroke();
+        fill(normal); //normal
+        this.isOver = false;
+        this.isClicked = false;
+      }
     }
 
-    if (img1 == null && img2 == null)
+    if (img2 == null)
     {
       rect(x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
     }
@@ -222,6 +235,17 @@ class button extends component
       String t = showText.toString(this.text);
       text(t, this.x + tx + this.w/2 - textWidth(t)/2, this.y + ty + this.h*2/3);
     } 
+    else if(this.text == null && this.img != null && this.img1 != null && this.img2 == null)          //image x2
+    {
+      if(isEnable)
+      {
+        image(this.img, this.x + this.w*0.15 + tx, this.y + this.h*0.15 + ty, this.w*0.7, this.h*0.7);
+      }
+      else
+      {
+        image(this.img1, this.x + this.w*0.15 + tx, this.y + this.h*0.15 + ty, this.w*0.7, this.h*0.7);
+      }
+    }
     else if (this.text == null && this.img != null && this.img1 != null && this.img2 != null)        //image x3
     {
       if (this.isClicked)
@@ -257,6 +281,15 @@ class button extends component
     if (text == null && img1 == null && img2 == null)
     {
       this.img = image;
+    }
+  }
+  
+  void setImage(PImage image, PImage image1)
+  {
+    if (text == null && img2 == null)
+    {
+      this.img = image;
+      this.img1 = image1;
     }
   }
 
@@ -321,7 +354,9 @@ class label extends component
     {
       noStroke();
       fill(border);
-      rect(x, y, w, h);
+      rect(x + tx, y + ty, w, h);
+      fill(normal);
+      rect(x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
       image(img, x + borderWidth + tx, y + borderWidth + ty, w - borderWidth*2, h - borderWidth*2);
     } 
     else if (text != null && img == null)
@@ -960,7 +995,7 @@ class textArea extends component
         }
         scroll.setScrollSize(sc > 20 ? (sc < scroll.h/2 ? sc : scroll.h) : 20);
       }
-    } //<>//
+    } //<>// //<>// //<>// //<>// //<>//
         
     fill(border);
     rect(x + tx, y + ty, w, h);
@@ -1271,12 +1306,20 @@ class itemList extends component
   scrollBar scroll;
   int vLines;
   boolean visible = true;
+  button[] buttons;
 
   itemList(int xPos, int yPos, int xLength, int yLength)
   {
     super(xPos, yPos, xLength, yLength);
     vLines = h/40;
-    scroll = new scrollBar(x + w - 15, y + 4, 15, h - 8);
+    buttons = new button[vLines];
+    
+    for(int a = 0; a < vLines; a++)
+    {
+      buttons[a] = new button(0,  ty + 40*a, w - 20, 39, "");
+    }
+    
+    scroll = new scrollBar(w - 15, 4, 15, (40*vLines) - 8);
     scroll.setScrollSize(50);
 
     scroll.setColor(normal);
@@ -1290,6 +1333,15 @@ class itemList extends component
   void clear()
   {
     itemTitle.clear();
+  }
+  
+  void setItems(String[] s)
+  {
+    itemTitle.clear();
+    for(String t : s)
+    {
+      itemTitle.add(t);
+    }
   }
   
   void setItemVisible(boolean v)
@@ -1325,7 +1377,7 @@ class itemList extends component
   {
     if (itemTitle.size() > vLines)
     {
-      scroll.updateComponent(x + tx + w - scroll.w - 2 + borderWidth, y + ty + borderWidth + 4);
+      scroll.translate(x + tx, y + ty);
       scroll.render();
 
       int sc = min(scroll.h/2 - (int) (itemTitle.size()*0.5), scroll.h/2);
@@ -1347,23 +1399,21 @@ class itemList extends component
       finish = vLines;
     }
     
+    for(int a = 0; a < vLines; a++)
+    {
+      buttons[a].setEnable(!(a == selected));
+      buttons[a].translate(x + tx, y + ty);
+    }
+    
     for (int a = start; a < finish; a++)
     {
-      button b = new button(x + tx, y + ty + 40*(a - start), itemTitle.size() > vLines ? (w - borderWidth*2) - 17 : (w - borderWidth*2), 39, itemTitle.size() > a ? itemTitle.get(a) : "");
-      
-      if(visible)
-      {
-        b.render();
-      }
-      else
-      {
-        if(b.text.length() > 0)
-        {
-          b.render();
-        }
-      }
-      
-      if(b.isClicked)
+      buttons[a - start].setText(itemTitle.size() > a ? itemTitle.get(a) : "");
+    }
+    
+    for(int a = 0; a < vLines; a++)
+    {
+      buttons[a].render();
+      if(buttons[a].isClicked)
       {
         selected = a;
       }

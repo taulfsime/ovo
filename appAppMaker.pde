@@ -98,8 +98,8 @@ class appMaker extends application
   {
     int ww = 600;
     int wh = 680;
-    createButton.setWorking(enterName.getText() != "");
-    loadButton.setWorking(enterName.getText() != "" && enterWidth.getText() == "" && enterHeight.getText() == "");
+    createButton.setEnable(enterName.getText() != "");
+    loadButton.setEnable(enterName.getText() != "" && enterWidth.getText() == "" && enterHeight.getText() == "");
     
     if(createButton.isClicked)
     {

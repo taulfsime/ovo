@@ -16,8 +16,8 @@ class textEditor extends application
     /* WRITING */
     main = new layout(576, 500);
     enterText = new textArea(0, 0, 500, 500);
-    saveFile = new button(510, 70, 25, 25, getImage("textures/painter/tools/saveFile.png"));
-    newFile = new button(540, 70, 25, 25, getImage("textures/painter/tools/newFile.png"));
+    saveFile = new button(510, 70, 25, 25, getImage("textures/button/tools/active/save_file.png"));
+    newFile = new button(540, 70, 25, 25, getImage("textures/button/tools/active/new_file.png"));
     
     main.addComponent(enterText);
     main.addComponent(saveFile);

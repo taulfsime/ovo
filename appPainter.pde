@@ -43,8 +43,8 @@ class painter extends application
     toolPencil = new button(510, 10, 25, 25, getImage("textures/painter/tools/pencil.png"));
     toolEraser = new button(540, 10, 25, 25, getImage("textures/painter/tools/eraser.png"));
     toolBucket = new button(510, 40, 25, 25, getImage("textures/painter/tools/bucket.png"));
-    saveFile = new button(510, 70, 25, 25, getImage("textures/painter/tools/saveFile.png"));
-    newFile = new button(540, 70, 25, 25, getImage("textures/painter/tools/newFile.png"));
+    saveFile = new button(510, 70, 25, 25, getImage("textures/button/tools/active/save_file.png"));
+    newFile = new button(540, 70, 25, 25, getImage("textures/button/tools/active/new_file.png"));
     
     sliderRed = new slider(504, 100, 68, 25, getImage("textures/painter/tools/redSlider.png"));
     sliderGreen = new slider(504, 130, 68, 25, getImage("textures/painter/tools/greenSlider.png"));
@@ -168,13 +168,13 @@ class painter extends application
     
     if(enterName.getText() == "")
     {
-      create.setWorking(false);
-      load.setWorking(false);
+      create.setEnable(false);
+      load.setEnable(false);
     }
     else
     {
-      create.setWorking(true);
-      load.setWorking(true);
+      create.setEnable(true);
+      load.setEnable(true);
     }
   }
   

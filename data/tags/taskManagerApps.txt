@@ -4,3 +4,4 @@ appSlot2=exampleApp
 appSlot3=appMaker
 appSlot4=textEditor
 appSlot5=fileBrowser
+appSlot6=appManager

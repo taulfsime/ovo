@@ -1,6 +1,7 @@
 class file
 {
   String name;
+  String date = null;
   file(String name) 
   {
     this.name = name;
@@ -15,13 +16,13 @@ class dtext extends file
   }
   
   void save(String[] s)
-  {
-    saveStrings("data/files/dtext/" + name + ".txt", s);
+  { 
+    saveStrings("data/files/dtext/" + name + ".dtext", s);
   }
   
   String[] load()
   {
-    String d = "data/files/dtext/" + name + ".txt";
+    String d = "data/files/dtext/" + name + ".dtext";
     if(isFileExist(d))
     {
       return loadStrings(d);

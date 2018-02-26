@@ -7,4 +7,5 @@ window.snakeGame.title = Simple Snake Game
 window.carCalculator.title = Car Calculator
 window.textEditor.title = Text Editor
 window.windowMessage.title = Message
+window.windowGetInfo.title = Get Info
 window.fileBrowser.title = File Browser

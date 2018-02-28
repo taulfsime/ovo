@@ -59,6 +59,7 @@ class fileBrowser extends application
     else if(newFile.isClicked)
     {
       system.openSubwindow(enterInfo);
+      println(enterInfo.getInfo());
     }
     
     /***************************ERROR*************************/
@@ -67,7 +68,7 @@ class fileBrowser extends application
         
     if(items.items.size() > 0 && items.getSelectedName().length() > 0)
     {
-      next.setEnable(checkStrings("folder", items.getFileType(items.getSelectedName())));
+      next.setEnable(isFolder(items.getSelectedName()));
     }
     else
     {
@@ -79,6 +80,9 @@ class fileBrowser extends application
 class compList extends component
 {
   ArrayList<String> items = new ArrayList<String>();
+  ArrayList<PImage> icons = new ArrayList<PImage>();
+  int vLines;
+  scrollBar scroll;
   boolean useDir = true;
   String dir = "";
   String mainDir = "";
@@ -86,6 +90,8 @@ class compList extends component
   compList(int xPos, int yPos, int xLength, int yLength)
   {
     super(xPos, yPos, xLength, yLength);
+    vLines = h/40;
+    scroll = new scrollBar(w - 17, 5, 15, vLines*40 - 10);
   }
   
   void setDir(String dir)
@@ -154,50 +160,83 @@ class compList extends component
     return "";
   }
   
-  String removeString(String text, String rText)
+  PImage getSelectedIcon()
   {
-    for(int a = 0; a < text.length() - rText.length(); a++)
+    if(icons.size() > selected)
     {
-      if(checkStrings(rText, text.substring(a)))
-      {
-        return text.substring(0, a);
-      }
+      return icons.get(selected);
     }
     
-    return text;
+    return null;
   }
   
   void render()
   {
     noStroke();
     fill(border);
-    rect(x + tx, y + ty, w, h);
+    rect(x + tx, y + ty, w, vLines*41 + borderWidth*4);
     
     fill(normal);
-    rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
+    rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, (vLines*41) + borderWidth*2);
+    
+    if(items.size() > vLines)
+    {
+      scroll.translate(x + tx, y + ty);
+      scroll.setScrollSize(vLines, items.size());
+      scroll.render();
+    }
     
     if(useDir)
     {
       items.clear();
+      icons.clear();
       for(String s : getFolderData(mainDir + dir))
       {
+        boolean hasChar = false;
+        
+        for(int a = 0; a < s.length(); a++)
+        {
+          if(s.charAt(a) == '.')
+          {
+            hasChar = true;
+            icons.add(getImage("textures/files/" + s.substring(a + 1) + ".png"));
+            break;
+          }
+        }
+        
+        if(!hasChar)
+        {
+          icons.add(getImage("textures/files/folder_empty.png"));
+        }
+        
         items.add(s);
       }
     }
     
-    for(int a = 0; a < items.size(); a++)
+    int start = items.size() > vLines ? (int) (scroll.getPer()*(items.size() - vLines)) : 0;
+    int finish = items.size() > vLines ? (start + vLines < items.size() ? start + vLines : items.size()) : items.size();
+    for(int a = start; a < finish; a++)
     {
-      String type = getFileType(items.get(a));
-      label icon = new label(x + tx + borderWidth*2 + 4, y + ty + borderWidth*2 + 4 + 41*a, 24, 24, getImage("textures/files/" + (type == "folder" ? (getFolderData("files/" + items.get(a)) != null ? "folder_full" : "folder_empty") : type) + ".png"));
-      collisionBox cb = new collisionBox(x + tx + borderWidth + 2, y + ty + borderWidth + 2 + 41*a, w - borderWidth*2 - 4, 40);
+      label icon = new label(x + tx + borderWidth*2 + 4, y + ty + borderWidth*2 + 4 + 41*(a - start), 24, 24, icons.get(a));
+      collisionBox cb = new collisionBox(x + tx + borderWidth + 2, y + ty + borderWidth + 2 + 41*(a - start), items.size() > vLines ? w - borderWidth*2 - 22 : w - borderWidth*2 - 4, 40);
       
       if(mouseClicked && cb.isOver() && isActive)
       {
-        selected = a;
+        if(items.size() > vLines)
+        {
+          if(!scroll.cb.isOver())
+          {
+            selected = a;
+          }
+        }
+        else
+        {
+          selected = a;
+        }
       }
       
       fill(border);
-      rect(x + tx + borderWidth + 2, y + ty + borderWidth + 2 + 41*a, w - borderWidth*2 - 4, 40);
+      rect(x + tx + borderWidth + 2, y + ty + borderWidth + 2 + 41*(a - start), items.size() > vLines ? w - borderWidth*2 - 22 : w - borderWidth*2 - 4, 40);
       
       if(a == selected)
       {
@@ -207,24 +246,66 @@ class compList extends component
       {
         fill(normal);
       }
-      rect(x + tx + borderWidth*2 + 2, y + ty + borderWidth*2 + 2 + 41*a, w - borderWidth*4 - 4, 38);
+      rect(x + tx + borderWidth*2 + 2, y + ty + borderWidth*2 + 2 + 41*(a - start), items.size() > vLines ? w - borderWidth*4 - 22 : w - borderWidth*4 - 4, 38);
       
-      icon.updateComponent(x + tx + borderWidth*2 + 9, y + ty + borderWidth*2 + 9 + 41*a);
+      icon.updateComponent(x + tx + borderWidth*2 + 9, y + ty + borderWidth*2 + 9 + 41*(a - start));
       icon.render();
       
       textSize(16);
       fill(0, 0, 0);
-      text(getFileType(items.get(a)) == "folder" ? items.get(a) : (getFileName(items.get(a)) + "." + getFileType(items.get(a))), x + tx + borderWidth*2 + 2 + 40, y + ty + borderWidth*2 + 2 + 41*a + 22);
+      text(items.get(a), x + tx + borderWidth*2 + 2 + 40, y + ty + borderWidth*2 + 2 + 41*(a - start) + 22);
     }
   }
   
-  void setItems(String[] s)
+  void addItem(String s, PImage i)
   {
     useDir = false;
+    
+    items.add(s);
+    icons.add(i);
+  }
+  
+  void clear()
+  {
     items.clear();
-    for(String t : s)
+    icons.clear();
+  }
+  
+  void setItems(String[] s, PImage[] i)
+  {
+    if(s.length > 0 && i.length > 0)
     {
-      items.add(t);
+      useDir = false;
+      
+      items.clear();
+      icons.clear();
+      
+      for(String t : s)
+      {
+        items.add(t);
+      }
+      
+      for(PImage t : i)
+      {
+        icons.add(t);
+      }
+    }
+  }
+  
+  void setItems(String[] s, PImage i)
+  {
+    if(s.length > 0)
+    {
+      useDir = false;
+      
+      items.clear();
+      icons.clear();
+      
+      for(String t : s)
+      {
+        items.add(t);
+        icons.add(i);
+      }
     }
   }
   
@@ -237,38 +318,6 @@ class compList extends component
         return file.substring(0, a);
       }
     }
-    
     return "";
-  }
-  
-  String getFileType(String fileName)
-  {
-    if(fileName.length() > 0)
-    {
-      boolean hasChar = false;
-      
-      for(int a = 0; a < fileName.length(); a++)
-      {
-        if(fileName.charAt(a) == '.')
-        {
-          hasChar = true;
-          break;
-        }
-      }
-      
-      if(hasChar)
-      {
-        switch(split(fileName, '.')[1])
-        {
-          case "json":
-            return "app";
-          
-          default:
-            return split(fileName, '.')[1];
-        }
-      }
-      return "folder";
-    }
-    return null;
   }
 }

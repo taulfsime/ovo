@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"exampleApp",
-		"appFile":"appExample.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"Simple Example Application"
-	}
-]
+{
+	"systemName":"exampleApp",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"Simple Example Application",
+	"name":"Example Application",
+	"icon":"textures/applicationIcon/exampleApp.png",
+	"isSystemApp":false,
+	"file":"exampleApp.pde"
+}

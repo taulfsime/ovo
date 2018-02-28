@@ -45,6 +45,7 @@ class window
     }
     else
     {
+      this.app = new application();
       this.w = 500;
       this.h = 500;
     }
@@ -212,22 +213,34 @@ class window
 
 class windowMessage extends window
 {
+  layout main;
+  label mess;
+  button done;
+  String text;
+  
   windowMessage(String text)
   {
-    super("windowMessage", new application() 
-    {
-      layout main;
-      label mess;
-      void init()
-      {
-        main = new layout(250, 100);
-        mess = new label(20, 10, 210, 80, "It`s a message!");
-        
-        main.addComponent(mess);
-        
-        setLayout(main);
-      }
-    });
+    super("windowMessage", null);
+    this.text = text;
+  }
+  
+  void init()
+  {
+    super.init();
+    main = new layout(250, 150);
+    mess = new label(20, 10, 210, 80, text);
+    done = new button(210, 100, 60, 30, "Done!");
+    
+    main.addComponent(mess);
+    main.addComponent(done);
+    
+    this.app.setLayout(main);
+  }
+  
+  void render()
+  {
+    super.render();
+    
   }
 }
 
@@ -244,9 +257,9 @@ class windowGetInfo extends window
     super("windowGetInfo", null);
   }
   
-  void open()
+  void init()
   {
-    super.open();
+    super.init();
     
     main = new layout(250, 150);
     enterInfo = new textField(10, 70, 230, 30, "Enter:");
@@ -268,11 +281,11 @@ class windowGetInfo extends window
     if(done.isClicked)
     {
       info = enterInfo.getText();
-      super.close();
+      //super.close();
     }
     else if(cancel.isClicked)
     {
-      super.close();
+      //super.close();
     }
   }
   

@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"textEditor",
-		"appFile":"textEditor.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"Simple Text Editor Application"
-	}
-]
+{
+	"systemName":"textEditor",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"Simple Text Editor Application",
+	"name":"Text Editor",
+	"icon":"textures/applicationIcon/textEditor.png",
+	"isSystemApp":false,
+	"file":"textEditor.pde"
+}

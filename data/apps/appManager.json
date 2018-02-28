@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"appManager",
-		"appFile":"appManager.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"desc"
-	}
-]
+{
+	"systemName":"appManager",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"desc",
+	"name":"Application Manager",
+	"icon":"textures/applicationIcon/appManager.png",
+	"isSystemApp":true,
+	"file":"appManager.pde"
+}

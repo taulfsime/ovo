@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"carCalculator",
-		"appFile":"carCalculator.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"Beta Application"
-	}
-]
+{
+	"systemName":"carCalculator",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"Beta Application",
+	"name":"Car Calculator",
+	"icon":"textures/applicationIcon/carCalculator.png",
+	"isSystemApp":false,
+	"file":"carCalculator.pde"
+}

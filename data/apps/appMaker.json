@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"appMaker",
-		"appFile":"appPainter.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"desc"
-	}
-]
+{
+	"systemName":"appMaker",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"desc",
+	"name":"Application Maker",
+	"icon":"textures/applicationIcon/appMaker.png",
+	"isSystemApp":false,
+	"file":"appMaker.pde"
+}

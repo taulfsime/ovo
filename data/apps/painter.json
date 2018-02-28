@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"painter",
-		"appFile":"appPainter.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"Simple Painter Application"
-	}
-]
+{
+	"systemName":"painter",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"Simple Painter Application",
+	"name":"Painter",
+	"icon":"textures/applicationIcon/painter.png",
+	"isSystemApp":false,
+	"file":"painter.pde"
+}

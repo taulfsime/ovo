@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"console",
-		"appFile":"console.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"The Power Of Code"
-	}
-]
+{
+	"systemName":"console",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"The Power Of Code",
+	"name":"Command Prompt",
+	"icon":"textures/applicationIcon/console.png",
+	"isSystemApp":true,
+	"file":"console.pde"
+}

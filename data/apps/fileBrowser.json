@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"fileBrowser",
-		"appFile":"fileBrowser.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"Control all of files "
-	}
-]
+{
+	"systemName":"fileBrowser",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"Control all of files ",
+	"name":"File Browser",
+	"icon":"textures/applicationIcon/fileBrowser.png",
+	"isSystemApp":true,
+	"file":"fileBrowser.pde"
+}

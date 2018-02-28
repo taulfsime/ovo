@@ -840,7 +840,7 @@ class textArea extends component
     vLines = w/15;
     
     scroll = new scrollBar(x + w - 15, y , 15, h - 4);
-    scroll.setScrollSize(50);
+    scroll.setScrollSize(0, 0);
 
     scroll.setColor(normal);
   }
@@ -993,9 +993,9 @@ class textArea extends component
         {
           scroll.sy = scroll.h - scroll.sScale;
         }
-        scroll.setScrollSize(sc > 20 ? (sc < scroll.h/2 ? sc : scroll.h) : 20);
+        scroll.setScrollSize(vLines, texts.size());
       }
-    } //<>// //<>// //<>// //<>// //<>//
+    }  //<>//
         
     fill(border);
     rect(x + tx, y + ty, w, h);
@@ -1078,6 +1078,11 @@ class layout extends component
   {
     this.isActive = active;
   }
+  
+  layout get()
+  {
+    return new layout(w, h);
+  }
 
   void addComponent(component c)
   {
@@ -1110,7 +1115,7 @@ class layout extends component
     for(component c : components)
     {
       c.setActive(isActive);
-      c.translate(this.x, this.y);
+      c.translate(this.x + 1, this.y + 1);
       c.render();
     }
   }
@@ -1320,7 +1325,7 @@ class itemList extends component
     }
     
     scroll = new scrollBar(w - 15, 4, 15, (40*vLines) - 8);
-    scroll.setScrollSize(50);
+    scroll.setScrollSize(0, 0);
 
     scroll.setColor(normal);
   }
@@ -1379,10 +1384,8 @@ class itemList extends component
     {
       scroll.translate(x + tx, y + ty);
       scroll.render();
-
-      int sc = min(scroll.h/2 - (int) (itemTitle.size()*0.5), scroll.h/2);
-
-      scroll.setScrollSize(sc > 20 ? (sc < scroll.h/2 ? sc : scroll.h) : 20);
+      
+      scroll.setScrollSize(vLines, itemTitle.size());
     }
     
     int start;
@@ -1563,9 +1566,9 @@ class scrollBar extends component
     this.c = c;
   }
   
-  void setScrollSize(int w)
+  void setScrollSize(int cItems, int mItems)
   {
-    sScale = w;
+    sScale = max((int) ((float) cItems / (float) mItems * (float) (h)), 20);
   }
   
   float getPer()

@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"calculator",
-		"appFile":"calculator.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"It`s a Calculator Application"
-	}
-]
+{
+	"systemName":"calculator",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"It`s a Calculator Application",
+	"name":"Calculator",
+	"icon":"textures/applicationIcon/calculator.png",
+	"isSystemApp":false,
+	"file":"calculator.pde"
+}

@@ -34,10 +34,11 @@ class example extends application
     scrollBar = new scrollBar          (480, 20, 15, 450);
     
     //Custom settings
-    itemList.addItem("iwan1");
-    itemList.addItem("iwan2");
-    itemList.addItem("iwan3");
-    itemList.addItem("iwan4");
+    
+    for(int a = 0; a < 14; a++)
+    {
+      itemList.addItem("iwan" + (a + 1));
+    }
     progressBar.showPercentage(true);
     slider1.showPercentage(true);
     slider2.showPercentage(true);
@@ -48,7 +49,7 @@ class example extends application
     textField.addToLibrary("peter");
     textField.addToLibrary("peterdwa");
     slider2.setType("vertical");
-    scrollBar.setScrollSize(50);
+    scrollBar.setScrollSize(0, 0);
     
     //add component to layout
     layout.addComponent(button);

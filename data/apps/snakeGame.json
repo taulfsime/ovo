@@ -1,9 +1,10 @@
-[
-	{
-		"systemName":"snakeGame",
-		"appFile":"snakeGame.pde",
-		"author":"taulfsime",
-		"version":"1.0",
-		"description":"For fun"
-	}
-]
+{
+	"systemName":"snakeGame",
+	"author":"taulfsime",
+	"version":"1.0",
+	"description":"For fun",
+	"name":"Snake Game",
+	"icon":"textures/applicationIcon/snakeGame.png",
+	"isSystemApp":false,
+	"file":"snakeGame.pde"
+}

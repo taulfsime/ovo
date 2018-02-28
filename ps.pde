@@ -10,6 +10,7 @@ boolean mouseClicked = false;
 boolean mouseDragged = false;
 boolean mouseReleased = false;
 boolean keyClicked = false;
+int scroll = 0;
 
 /*******************
  
@@ -17,6 +18,7 @@ boolean keyClicked = false;
  *TODO: Remake textSize in components with text /components/
  *TODO: Finish file command /applicationCMD/
  *TODO: appMaker - editor /appMaker/
+ *TODO: appManager - load apps /appManager/
  *TODO: fileBrowser *pic for emty and full folder
  
  *******************/
@@ -77,6 +79,11 @@ void mousePressed()
   mouseClicked = true;
 }
 
+void mouseWheel(MouseEvent event) 
+{
+  scroll += event.getCount();
+}
+
 void keyPressed()
 {
   keyClicked = true;
@@ -115,6 +122,19 @@ boolean isFileExist(String dir)
   }
 
   return false;  
+}
+
+boolean isFolder(String fileName)
+{
+  for(int a = 0; a < fileName.length(); a++)
+  {
+    if(fileName.charAt(a) == '.')
+    {
+      return false;
+    }
+  }
+  
+  return true;
 }
 
 PImage createPImage(color c, int w, int h)

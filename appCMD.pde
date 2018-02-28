@@ -564,7 +564,7 @@ class cmdLogger extends component
     vLines = w/21;
 
     scroll = new scrollBar(x + w - 15, y + 4, 15, h - 8);
-    scroll.setScrollSize(50);
+    scroll.setScrollSize(0, 0);
 
     scroll.setColor(backgroundColor);
   }
@@ -602,9 +602,9 @@ class cmdLogger extends component
       scroll.updateComponent(x + tx + w - scroll.w - 2, y + ty + 4);
       scroll.render();
 
-      int sc = min(scroll.h/2 - (int) (texts.size()*0.5), scroll.h/2);
+      //int sc = min(scroll.h/2 - (int) (texts.size()*0.5), scroll.h/2);
 
-      scroll.setScrollSize(sc > 20 ? (sc < scroll.h/2 ? sc : scroll.h) : 20);
+      scroll.setScrollSize(vLines, texts.size());
     }
 
     textSize(12);

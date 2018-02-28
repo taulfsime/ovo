@@ -152,6 +152,8 @@ class system
     {
       if(subwindow.isOpen)
       {
+        subwindow.setActive(true);
+        subwindow.setToolBarActive(true);
         subwindow.render();
         subwindow.move();
       }

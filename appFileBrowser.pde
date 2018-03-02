@@ -229,7 +229,11 @@ class compList extends component
     {
       label icon = new label(x + tx + borderWidth*2 + 4, y + ty + borderWidth*2 + 4 + 41*(a - start), 24, 24, icons.get(a));
       
-      //if(mouseClicked && isOver() && isActive)
+      int cx = x + tx + borderWidth + 2;
+      int cy = y + ty + borderWidth + 2 + 41*(a - start);
+      int cw = items.size() > vLines ? w - borderWidth*2 - 22 : w - borderWidth*2 - 4;
+      int ch = 40;
+      if(mouseClicked && (mouseX > cx && mouseY > cy && mouseX < cx + cw && mouseY < cy + ch) && isActive)
       {
         if(items.size() > vLines)
         {

@@ -19,7 +19,6 @@ int scroll = 0;
  *TODO: appMaker - editor /appMaker/
  *TODO: appManager - load apps /appManager/
  *TODO: fix creator /appMaker/
- *TODO: compList /filebrowser/
  
  *******************/
 

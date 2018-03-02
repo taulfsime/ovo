@@ -717,7 +717,10 @@ class textField extends component
   {
     if (isActive && isEnable)
     {
-      enterText = isClicked();
+      if(mouseClicked)
+      {
+        enterText = isClicked();
+      }
             
       if (enterText && keyClicked)
       {
@@ -927,7 +930,12 @@ class textArea extends component
   {
     if(isActive)
     {
-      enterText = isClicked();
+      if(mouseClicked)
+      {
+        println((mouseY - (y + ty))/20);
+        
+        enterText = isClicked();
+      }
       
       if(keyClicked && enterText)
       {
@@ -1125,7 +1133,7 @@ class textArea extends component
   
   String drawText(String text, int num)
   {
-    if(text.length() > num && text.length() > 1)
+    if(text.length() > num && text.length() > 0)
     {
       return text.substring(0, num) + " " + text.substring(num);
     }
@@ -1137,14 +1145,21 @@ class textArea extends component
   {
     if(text.length() > num)
     {
-      if(num > 0)
+      if(num >= 0)
       {
         if(backspace)
         {
-          return text.substring(0, num - 1) + text.substring(num);
+          if(num > 1)
+          {
+            return text.substring(0, num - 1) + text.substring(num);
+          }
         }
         else
         {
+          if(num >= text.length())
+          {
+            
+          }
           return text.substring(0, num ) + text.substring(num + 1);
         }
       }
@@ -1154,14 +1169,21 @@ class textArea extends component
       }
     }
     
-    return text.substring(0, text.length() - 1);
+    return text;
   }
   
   float pointerX(int num)
   {
     if(texts.get(curLine).length() > num)
     {
-      return textWidth(texts.get(curLine).substring(0, num));
+      if(num >= 0)
+      {
+        return textWidth(texts.get(curLine).substring(0, num));
+      }
+      else
+      {
+        return 0;
+      }
     }
     
     return textWidth(texts.get(curLine));

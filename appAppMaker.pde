@@ -142,27 +142,26 @@ class appMaker extends application
       {
         component comp = components.get(a);
         
-        //if(mouseClicked && cb.isOver())
-        //{
-        //  if(cba.isOver())
-        //  {
-        //    editComponent = a;
+        if(mouseClicked && (mouseX > x + ae.x && mouseY > y + ae.y && mouseX < ae.w + x + ae.x && mouseY < ae.h + ae.y + y))
+        {
+          if(mouseX > x + comp.x && mouseY > y + comp.y && mouseX < comp.w + x + comp.x && mouseY < comp.h + comp.y + y)
+          {
+            editComponent = a;
             
-        //    coord[0].setText(components.get(editComponent).x + "");
-        //    coord[1].setText(components.get(editComponent).y + "");
-        //    coord[2].setText(components.get(editComponent).w + "");
-        //    coord[3].setText(components.get(editComponent).h + "");
+            coord[0].setText(components.get(editComponent).x + "");
+            coord[1].setText(components.get(editComponent).y + "");
+            coord[2].setText(components.get(editComponent).w + "");
+            coord[3].setText(components.get(editComponent).h + "");
             
-        //    break;
-        //  }
-        //  else
-        //  {
-        //    editComponent = -1;
-        //  }
-        //}
+            break;
+          }
+          else
+          {
+            editComponent = -1;
+          }
+        }
       }
     }
-    
     if(editComponent >= 0)
     {
       /* COMPONENT X */

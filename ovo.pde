@@ -1,7 +1,6 @@
 taskManager taskManager; //<>//
 taskBar taskBar;
 desktop desktop;
-startButton startButton;
 system system;
 
 String lang = "eng.txt";
@@ -19,7 +18,8 @@ int scroll = 0;
  *TODO: Finish file command /applicationCMD/
  *TODO: appMaker - editor /appMaker/
  *TODO: appManager - load apps /appManager/
- *TODO: fileBrowser *pic for emty and full folder
+ *TODO: fix creator /appMaker/
+ *TODO: compList /filebrowser/
  
  *******************/
 
@@ -32,21 +32,20 @@ void setup()
   system = new system();
   taskBar = new taskBar();
   taskManager = new taskManager(taskBar.getWidth());
-  startButton = new startButton();
   desktop = new desktop();
 
   taskBar.registerApplication(loadImage("textures/taskBar/setting.png"), new setting());
 
-  system.registerApplication("painter", new painter());
-  system.registerApplication("calculator", new calculator());
-  system.registerApplication("exampleApp", new example());
-  system.registerApplication("carCalculator", new carCalculator());
-  system.registerApplication("appMaker", new appMaker());
-  system.registerApplication("snakeGame", new snakeGame());
-  system.registerApplication("textEditor", new textEditor());
-  system.registerApplication("fileBrowser", new fileBrowser());
-  system.registerApplication("appManager", new appManager());
-  system.registerApplication("console", new console());
+  system.registerApplication(new painter());
+  system.registerApplication(new calculator());
+  system.registerApplication(new example());
+  system.registerApplication(new carCalculator());
+  system.registerApplication(new appMaker());
+  system.registerApplication(new snakeGame());
+  system.registerApplication(new textEditor());
+  system.registerApplication(new fileBrowser());
+  system.registerApplication(new appManager());
+  system.registerApplication(new console());
 
   taskManager.registerApplication("console");
   taskManager.read();
@@ -54,12 +53,12 @@ void setup()
 
 void draw()
 {
+  //println(keyCode);
+  
   background(0);
-
   fps();
   desktop.render();
   taskManager.render();
-  startButton.render();
   taskBar.render();
   system.render();
 
@@ -67,6 +66,7 @@ void draw()
   mouseClicked = false;
   keyClicked = false;
   mouseReleased = false;
+  scroll = 0;
 }
 
 void mouseDragged()
@@ -236,8 +236,15 @@ String clock(boolean showSecs)
 class setting extends application
 {
   layout main = new layout(250, 250);
+  
+  setting()
+  {
+    super(null);
+  }
+  
   void init()
   {
+    
   }
 
   void update()
@@ -254,6 +261,11 @@ class clockTaskBar extends application
   PGraphics imgClock;
   int cx, cy;
   int radius;
+
+  clockTaskBar()
+  {
+    super(null);
+  }
 
   void init()
   {

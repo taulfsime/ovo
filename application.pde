@@ -6,7 +6,13 @@ class application
   public int w;
   public int h;
   public boolean isActive = true;
-  public String title;
+  public String addToTitle = null;
+  private applicationInfo appInfo;
+  
+  application(applicationInfo info)
+  {
+    appInfo = info;
+  }
   
   void init() {}
   void update() {}
@@ -23,7 +29,7 @@ class application
   
   void addToTitle(String s)
   {
-    title = s;
+    addToTitle = s;
   }
   
   void addComponent(component c)
@@ -50,6 +56,8 @@ class application
     }
   }
   
+  applicationInfo getInfo() {return appInfo;}
+  
   void updateComponent(int x, int y)
   {
     this.x = x;
@@ -57,4 +65,32 @@ class application
     layout.x = this.x;
     layout.y = this.y;
   }
+}
+
+class applicationInfo
+{
+  private String systemName = null;
+  private String author = null;
+  private String version = null;
+  private String description = null;
+  private String title = null;
+  private String iconDir = null;
+  
+  applicationInfo(String file)
+  {
+    JSONObject load = loadJSONObject(file);
+    systemName = load.getString("systemName");
+    author = load.getString("author");
+    version = load.getString("version");
+    description = load.getString("description");
+    title = load.getString("title");
+    iconDir = load.getString("icon");
+  }
+  
+  String getSystemName() {return systemName;}
+  String getAuthor() {return author;}
+  String getVersion() {return version;}
+  String getDescription() {return description;}
+  String getTitle() {return title;}
+  String getIconDir() {return iconDir;}
 }

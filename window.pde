@@ -1,7 +1,6 @@
 class window
 {
   application app;
-  PImage icon;
   int x;
   int y;
   int w;
@@ -10,21 +9,18 @@ class window
   int newX;
   int newY;
   String systemName;
-  String title;
   boolean isOpen = false;
   boolean isLocked = true;
   boolean isActive = true;
   boolean isToolBarActive = true;
   button btnClose;
   label lbIcon;
-  collisionBox toolBar;
   dataReader dataReader = new dataReader();
   PGraphics window;
   
-  window(String systemName, application app)
+  window(application app)
   {
     this.app = app;
-    this.systemName = systemName;
     
     if(this.app != null)
     {
@@ -45,7 +41,7 @@ class window
     }
     else
     {
-      this.app = new application();
+      this.app = new application(new applicationInfo("data/apps/empty.json"));
       this.w = 500;
       this.h = 500;
     }
@@ -64,19 +60,10 @@ class window
     window.fill(200, 200, 200);
     window.rect(6, 21, w - 12, h - 27);
     window.endDraw();
+    systemName = app.getInfo().getSystemName();
     
-    icon = getImage("textures/applicationIcon/" + systemName + ".png");
-    lbIcon = new label(2, 2, 17, 17, icon);
-    toolBar = new collisionBox(0, 7, w, 14);
+    lbIcon = new label(2, 2, 17, 17, getImage(app.getInfo().getIconDir()));
     btnClose = new button(w - 42, 0, 35, 16, loadImage("textures/button/close/normal.png"), loadImage("textures/button/close/over.png"), loadImage("textures/button/close/clicked.png"));
-    if(app != null)
-    {
-      title = dataReader.readData("window", systemName, "title", "data/lang/" + lang) + (app.title != null ? (" | " + app.title) : "");
-    }
-    else
-    {
-      title = dataReader.readData("window", systemName, "title", "data/lang/" + lang);
-    }
   }
   
   void addComponent(component c)
@@ -84,6 +71,16 @@ class window
     app.addComponent(c);
     app.init();
     app.update();
+  }
+  
+  PImage getIcon()
+  {
+    return getImage(app.getInfo().getIconDir());
+  }
+  
+  String getTitle()
+  {
+    return app.getInfo().getTitle();
   }
   
   //SETS
@@ -97,14 +94,19 @@ class window
     isToolBarActive = active;
   }
   
+  boolean isOverWindow()
+  {
+    if(mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
   void open() 
   {
-    if(app != null)
-    {
-      title = dataReader.readData("window", systemName, "title", "data/lang/" + lang) + (app.title != null ? (" | " + app.title) : "");
-    }
-    icon = getImage("textures/applicationIcon/" + systemName + ".png");
-    lbIcon.setImage(icon);
+    init();
     isOpen = true;
   }
   
@@ -113,20 +115,25 @@ class window
      x = (width - this.w)/2;
      y = (height - this.h)/2;
      
-    if(app != null)
-    {
-      this.app.init();
-      this.app.update();
-    }
+    init();
     
     isOpen = false;
+  }
+  
+  boolean isOverToolBar()
+  {
+    if(mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + 14)
+    {
+      return true;
+    }
+    
+    return false;
   }
   
   void render()
   {    
     if(isOpen)
     {
-      toolBar.translate(x, y);
       lbIcon.translate(x, y);
       btnClose.translate(x, y);
       btnClose.setActive(isToolBarActive);
@@ -147,9 +154,6 @@ class window
         if(this.w != app.w + 12 || this.h != app.h + 27)
         {
           init();
-          
-          //this.w = app.w + 12;
-          //this.h = app.h + 27;
         }
         app.setActive(isActive && isLocked);
         
@@ -161,12 +165,12 @@ class window
         
         fill(0);
         textSize(13);
-        text(title, x + 24, y + 15.5);
+        text(app.getInfo().getTitle(), x + 24, y + 15.5);
       }
         
       if(isToolBarActive && mouseButton == LEFT && mouseClicked)
       {
-        if(toolBar.isOver())
+        if(isOverToolBar())
         {
           isLocked = false;
         }
@@ -197,7 +201,7 @@ class window
         isLocked = true;
       }
       
-      if(btnClose.isClicked)
+      if(btnClose.isClicked())
       {
         close();
       }
@@ -220,7 +224,7 @@ class windowMessage extends window
   
   windowMessage(String text)
   {
-    super("windowMessage", null);
+    super(null);
     this.text = text;
   }
   
@@ -254,7 +258,7 @@ class windowGetInfo extends window
   
   windowGetInfo()
   {
-    super("windowGetInfo", null);
+    super(null);
   }
   
   void init()
@@ -278,12 +282,12 @@ class windowGetInfo extends window
   void render()
   {
     super.render();
-    if(done.isClicked)
+    if(done.isClicked())
     {
       info = enterInfo.getText();
       //super.close();
     }
-    else if(cancel.isClicked)
+    else if(cancel.isClicked())
     {
       //super.close();
     }

@@ -1,6 +1,5 @@
 /**************************
  - Desktop
- - Start Button
  - Task Manager
  - Task bar 
  **************************/
@@ -28,30 +27,16 @@ class desktop
   }
 }
 
-//Start Button
-class startButton
-{
-  button start = new button(13, height - 38, 35, 30, loadImage("textures/button/start/normal.png"));
-  startButton() {}
-
-  void render()
-  {
-    start.render();
-    if (start.isClicked)
-    {
-      exit();
-    }
-  }
-}
-
 //Task Manager
 class taskManager
 {
   int displayNameTime = 30; //Timer
   int w;
   data data = new data("taskManagerApps");
+  taskButton startButton = new taskButton(13, height - 40, 41, 38, getImage("textures/start.png"), "Start");
 
   ArrayList<String> systemNames = new ArrayList<String>();
+  ArrayList<taskButton> buttons = new ArrayList<taskButton>();
 
   taskManager(int w)
   {
@@ -102,6 +87,7 @@ class taskManager
       if(checkStrings(s, systemName))
       {
         this.systemNames.add(s);
+        buttons.add(new taskButton((systemNames.size() - 1)*43 + 58, height - 40, 40, 38, system.getWindow(s).getIcon(), system.getWindow(s).getTitle()));
       }
     }
   }
@@ -116,33 +102,26 @@ class taskManager
     fill(218, 218, 218);
     stroke(0);
     rect(0, height - 42, width - w, 42);
-    button[] buttons = new button[systemNames.size()];
-    label[] showNames = new label[systemNames.size()];
-
-    for (int a = 0; a < systemNames.size(); a++)
+    
+    startButton.render();
+    if(startButton.isClicked())
     {
-      showNames[a] = new label((int) (a * 38 + 18) + 16 - (int) (textWidth(systemNames.get(a))/2), height - 62, (int) textWidth(systemNames.get(a)), 20, systemNames.get(a));
-      buttons[a] = new button((int) ((a + 1) * 38 + 18), (int) (height - 38.5), 32, 32, system.getWindow(systemNames.get(a)).icon);
-      buttons[a].render();
-      if(buttons[a].isClicked)
+      exit();
+    }
+    
+    for(int a = 0; a < buttons.size(); a++)
+    {
+      buttons.get(a).render();
+      if(buttons.get(a).isClicked())
       {
         system.open(systemNames.get(a));
-        //cTimer[a] = displayNameTime + 5;
       }
-      
-      //if(buttons[a].isOver && cTimer[a] <= displayNameTime)
-      //{
-      //  cTimer[a]++;
-      //}
-      //else
-      //{
-      //  cTimer[a] = 0;
-      //}
-      //println(cTimer[a], buttons[a].isOver);
-      //if(cTimer[a] > displayNameTime && cTimer[a] < displayNameTime + 2)
-      //{
-      //  showNames[a].render();
-      //}
+    }
+    
+    startButton.renderText();
+    for(taskButton b : buttons)
+    {
+      b.renderText();
     }
   }
 }
@@ -204,7 +183,7 @@ class taskBar
     btnClock.setText(clock(false));
     
 
-    if (btnClock.isClicked)
+    if (btnClock.isClicked())
     {
       if(clockDialog.isOpen)
       {
@@ -224,7 +203,7 @@ class taskBar
       buttons[a].render();
       dialogs.get(a).render();
 
-      if (buttons[a].isClicked)
+      if (buttons[a].isClicked())
       {
         if(!dialogs.get(a).isOpen)
         {
@@ -236,5 +215,94 @@ class taskBar
         }
       }
     }
+  }
+}
+
+class taskButton
+{
+  PImage icon;
+  String text;
+  int textTimer = 30;
+  int timer;
+  boolean isActive = true;
+  int x;
+  int y;
+  int w;
+  int h;
+  
+  taskButton(int x, int y, int w, int h, PImage icon, String text)
+  {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    
+    this.text = text;
+    this.icon = icon;
+  }
+  
+  void render()
+  {
+    stroke(50, 50, 50);
+    strokeWeight(0.5);
+    
+    if(isOver() && isActive)
+    {
+      if(isClicked())
+      {
+        fill(200, 200, 200);
+      }
+      else
+      {
+        fill(220, 220, 220);
+      }
+    }
+    else
+    {
+      fill(255, 255, 255);
+    }
+    rect(x, y, w, h, min(x, y) - 3);
+    
+    image(icon, x + 8, y + 8, w - 16, h - 16);
+  }
+  
+  void renderText()
+  {
+    if(isActive && isOver())
+    {
+      stroke(50, 50, 50);
+      strokeWeight(0.3);
+      fill(130, 130, 130);
+      rect(mouseX, mouseY - 30, textWidth(text) + 10, 30, 29);
+      
+      textSize(14);
+      fill(255, 255, 255);
+      text(text, mouseX + 6, mouseY - 10);
+    }
+  }
+  
+  void setActive(boolean active)
+  {
+    this.isActive = active;
+  }
+  
+  boolean isClicked()
+  {
+    if(isOver() && mouseClicked && isActive)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isOver()
+  {
+    if(mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h)
+    {
+      return true;
+    }
+    
+    return false;
   }
 }

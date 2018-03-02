@@ -12,9 +12,9 @@ class system
     subwindow.open();
   }
   
-  void registerApplication(String systemName, application app)
+  void registerApplication(application app)
   {
-    this.windows.add(new window(systemName, app));
+    this.windows.add(new window(app));
   }
   
   String[] getSystemNames()
@@ -103,33 +103,6 @@ class system
       }
     }
     
-    //for(int a = 0; a < renderWindows.size(); a++)
-    //{
-    //  for(int q = 0; q < renderWindows.size(); q++)
-    //  {
-    //    if(!checkStrings(renderWindows.get(a), renderWindows.get(q)))
-    //    {
-    //      String w1 = renderWindows.get(a);
-    //      String w2 = renderWindows.get(q);
-          
-    //      println(w1 + " - " + getWindow(w1).y ,w2 + " - " + getWindow(w2).y);
-          
-    //      if(getWindow(w1).y > getWindow(w2).y)
-    //      {
-    //        getWindow(w1).setToolBarActive(true);
-    //        getWindow(w2).setToolBarActive(false);
-    //      }
-    //      else
-    //      {
-    //        getWindow(w1).setToolBarActive(false);
-    //        getWindow(w2).setToolBarActive(true);
-    //      }
-    //    }
-    //  }
-    //}
-    
-    //printArray(renderWindows);
-    
     for(int a = 0; a < renderWindows.size(); a++)
     {
       String w = renderWindows.get(a);
@@ -160,6 +133,23 @@ class system
       else
       {
         subwindow = null;
+      }
+    }
+    if(renderWindows.size() > 1)
+    {
+      for(int a = renderWindows.size() - 1; a > 0 ; a--)
+      {
+        if(!getWindow(renderWindows.get(a)).isOverWindow() && getWindow(renderWindows.get(a - 1)).isOverWindow() && mouseClicked)
+        {
+          String s = renderWindows.get(a - 1);
+          renderWindows.set(a - 1, renderWindows.get(a));
+          renderWindows.set(a, s);
+          
+          //for(int q = a; q > 0; q--)
+          //{
+          //  renderWindows.set(q, renderWindows.get(q - 1));
+          //}
+        }
       }
     }
   }

@@ -1,5 +1,7 @@
 class textEditor extends application
 {
+  textEditor() {super(new applicationInfo("data/apps/textEditor.json"));}
+  
   dtext dtxt;
   layout createFile;
   textField enterName;
@@ -40,7 +42,7 @@ class textEditor extends application
   {
     if(getLayout() == main)
     {
-      if(saveFile.isClicked)
+      if(saveFile.isClicked())
       {
         dtxt = new dtext(enterName.getText());
         dtxt.save(enterText.getText());
@@ -48,13 +50,13 @@ class textEditor extends application
     }
     else if(getLayout() == createFile)
     {
-      if(load.isClicked)
+      if(load.isClicked())
       {
         dtxt = new dtext(enterName.getText());
         enterText.setText(dtxt.load());
         setLayout(main);
       }
-      else if(create.isClicked)
+      else if(create.isClicked())
       {
         setLayout(main);
       }

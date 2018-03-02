@@ -1,5 +1,7 @@
 class painter extends application
 {
+  painter() {super(new applicationInfo("data/apps/painter.json"));}
+  
   picture pic;
   
   //Tools
@@ -131,13 +133,13 @@ class painter extends application
   
   void saving()
   {
-    if(saveIt.isClicked)
+    if(saveIt.isClicked())
     {
       pic.save(canvas.getPixel());
       setLayout(draw);
       canvas.empty();
     }
-    else if(dSaveIt.isClicked)
+    else if(dSaveIt.isClicked())
     {
       setLayout(draw);
       canvas.empty();
@@ -146,11 +148,11 @@ class painter extends application
   
   void createPicture()
   {
-    if(create.isClicked)
+    if(create.isClicked())
     {
       setLayout(draw);
     }
-    else if(load.isClicked)
+    else if(load.isClicked())
     {
       pic = new picture(enterName.getText());
       if(pic.load() != null)
@@ -159,7 +161,7 @@ class painter extends application
       }
       setLayout(draw);
     }
-    else if(customLoad.isClicked)
+    else if(customLoad.isClicked())
     {
       pic = new picture(split(enterName.getText(), '.')[0]);
       canvas.pixel = pic.customLoad(enterName.getText());
@@ -182,43 +184,43 @@ class painter extends application
   {
     drawColor = color(sliderRed.getPercentage()*255, sliderGreen.getPercentage()*255, sliderBlue.getPercentage()*255);
     sc.setColor(drawColor);
-    if(colors[0].isClicked)
+    if(colors[0].isClicked())
     {
       drawColor = color(255, 255, 255);
     }
-    else if(colors[1].isClicked)
+    else if(colors[1].isClicked())
     {
       drawColor = color(165, 165, 165);
     }
-    else if(colors[2].isClicked)
+    else if(colors[2].isClicked())
     {
       drawColor = color(255, 0, 0);
     }
-    else if(colors[3].isClicked)
+    else if(colors[3].isClicked())
     {
       drawColor = color(255, 153, 0);
     }
-    else if(colors[4].isClicked)
+    else if(colors[4].isClicked())
     {
       drawColor = color(165, 165, 165);
     }
-    else if(toolPencil.isClicked)
+    else if(toolPencil.isClicked())
     {
       tool = "pencil";
     }
-    else if(toolEraser.isClicked)
+    else if(toolEraser.isClicked())
     {
       tool = "eraser";
     }
-    else if(newFile.isClicked)
+    else if(newFile.isClicked())
     {
       setLayout(saving);
     }
-    else if(toolBucket.isClicked)
+    else if(toolBucket.isClicked())
     {
       tool = "bucket";
     }
-    else if(saveFile.isClicked)
+    else if(saveFile.isClicked())
     {
       picture p = new picture(enterName.getText());
       p.save(canvas.getPixel());
@@ -315,7 +317,6 @@ class canvas extends component
   int col = 100;
   int row = 100;
   color[] pixel = new color[row*col];
-  collisionBox cb;
   
   color background = color(255, 255, 255);
   
@@ -390,8 +391,6 @@ class canvas extends component
   
   void render()
   {
-    cb = new collisionBox(x + tx, y + ty, w, h);
-    
     for(int dx = 1; dx <= 500; dx += 5)
     {
       for(int dy = 1; dy <= 500; dy += 5)

@@ -1,5 +1,7 @@
 class snakeGame extends application
 {
+  snakeGame() {super(new applicationInfo("data/apps/snakeGame.json"));}
+  
   data data;
     
   color headColor = color(0, 175, 0);
@@ -88,13 +90,13 @@ class snakeGame extends application
   
   void menu()
   {
-    if(start.isClicked)
+    if(start.isClicked())
     {
       s.setHeadColor(headColor);
       s.setTailColor(tailColor);
       setLayout(main);
     }
-    else if(settings.isClicked)
+    else if(settings.isClicked())
     {
       setLayout(setting);
       
@@ -146,11 +148,11 @@ class snakeGame extends application
   
   void setting()
   {
-    if(back.isClicked)
+    if(back.isClicked())
     {
       setLayout(menu);
     }
-    else if(save.isClicked)
+    else if(save.isClicked())
     {
       data.toTag("name", enterName.getText());
       data.toTag("getRed_head", String.valueOf(getRed.getPercentage()));

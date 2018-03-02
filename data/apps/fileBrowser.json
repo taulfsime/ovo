@@ -3,8 +3,6 @@
 	"author":"taulfsime",
 	"version":"1.0",
 	"description":"Control all of files ",
-	"name":"File Browser",
-	"icon":"textures/applicationIcon/fileBrowser.png",
-	"isSystemApp":true,
-	"file":"fileBrowser.pde"
+	"title":"File Browser",
+	"icon":"textures/applicationIcon/fileBrowser.png"
 }

@@ -87,32 +87,29 @@ class component
 }
 
 //Collision Box
-class collisionBox extends component
-{
-  collisionBox(int x, int y, int w, int h) 
-  {
-    super(x, y, w, h);
-  }
+//class collisionBox extends component
+//{
+//  collisionBox(int x, int y, int w, int h) 
+//  {
+//    super(x, y, w, h);
+//  }
 
-  public boolean isOver()
-  {
-    if (isActive)
-    {
-      return (mouseX >= (x + tx) && mouseX <= (x + ty + w) && mouseY >= (y + ty) && mouseY <= (y + h + ty));
-    }
-    return false;
-  }
-}
+//  public boolean isOver()
+//  {
+//    if (isActive)
+//    {
+//      return (mouseX >= (x + tx) && mouseX <= (x + ty + w) && mouseY >= (y + ty) && mouseY <= (y + h + ty));
+//    }
+//    return false;
+//  }
+//}
 
 //Button
 class button extends component
 {
-  collisionBox cb;
   String text = null;
   PImage img = null;
   PImage img1 = null, img2 = null;
-  boolean isClicked = false;
-  boolean isOver = false;
   char bindKey;
   boolean useBindKey = false;
   text showText;
@@ -162,12 +159,29 @@ class button extends component
     bindKey = bKey;
     useBindKey = true;
   }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    if(isActive && isOver() && mouseClicked)
+    {
+      return true;
+    }
+    
+    return false;
+  }
 
   void render()
   {
-    cb = new collisionBox(x + tx, y + ty, w, h);
-    cb.setActive(isActive && isEnable);
-
     if (img2 == null)
     {
       noStroke();
@@ -177,28 +191,23 @@ class button extends component
     
     if(isEnable)
     {
-      if (isActive && (cb.isOver() || (keyClicked && key == bindKey && useBindKey)))
+      if (isActive && (isOver() || (keyClicked && key == bindKey && useBindKey)))
       {
-        if (mouseClicked || (keyClicked && key == bindKey && useBindKey))
+        if (isClicked() || (keyClicked && key == bindKey && useBindKey))
         {
           noStroke();
           fill(click); //clicked
-          this.isClicked = true;
         } 
         else
         {
           noStroke();
           fill(over); //over
-          this.isClicked = false;
-          this.isOver = true;
         }
       } 
       else
       {
         noStroke();
         fill(normal); //normal
-        this.isOver = false;
-        this.isClicked = false;
       }
     }
     else
@@ -207,15 +216,11 @@ class button extends component
       {
         noStroke();
         fill(click); //normal
-        this.isOver = false;
-        this.isClicked = false;
       }
       else
       {
         noStroke();
         fill(normal); //normal
-        this.isOver = false;
-        this.isClicked = false;
       }
     }
 
@@ -248,11 +253,11 @@ class button extends component
     }
     else if (this.text == null && this.img != null && this.img1 != null && this.img2 != null)        //image x3
     {
-      if (this.isClicked)
+      if (isClicked())
       {
         image(img2, x + tx, y + ty, w, h);  //clicked
       } 
-      else if (this.isOver)
+      else if (isOver())
       {
         image(img1, x + tx, y + ty, w, h); //over
       } 
@@ -312,7 +317,6 @@ class label extends component
   int textScale;
   text showText;
   boolean isActive = true;
-  collisionBox cb;
 
   label(int xPos, int yPos, int xLength, int yLength, String text) 
   {
@@ -346,10 +350,19 @@ class label extends component
   {
     this.textScale = scale;
   }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
 
   void render()
   {
-    cb = new collisionBox(x, y, w, h);
     if (text == null && img != null)
     {
       noStroke();
@@ -402,11 +415,9 @@ class label extends component
 class switchButton extends component
 {
   boolean isClicked = false;
-  boolean isOver = false;
   PImage imgOff = null;
   PImage imgOn = null;
   String text = null;
-  collisionBox cb;
   text showText;
   boolean isActive = true;
 
@@ -452,6 +463,21 @@ class switchButton extends component
       this.text = text;
     }
   }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    return isClicked;
+  }
 
   void setImage(PImage img)
   {
@@ -472,22 +498,15 @@ class switchButton extends component
 
   void render()
   {
-    cb = new collisionBox(x + tx, y + ty, w, h);
-    cb.setActive(isActive);
 
     if (isActive)
     {
-      if (cb.isOver())
+      if (isOver())
       {
         if (mouseClicked)
         {
           isClicked = !isClicked;
         }
-        isOver = true;
-      } 
-      else
-      {
-        isOver = false;
       }
     }
 
@@ -514,7 +533,7 @@ class switchButton extends component
       } 
       else 
       {
-        if (isOver)
+        if (isOver())
         {
           fill(over);
         } 
@@ -549,7 +568,6 @@ class progressBar extends component
   color bar = color(0, 255, 0);
   text showText;
   boolean isActive = true;
-  collisionBox cb;
 
   progressBar(int xPos, int yPos, int xLength, int yLength) 
   {
@@ -564,6 +582,16 @@ class progressBar extends component
   float getPercentage()
   {
     return percentage;
+  }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
   }
 
   void showPercentage(boolean show)
@@ -595,8 +623,6 @@ class progressBar extends component
 
   void render()
   {
-    cb = new collisionBox(x, y, w, h);
-    
     fill(border);
     rect(x + tx, y + ty, w, h);
     
@@ -622,13 +648,11 @@ class textField extends component
   color textColor = color(0, 0, 0);
   String text = "";
   String dText = "";
-  collisionBox cb;
   boolean enterText = false;
-  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& /";
+  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& /[]{}()";
   String filter = null;
   ArrayList<String> library = new ArrayList<String>();
   String example = null;
-  boolean isWorking = true;
   int maxSymbols = 0;
     
   textField(int xPos, int yPos, int xLength, int yLength, String displayText)
@@ -643,11 +667,6 @@ class textField extends component
     {
       maxSymbols = n;
     }
-  }
-  
-  void setWorking(boolean work)
-  {
-    isWorking = work;
   }
   
   String getText()
@@ -674,16 +693,31 @@ class textField extends component
     library.add(text);
   }
 
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    if(isActive && isOver() && mouseClicked)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+
   void render()
   {
-    cb = new collisionBox(x + tx, y + ty, w, h);
-    cb.setActive(isActive);
-    if (isActive && isWorking)
+    if (isActive && isEnable)
     {
-      if (mouseClicked)
-      {
-        enterText = cb.isOver();
-      }
+      enterText = isClicked();
             
       if (enterText && keyClicked)
       {
@@ -821,14 +855,13 @@ class textField extends component
 //Text Area
 class textArea extends component
 {
-  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& ";
+  final String symbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM><.,0123456789*-+=!?& /[]{}()";
   ArrayList<String> texts = new ArrayList<String>();
   int curLine = 0;
   int vLines;
   int maxLines = -1;
   int pc = 20;
   boolean enterText = false;
-  collisionBox cb;
   scrollBar scroll;
   
   textArea(int xPos, int yPos, int xLength, int yLength)
@@ -848,6 +881,26 @@ class textArea extends component
   void setMaxLines(int m)
   {
     maxLines = m;
+  }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    if(isActive && isOver() && mouseClicked)
+    {
+      return true;
+    }
+    
+    return false;
   }
   
   void setText(String[] s)
@@ -872,16 +925,9 @@ class textArea extends component
   
   void render()
   {
-    cb = new collisionBox(x + tx, y + ty, w, h);
-    cb.setActive(isActive);
-    //println(curLine, vLines);
-    
     if(isActive)
     {
-      if (mouseClicked)
-      {
-        enterText = cb.isOver();
-      }
+      enterText = isClicked();
       
       if(keyClicked && enterText)
       {
@@ -892,7 +938,8 @@ class textArea extends component
           {
             if (texts.get(curLine).length() > 0)
             {
-              texts.set(curLine, texts.get(curLine).substring(0, texts.get(curLine).length() - 1));
+              texts.set(curLine, deleteFromText(texts.get(curLine), pc, true));
+              pc--;
             }
             else
             {
@@ -904,21 +951,39 @@ class textArea extends component
           }
           break;
           
-          case ENTER:
+          case DELETE:
           {
-            if(maxLines >= 0)
+            if (texts.get(curLine).length() > 0 && pc < texts.get(curLine).length() - 1)
             {
-              if(curLine < maxLines - 1)
-              {
-                texts.add("");
-                curLine++;
-                pc = texts.get(curLine).length();
-              }
+              texts.set(curLine, deleteFromText(texts.get(curLine), pc, false));
+            }
+          }
+          break;
+          
+          case TAB:
+          {
+            //TABS
+            for(int a = 0; a < 7; a++)
+            {
+              texts.set(curLine, writeToText(texts.get(curLine), pc, ' '));
+              pc++;
+            }
+          }
+          break;
+          
+          case ENTER:
+          {            
+            if(pc < texts.get(curLine).length())
+            {
+              curLine++;
+              texts.add(curLine, texts.get(curLine - 1).substring(pc));
+              texts.set(curLine - 1, texts.get(curLine - 1).substring(0, pc));
+              pc = 0;
             }
             else
             {
-              texts.add("");
               curLine++;
+              texts.add(curLine, "");
               pc = texts.get(curLine).length();
             }
           }
@@ -972,11 +1037,23 @@ class textArea extends component
               }
               break;
               
+              case 35:
+              {
+                pc = texts.get(curLine).length();
+              }
+              break;
+              
+              case 36:
+              {
+                pc = 0;
+              }
+              break;
+              
               default:
               {
                 if (checkSymbol(ch) && textWidth(texts.get(curLine) + ch) < w)
                 {
-                  texts.set(curLine, writeTotText(texts.get(curLine), pc, ch));//texts.get(curLine) + ch)
+                  texts.set(curLine, writeToText(texts.get(curLine), pc, ch)); //texts.get(curLine) + ch)
                   pc++;
                 }    
               }
@@ -995,7 +1072,7 @@ class textArea extends component
         }
         scroll.setScrollSize(vLines, texts.size());
       }
-    }  //<>//
+    } //<>//
         
     fill(border);
     rect(x + tx, y + ty, w, h);
@@ -1017,7 +1094,14 @@ class textArea extends component
       for (int a = start; a < finish; a++)
       {
         fill(0, 0, 0);
-        text(texts.get(a), x + tx + borderWidth + 3, y + ty + borderWidth + 15*((a - start) + 1));
+        if(a == curLine)
+        {
+          text(drawText(texts.get(a), pc), x + tx + borderWidth + 3, y + ty + borderWidth + 15*((a - start) + 1));
+        }
+        else
+        {
+          text(texts.get(a), x + tx + borderWidth + 3, y + ty + borderWidth + 15*((a - start) + 1));
+        }
       }
       
       if(enterText)
@@ -1029,7 +1113,7 @@ class textArea extends component
     }
   }
   
-  String writeTotText(String text, int num, char ch)
+  String writeToText(String text, int num, char ch)
   {
     if(text.length() > num)
     {
@@ -1037,6 +1121,40 @@ class textArea extends component
     }
     
     return text + ch;
+  }
+  
+  String drawText(String text, int num)
+  {
+    if(text.length() > num && text.length() > 1)
+    {
+      return text.substring(0, num) + " " + text.substring(num);
+    }
+    
+    return text;
+  }
+  
+  String deleteFromText(String text, int num, boolean backspace)
+  {
+    if(text.length() > num)
+    {
+      if(num > 0)
+      {
+        if(backspace)
+        {
+          return text.substring(0, num - 1) + text.substring(num);
+        }
+        else
+        {
+          return text.substring(0, num ) + text.substring(num + 1);
+        }
+      }
+      else
+      {
+        return text;
+      }
+    }
+    
+    return text.substring(0, text.length() - 1);
   }
   
   float pointerX(int num)
@@ -1129,12 +1247,10 @@ class slider extends component
   int newX;
   int newY;
   PImage img = null;
-  collisionBox cb;
   final int sliderWidth = 5;
   boolean showPercentage = false;
   color slider = color(80, 80, 80);
   text showText;
-  boolean isActive = true;
   boolean vertical = false;
 
   slider(int xPos, int yPos, int xLength, int yLength)
@@ -1167,11 +1283,6 @@ class slider extends component
       sx = (int) (per*(this.w - sliderWidth));
     }
   }
-  
-  void setActive(boolean active)
-  {
-    isActive = active;
-  }
  
   void showPercentage(boolean show)
   {
@@ -1195,19 +1306,36 @@ class slider extends component
   {
     this.img =  img;
   }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    if(isActive && isOver() && mouseClicked)
+    {
+      return true;
+    }
+    
+    return false;
+  }
 
   void render()
-  {
-    cb = new collisionBox(x + tx + borderWidth, y + ty, w - borderWidth*2, h);
-    cb.setActive(isActive);
-    
+  { 
     if(isActive)
     {
       if(!vertical)
       {
         newX = (mouseX - (x + tx + sliderWidth/2));
     
-        if (mousePressed && cb.isOver())
+        if (mousePressed && isOver())
         {
           if (newX > w - sliderWidth)
           {
@@ -1227,7 +1355,7 @@ class slider extends component
       {
         newY = (mouseY - (y + ty + sliderWidth/2));
         
-        if (mousePressed && cb.isOver())
+        if (mousePressed && isOver())
         {
           if (newY > h - sliderWidth - 2)
           {
@@ -1416,7 +1544,7 @@ class itemList extends component
     for(int a = 0; a < vLines; a++)
     {
       buttons[a].render();
-      if(buttons[a].isClicked)
+      if(buttons[a].isClicked())
       {
         selected = a;
       }
@@ -1429,7 +1557,6 @@ class image extends component
 {
   PImage img = null;
   boolean isActive = true;
-  collisionBox cb;
   image(int xPos, int yPos, int xLength, int yLength, PImage img)
   {
     super(xPos, yPos, xLength, yLength);
@@ -1460,15 +1587,23 @@ class image extends component
     
     return a;
   }
+  
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
 
   void setImage(PImage img)
   {
     this.img = img;
   }
   void render()
-  {
-    cb = new collisionBox(x, y, w, h);
-    
+  {    
     if(img != null)
     {
       image(img, x + tx, y + ty, w, h);
@@ -1479,7 +1614,6 @@ class image extends component
 //Check Box
 class checkBox extends component
 {
-  collisionBox cb;
   String text = null;
   boolean clicked = false;
   boolean update = false;
@@ -1498,11 +1632,28 @@ class checkBox extends component
     isActive = active;
   }
   
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    if(isActive && isOver() && mouseClicked)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
   void render()
   {
-    cb = new collisionBox(x + tx + 3, y + ty + 3, h - 6, h - 6);
-    cb.setActive(isActive);
-    
     fill(border);
     rect(x + 3 + tx, y + ty + 3, h - 6, h - 6);
     
@@ -1513,7 +1664,7 @@ class checkBox extends component
     textSize(15);
     text(showText.toString(text), tx + x + h + 5, ty + y + h*0.62);
     
-    if(isActive && cb.isOver() && mouseClicked)
+    if(isActive && isOver() && mouseClicked)
     {
       clicked = !clicked;
       update = true;
@@ -1529,7 +1680,7 @@ class checkBox extends component
       fill(click);
       rect(x + tx + borderWidth + 6, y + ty + borderWidth + 6, h - borderWidth*2 - 12, h - borderWidth*2 - 12);
       
-      if(cb.isOver())
+      if(isOver())
       {
         fill(over);
       }
@@ -1549,7 +1700,6 @@ class scrollBar extends component
   int sy = 0;
   int newY;
   int sScale = 0;
-  collisionBox cb;
   color c = normal;
   scrollBar(int xPos, int yPos, int xLength, int yLength)
   {
@@ -1568,7 +1718,7 @@ class scrollBar extends component
   
   void setScrollSize(int cItems, int mItems)
   {
-    sScale = max((int) ((float) cItems / (float) mItems * (float) (h)), 20);
+    sScale = max((int) ((float) cItems / (float) mItems * (float) h), 20);
   }
   
   float getPer()
@@ -1576,26 +1726,64 @@ class scrollBar extends component
     return (float) (sy / (float) (h - sScale));
   }
   
+  boolean isOver()
+  {
+    if(mouseX > tx + x && mouseX < tx + x + w && mouseY > ty + y && mouseY < ty + y + h)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean isClicked()
+  {
+    if(isActive && isOver() && mouseClicked)
+    {
+      return true;
+    }
+    
+    return false;
+  }
+  
   void render()
   {
     if(isActive)
     {
-      cb = new collisionBox(x + tx, y + ty, w, h);
       newY = mouseY - (y + ty + sScale/2);
-      
-      if(mousePressed && cb.isOver())
+ 
+      if(isOver())
       {
-        if(newY > h - sScale)
+        if(mousePressed)
+        {
+          if(newY > h - sScale)
+          {
+            sy = h - sScale;
+          }
+          else if(newY < 0)
+          {
+            sy = 0;
+          }
+          else
+          {
+            sy = newY;
+          }
+        }
+      }
+      
+      if(scroll != 0)
+      {
+        if(scroll*20 + sy > h - sScale)
         {
           sy = h - sScale;
         }
-        else if(newY < 0)
+        else if(scroll*20 + sy < 0)
         {
           sy = 0;
         }
         else
         {
-          sy = newY;
+          sy += scroll*20;
         }
       }
       
@@ -1613,7 +1801,7 @@ class scrollBar extends component
     fill(c, 230);
     rect(x + tx, y + ty, w, h);
     
-    if(cb.isOver() && isActive)
+    if(isOver() && isActive)
     {
       fill(click, 240);
     }

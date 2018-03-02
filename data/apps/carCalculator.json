@@ -3,8 +3,6 @@
 	"author":"taulfsime",
 	"version":"1.0",
 	"description":"Beta Application",
-	"name":"Car Calculator",
-	"icon":"textures/applicationIcon/carCalculator.png",
-	"isSystemApp":false,
-	"file":"carCalculator.pde"
+	"title":"Car Calculator",
+	"icon":"textures/applicationIcon/carCalculator.png"
 }

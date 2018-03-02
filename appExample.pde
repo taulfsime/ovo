@@ -1,5 +1,7 @@
 class example extends application
 {
+  example() {super(new applicationInfo("data/apps/exampleApp.json"));}
+  
   layout layout;
   button button;
   label label;
@@ -70,7 +72,7 @@ class example extends application
     
   void update()
   {
-    if(button.isClicked)
+    if(button.isClicked())
     {
       system.openSubwindow(new windowMessage("text"));
     }

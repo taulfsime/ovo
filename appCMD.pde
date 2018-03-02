@@ -1,5 +1,7 @@
 class console extends application
 {
+  console() {super(new applicationInfo("data/apps/console.json"));}
+  
   layout main;
   textField enterCommand;
   button enter;
@@ -44,7 +46,7 @@ class console extends application
 
   void update()
   {
-    if (enter.isClicked)
+    if (enter.isClicked())
     {
       readCommand = enterCommand.getText();
       logger.add("> " + readCommand);
@@ -454,7 +456,7 @@ class console extends application
   {
     for (String s : system.getSystemNames())
     {
-      logger.add(">> '" + s + "' is " + system.getWindow(s).title, outputColor);
+      logger.add(">> '" + s + "' is " + system.getWindow(s).getTitle(), outputColor);
     }
   }
 

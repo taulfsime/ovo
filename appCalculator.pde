@@ -1,5 +1,7 @@
 class calculator extends application
 {
+  calculator() {super(new applicationInfo("data/apps/calculator.json"));}
+  
   float fNum = 0.0;
   float sNum = 0.0;
   float result = 0.0;
@@ -204,7 +206,7 @@ class calculator extends application
   void buttonClick()
   {
     //Buttons
-    if (num0.isClicked)
+    if (num0.isClicked())
     {
       if (operation == null)
       {
@@ -213,7 +215,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 0);
       }
-    } else if (num1.isClicked)
+    } else if (num1.isClicked())
     {
       if (operation == null)
       {
@@ -222,7 +224,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 1);
       }
-    } else if (num2.isClicked)
+    } else if (num2.isClicked())
     {
       if (operation == null)
       {
@@ -231,7 +233,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 2);
       }
-    } else if (num3.isClicked)
+    } else if (num3.isClicked())
     {
       if (operation == null)
       {
@@ -240,7 +242,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 3);
       }
-    } else if (num4.isClicked)
+    } else if (num4.isClicked())
     {
       if (operation == null)
       {
@@ -249,7 +251,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 4);
       }
-    } else if (num5.isClicked)
+    } else if (num5.isClicked())
     {
       if (operation == null)
       {
@@ -258,7 +260,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 5);
       }
-    } else if (num6.isClicked)
+    } else if (num6.isClicked())
     {
       if (operation == null)
       {
@@ -267,7 +269,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 6);
       }
-    } else if (num7.isClicked)
+    } else if (num7.isClicked())
     {
       if (operation == null)
       {
@@ -276,7 +278,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 7);
       }
-    } else if (num8.isClicked)
+    } else if (num8.isClicked())
     {
       if (operation == null)
       {
@@ -285,7 +287,7 @@ class calculator extends application
       {
         sNum = setNum(sNum, 8);
       }
-    } else if (num9.isClicked)
+    } else if (num9.isClicked())
     {
       if (operation == null)
       {
@@ -295,31 +297,31 @@ class calculator extends application
         sNum = setNum(sNum, 9);
       }
     } 
-    else if (dot.isClicked)
+    else if (dot.isClicked())
     {
       
-    } else if (plus.isClicked)
+    } else if (plus.isClicked())
     {
       operation = "+";
-    } else if (minus.isClicked)
+    } else if (minus.isClicked())
     {
       operation = "-";
-    } else if (by.isClicked)
+    } else if (by.isClicked())
     {
       operation = "*";
-    } else if (divide.isClicked)
+    } else if (divide.isClicked())
     {
       operation = "/";
-    } else if (equals.isClicked)
+    } else if (equals.isClicked())
     {
       showResult = true;
-    } else if (percentage.isClicked)
+    } else if (percentage.isClicked())
     {
-    } else if (sqrt.isClicked)
+    } else if (sqrt.isClicked())
     {
-    } else if (c.isClicked)
+    } else if (c.isClicked())
     {
-    } else if (ce.isClicked)
+    } else if (ce.isClicked())
     {
       result = 0.0;
       fNum = 0.0;
@@ -327,21 +329,21 @@ class calculator extends application
       showResult = false;
       operation = null;
     } 
-    else if (backspace.isClicked)
+    else if (backspace.isClicked())
     {
-    } else if (mc.isClicked)
+    } else if (mc.isClicked())
     {
-    } else if (ms.isClicked)
+    } else if (ms.isClicked())
     {
-    } else if (mPlus.isClicked)
+    } else if (mPlus.isClicked())
     {
-    } else if (mMinus.isClicked)
+    } else if (mMinus.isClicked())
     {
-    } else if (sqrt.isClicked)
+    } else if (sqrt.isClicked())
     {
-    } else if (inverse.isClicked)
+    } else if (inverse.isClicked())
     {
-    } else if (plusMinus.isClicked)
+    } else if (plusMinus.isClicked())
     {
     }
   }
@@ -349,6 +351,8 @@ class calculator extends application
 
 class carCalculator extends application
 {
+  carCalculator() {super(new applicationInfo("data/apps/carCalculator.json"));}
+  
   double lpk1 = 0, lpk2 = 0;
   double l1 = 0, l2 = 0;
   double cp1 = 0, cp2 = 0;
@@ -413,7 +417,7 @@ class carCalculator extends application
     }
     finish.setActive(active);
     
-    if(finish.isClicked)
+    if(finish.isClicked())
     {
       
       double a1 = Double.parseDouble(enter[0].getText());

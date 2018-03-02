@@ -3,8 +3,6 @@
 	"author":"taulfsime",
 	"version":"1.0",
 	"description":"desc",
-	"name":"Application Manager",
-	"icon":"textures/applicationIcon/appManager.png",
-	"isSystemApp":true,
-	"file":"appManager.pde"
+	"title":"Application Manager",
+	"icon":"textures/applicationIcon/appManager.png"
 }

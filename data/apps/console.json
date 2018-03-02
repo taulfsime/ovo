@@ -3,8 +3,6 @@
 	"author":"taulfsime",
 	"version":"1.0",
 	"description":"The Power Of Code",
-	"name":"Command Prompt",
-	"icon":"textures/applicationIcon/console.png",
-	"isSystemApp":true,
-	"file":"console.pde"
+	"title":"Command Prompt",
+	"icon":"textures/applicationIcon/console.png"
 }

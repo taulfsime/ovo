@@ -1,5 +1,7 @@
 class fileBrowser extends application
 {
+  fileBrowser() {super(new applicationInfo("data/apps/fileBrowser.json"));}
+  
   compList items;
   data data;
   layout main;
@@ -42,21 +44,21 @@ class fileBrowser extends application
   
   void update()
   {
-    if(find.isClicked)
+    if(find.isClicked())
     {
       items.dir = address.getText();
     }
-    else if(back.isClicked)
+    else if(back.isClicked())
     {
       items.dir = items.getBackDir();
       address.setText(items.dir);
     }
-    else if(next.isClicked)
+    else if(next.isClicked())
     {
       items.addDir(items.items.get(items.getSelected()));
       address.setText(items.dir);
     }
-    else if(newFile.isClicked)
+    else if(newFile.isClicked())
     {
       system.openSubwindow(enterInfo);
       println(enterInfo.getInfo());
@@ -91,7 +93,7 @@ class compList extends component
   {
     super(xPos, yPos, xLength, yLength);
     vLines = h/40;
-    scroll = new scrollBar(w - 17, 5, 15, vLines*40 - 10);
+    scroll = new scrollBar(w - 17, 5, 15, vLines*41 - 5);
   }
   
   void setDir(String dir)
@@ -174,13 +176,14 @@ class compList extends component
   {
     noStroke();
     fill(border);
-    rect(x + tx, y + ty, w, vLines*41 + borderWidth*4);
+    rect(x + tx, y + ty, w, vLines*41 + borderWidth*5);
     
     fill(normal);
-    rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, (vLines*41) + borderWidth*2);
+    rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, (vLines*41) + borderWidth*3);
     
     if(items.size() > vLines)
     {
+      scroll.setActive(this.isActive);
       scroll.translate(x + tx, y + ty);
       scroll.setScrollSize(vLines, items.size());
       scroll.render();
@@ -206,7 +209,14 @@ class compList extends component
         
         if(!hasChar)
         {
-          icons.add(getImage("textures/files/folder_empty.png"));
+          if(getFolderData(mainDir  + "/" + dir + "/" + s).length > 0)
+          {
+            icons.add(getImage("textures/files/folder_full.png"));
+          }
+          else
+          {
+            icons.add(getImage("textures/files/folder_empty.png"));
+          }
         }
         
         items.add(s);
@@ -218,13 +228,12 @@ class compList extends component
     for(int a = start; a < finish; a++)
     {
       label icon = new label(x + tx + borderWidth*2 + 4, y + ty + borderWidth*2 + 4 + 41*(a - start), 24, 24, icons.get(a));
-      collisionBox cb = new collisionBox(x + tx + borderWidth + 2, y + ty + borderWidth + 2 + 41*(a - start), items.size() > vLines ? w - borderWidth*2 - 22 : w - borderWidth*2 - 4, 40);
       
-      if(mouseClicked && cb.isOver() && isActive)
+      //if(mouseClicked && isOver() && isActive)
       {
         if(items.size() > vLines)
         {
-          if(!scroll.cb.isOver())
+          if(!scroll.isOver())
           {
             selected = a;
           }
@@ -253,7 +262,7 @@ class compList extends component
       
       textSize(16);
       fill(0, 0, 0);
-      text(items.get(a), x + tx + borderWidth*2 + 2 + 40, y + ty + borderWidth*2 + 2 + 41*(a - start) + 22);
+      text(items.get(a) != null ? items.get(a) : "Error", x + tx + borderWidth*2 + 2 + 40, y + ty + borderWidth*2 + 2 + 41*(a - start) + 22);
     }
   }
   

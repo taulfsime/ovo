@@ -1,5 +1,7 @@
 class appMaker extends application
 {
+  appMaker() {super(new applicationInfo("data/apps/appMaker.json"));}
+  
   int ww = 600;
   int wh = 680;
   
@@ -73,7 +75,7 @@ class appMaker extends application
   
   void editor()
   {
-    if(back.isClicked)
+    if(back.isClicked())
     {
       setLayout(main);
     }
@@ -101,7 +103,7 @@ class appMaker extends application
     createButton.setEnable(enterName.getText() != "");
     loadButton.setEnable(enterName.getText() != "" && enterWidth.getText() == "" && enterHeight.getText() == "");
     
-    if(createButton.isClicked)
+    if(createButton.isClicked())
     {
       if(enterWidth.getText() != "")
       {   
@@ -139,27 +141,25 @@ class appMaker extends application
       for(int a = components.size() - 1; a >= 0 ; a--)
       {
         component comp = components.get(a);
-        collisionBox cba = new collisionBox(x + comp.x, y + comp.y, comp.w, comp.h);
-        collisionBox cb = new collisionBox(x + ae.x, y + ae.y, ae.w, ae.h);
         
-        if(mouseClicked && cb.isOver())
-        {
-          if(cba.isOver())
-          {
-            editComponent = a;
+        //if(mouseClicked && cb.isOver())
+        //{
+        //  if(cba.isOver())
+        //  {
+        //    editComponent = a;
             
-            coord[0].setText(components.get(editComponent).x + "");
-            coord[1].setText(components.get(editComponent).y + "");
-            coord[2].setText(components.get(editComponent).w + "");
-            coord[3].setText(components.get(editComponent).h + "");
+        //    coord[0].setText(components.get(editComponent).x + "");
+        //    coord[1].setText(components.get(editComponent).y + "");
+        //    coord[2].setText(components.get(editComponent).w + "");
+        //    coord[3].setText(components.get(editComponent).h + "");
             
-            break;
-          }
-          else
-          {
-            editComponent = -1;
-          }
-        }
+        //    break;
+        //  }
+        //  else
+        //  {
+        //    editComponent = -1;
+        //  }
+        //}
       }
     }
     
@@ -341,19 +341,19 @@ class appMaker extends application
   
   void buttonClick()
   {
-    if(drawLabel.isClicked)
+    if(drawLabel.isClicked())
     {
       ae.setComponent("label");
     }
-    else if(drawButton.isClicked)
+    else if(drawButton.isClicked())
     {
       ae.setComponent("button");
     }
-    else if(export.isClicked)
+    else if(export.isClicked())
     {
       export();
     }
-    else if(edit.isClicked)
+    else if(edit.isClicked())
     {
       show.clear();
       for(String s : save)
@@ -417,7 +417,6 @@ class appElement extends component
   int ch = 0;
   String component = null;
   boolean isReady = false;
-  collisionBox cb;
   final color base = color(206, 206, 206);
   
   appElement(int xPos, int yPos, int xLength, int yLength)
@@ -479,17 +478,25 @@ class appElement extends component
     isReady = false;
   }
   
-  void render()
+  boolean isOver()
   {
-    cb = new collisionBox(x + tx, y + ty, w, h);
+    if(mouseX > x + tx && mouseX < x + tx + w && mouseY > y + ty && mouseY < y + ty + h)
+    {
+      return false;
+    }
     
+    return false;
+  }
+  
+  void render()
+  {    
     fill(border);
     rect(x + tx, y + ty, w, h);
     
     fill(base);
     rect(x + tx + borderWidth, y + ty + borderWidth, w - borderWidth*2, h - borderWidth*2);
     
-    if(cb.isOver() && component != null)
+    if(isOver() && component != null)
     {
       if(mouseClicked)
       {

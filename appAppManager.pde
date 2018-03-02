@@ -1,5 +1,7 @@
 class appManager extends application
 {
+  appManager() {super(new applicationInfo("data/apps/appManager.json"));}
+  
   String[] appList;
   /* MAIN */
   layout main;
@@ -13,7 +15,7 @@ class appManager extends application
   layout showApp;
   button back;
   button getApp;
-  label icon;
+  image icon;
   label name;
   label version;
   
@@ -36,7 +38,7 @@ class appManager extends application
     /* SHOW APP INFO */
     showApp = main.get();
     back = new button(10, 10, 30, 30, getImage("textures/button/tools/active/arrow_back.png"), getImage("textures/button/tools/unactive/arrow_back.png"));
-    icon = new label(50, 50, 70, 70, getIcon(appList[items.getSelected()]));
+    icon = new image(50, 50, 70, 70, getImage(getIcon(appList[items.getSelected()])));
     name = new label(130, 60, 150, 40, "");
     version = new label(130, 105, 150, 40, "");
     wallpaper = new image(0, 0, 598, 200, getImage("textures/app/appManager/wallpaper.png"));
@@ -49,10 +51,7 @@ class appManager extends application
     
     for(String s : appList)
     {
-      if(!isSystemApp(s))
-      {
-        items.addItem(getName(s), getIcon(s) == null ? getImage("textures/files/app.png") : getImage(getIcon(s)));
-      }
+      items.addItem(getName(s), getIcon(s) == null ? getImage("textures/files/app.png") : getImage(getIcon(s)));
     }
     
     setLayout(main);
@@ -60,7 +59,7 @@ class appManager extends application
   
   void mainLayout()
   {
-    if(search.isClicked)
+    if(search.isClicked())
     {
       items.clear();
       for(String s : appList)
@@ -69,18 +68,15 @@ class appManager extends application
         {
           if(checkStrings(searchBar.getText().toLowerCase(), getName(s).substring(a, a + searchBar.getText().length()).toLowerCase()))
           {
-            if(!isSystemApp(s))
-            {
-              items.addItem(getName(s), getIcon(s) == null ? getImage("textures/files/app.png") : getImage(getIcon(s)));
-              break;
-            }
+            items.addItem(getName(s), getIcon(s) == null ? getImage("textures/files/app.png") : getImage(getIcon(s)));
+            break;
           }
         }
       }
     }
-    else if(view.isClicked)
+    else if(view.isClicked())
     {
-      String file = "asd";
+      String file = null;
       
       for(String s : appList)
       {
@@ -104,7 +100,7 @@ class appManager extends application
   
   void showAppLayout()
   {
-    if(back.isClicked)
+    if(back.isClicked())
     {
       setLayout(main);
     }
@@ -124,7 +120,7 @@ class appManager extends application
   
   String getName(String file)
   {
-    return loadJSONObject("data/apps/" + file).getString("name");
+    return loadJSONObject("data/apps/" + file).getString("title");
   }
   
   String getSystemName(String file)
@@ -155,11 +151,6 @@ class appManager extends application
   String getIcon(String file)
   {
     return loadJSONObject("data/apps/" + file).getString("icon");
-  }
-  
-  boolean isSystemApp(String file)
-  {
-    return loadJSONObject("data/apps/" + file).getBoolean("isSystemApp");
   }
 }
 

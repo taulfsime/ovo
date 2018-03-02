@@ -3,8 +3,6 @@
 	"author":"taulfsime",
 	"version":"1.0",
 	"description":"Simple Example Application",
-	"name":"Example Application",
-	"icon":"textures/applicationIcon/exampleApp.png",
-	"isSystemApp":false,
-	"file":"exampleApp.pde"
+	"title":"Example Application",
+	"icon":"textures/applicationIcon/exampleApp.png"
 }
